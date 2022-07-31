@@ -3,11 +3,26 @@ from fastapi.responses import JSONResponse,RedirectResponse,FileResponse
 from fastapi.templating import Jinja2Templates
 from walrus import Database, RateLimitException
 
+from fastapi.middleware.cors import CORSMiddleware
 
 # from tortoise.contrib. fastapi import register_tortoise
 
 
 app = FastAPI()
+
+# 资源访问
+origins = [
+    "http://localhost",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # 数据库
 # register_tortoise(app,
@@ -22,6 +37,9 @@ db = Database(host='localhost',port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 
+@app.get("/")
+async def root():
+    return "index"
 
 # 获取路径参数
 @app.get("/user/{id}")
