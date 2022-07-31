@@ -1,10 +1,19 @@
-from tortoise import Model, fields
+from typing import Optional
+from db import engine
+from sqlmodel import Field, Session, SQLModel
 
-"""数据库当中的表"""
+class Food(SQLModel, table=True):
+    __tablename__: str = "food_menu"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    menu_name: Optional[str] = Field(default=None)
+    menu_img: Optional[str] = Field(default=None)
+    menu_price: Optional[int] = Field(default=None)
+    menu_status: str = Field(default=None)
 
 
-class dd(Model):
-    id = fields.IntField(pk=True)
-    content = fields.CharField(max_length=500)
-    created = fields.DatetimeField(auto_now_add=True)
-    updated = fields.DatetimeField(auto_now=True)
+
+def addFood():
+    food = Food(menu_name="foods1", menu_status="1")
+    with Session(engine) as session:
+        session.add(food)
+        session.commit()
