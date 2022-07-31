@@ -6,4 +6,5 @@ jinja2
 aiofiles
 
 #orm
-tortoise
+sqlmodel
+pymysql

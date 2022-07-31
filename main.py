@@ -5,7 +5,8 @@ from walrus import Database, RateLimitException
 
 from fastapi.middleware.cors import CORSMiddleware
 
-# from tortoise.contrib. fastapi import register_tortoise
+from dao.dd import addFood
+
 
 
 app = FastAPI()
@@ -24,12 +25,6 @@ app.add_middleware(
 )
 
 
-# 数据库
-# register_tortoise(app,
-#                   db_url="mysql://root:123456@localhost:3306/fastapi",
-#                   modules={"models": []},
-#                   add_exception_handlers=True,
-#                   generate_schemas=True)
 # 模板初始化
 template = Jinja2Templates("pages")
  
@@ -39,7 +34,10 @@ rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 @app.get("/")
 async def root():
+    
+    addFood()
     return "index"
+
 
 # 获取路径参数
 @app.get("/user/{id}")
