@@ -3,8 +3,18 @@ from fastapi.responses import JSONResponse,RedirectResponse,FileResponse
 from fastapi.templating import Jinja2Templates
 from walrus import Database, RateLimitException
 
+
+# from tortoise.contrib. fastapi import register_tortoise
+
+
 app = FastAPI()
 
+# 数据库
+# register_tortoise(app,
+#                   db_url="mysql://root:123456@localhost:3306/fastapi",
+#                   modules={"models": []},
+#                   add_exception_handlers=True,
+#                   generate_schemas=True)
 # 模板初始化
 template = Jinja2Templates("pages")
  
