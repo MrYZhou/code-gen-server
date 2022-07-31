@@ -1,9 +1,6 @@
-# 限速
 walrus
-
-#爬虫
-feapder
-
-#fastapi
 fastapi
 uvicorn[standard]
+
+jinja2
+aiofiles
