@@ -1,10 +1,6 @@
 walrus
 fastapi
 uvicorn[standard]
-
 jinja2
 aiofiles
-
-#orm
 sqlmodel
-pymysql
