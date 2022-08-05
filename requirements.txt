@@ -4,3 +4,4 @@ uvicorn[standard]
 jinja2
 aiofiles
 sqlmodel
+pymysql
