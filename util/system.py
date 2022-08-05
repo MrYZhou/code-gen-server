@@ -1,6 +1,45 @@
+import imp
 import zipfile
 import os
+from fastapi import FastAPI
+# 路由
+from router import example
 
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
+
+from db import engine
+# 模板初始化
+jinjaEngine = Jinja2Templates("template")
+def initRouter(app:FastAPI):
+    app.include_router(example.router)
+    
+def initHttp(app:FastAPI):
+    # 资源访问
+    origins = [
+        "http://localhost",
+    ]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+         
+         
+class Init: 
+    def do(app:FastAPI):
+        initHttp(app)
+        initRouter(app)
+
+class App:
+    je = None
+    def __init__(self):
+        self.je = jinjaEngine
+        
+            
+        
 class Common:
     @staticmethod
     def zipfile(src_dir, save_name='default'):
@@ -40,3 +79,5 @@ class Common:
             print('This is not zip')
             return False
         return True
+
+    

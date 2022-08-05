@@ -1,34 +1,12 @@
-from typing import List
-from fastapi import FastAPI, Request, Header, Body
-from fastapi.responses import JSONResponse, RedirectResponse, FileResponse
-from fastapi.templating import Jinja2Templates
-from walrus import Database as RedisDatabase, RateLimitException
+from fastapi import FastAPI
+from util.system import Init
 
-from fastapi.middleware.cors import CORSMiddleware
-
-from util.index import Common
-from server.connect.dao import Table
-
-from db import engine
-from sqlmodel import create_engine, SQLModel, Session
-
+from server.food.dao import addFood
 app = FastAPI()
 
-# 资源访问
-origins = [
-    "http://localhost",
-]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-# 模板初始化
-jinjaEngine = Jinja2Templates("template")
-
+Init.do(app)
 
 @app.get("/")
 async def index():
+    addFood()
     return "index"
