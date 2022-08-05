@@ -6,7 +6,7 @@ from walrus import Database as RedisDatabase, RateLimitException
 
 from fastapi.middleware.cors import CORSMiddleware
 
-from util.index import Common
+from util.system import Common
 from server.connect.dao import Table
 
 from db import engine
