@@ -7,30 +7,41 @@ orm document
 [https://sqlmodel.tiangolo.com/tutorial/](https://sqlmodel.tiangolo.com/tutorial/)
 ## step:
 1: need build a venv folder
-```java
+```bash
 python -m venv .venv
 ```
 2.start venv
-```java
+```bash
 .\.venv\Scripts\activate 
 ```
 3.install pacakge
-```java
+```bash
 pip install -r requirements.txt
 ```
 4.start app
-```java
+```bash
 uvicorn main:app --reload --port=8000
+```
+5.add a dotenv file (optional)
+```python
+DB_HOST = "localhost"
+DB_PORT = "3306"
+DB_USER = "root"
+DB_PASSWORD = "123456"
+DB_NAME = "study"
+DB_DRIVER = "mysql+pymysql"
+SQLMODEL_ECHO = True
 ```
 
 
+
 ## build app
-```java
+```bash
 docker-compose up -d
 ```
 if you want build a docker images,you can use dockerfile.
 such as
-```java
+```bash
 docker build -t fastweb .
 ```
 
