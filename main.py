@@ -8,5 +8,4 @@ Init.do(app)
 
 @app.get("/")
 async def index():
-    addFood()
     return "index"
