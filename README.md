@@ -39,7 +39,7 @@ SQLMODEL_ECHO = True
 ```bash
 docker-compose up -d
 ```
-if you want build a docker images,you can use dockerfile.
+if you want build a docker image,you can use dockerfile.
 such as
 ```bash
 docker build -t fastweb .
