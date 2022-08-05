@@ -2,19 +2,27 @@
 
 fastapi document
 [https://fastapi.tiangolo.com/zh/tutorial/first-steps/](https://fastapi.tiangolo.com/zh/tutorial/first-steps/)
+
 orm document
 [https://sqlmodel.tiangolo.com/tutorial/](https://sqlmodel.tiangolo.com/tutorial/)
-## use:
-```java
+## step:
 1: need build a venv folder
+```java
 python -m venv .venv
+```
 2.start venv
+```java
 .\.venv\Scripts\activate 
+```
 3.install pacakge
+```java
 pip install -r requirements.txt
+```
 4.start app
+```java
 uvicorn main:app --reload --port=8000
 ```
+
 
 ## build app
 ```java
