@@ -1,0 +1,11 @@
+ <select id="selectFlowPressLog" resultType="jnpf.model.flow.TenantFlowVO">
+    select `F_Id` as id, `F_TenantName` as tenantName , `F_FlowTitle` as flowTitle,
+    `F_BaseFlowName` as baseFlowName,`F_PressTime` as pressTime,`F_StartTime` as startTime,`F_NodeName` as nodeName from flow_log
+    where
+    F_TenantId = #{page.tenantId}
+
+    <if test="page.startTime != null and page.endTime != null ">
+    AND  F_PressTime BETWEEN #{page.startTime} and #{page.endTime}
+    </if>
+    limit ${(page.currentPage-1) * page.pageSize} ,${page.pageSize}
+</select>
