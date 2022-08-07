@@ -116,6 +116,10 @@ def html():
     content = {"username": "larry", "list": ["音乐", "游戏", "编码"]}
     template = jinjaEngine.get_template("1.html")
     template.stream(content).dump('my_new_file.html')
+ 
+#    with open ( "index.html" , 'w' ) as file:
+#      content = template.render(data = {})
+#      file.write(html_content)  # 写入模板 生成html
     return "success"
 
 

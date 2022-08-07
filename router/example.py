@@ -37,7 +37,7 @@ async def index(data:Config):
     b= time.time()   
     print(a,b)
     
-    return {"cacheKey": data.cacheKey, "res": 'ok'}
+    return {"cacheKey": data.cacheKey, "res": res}
 
 
 
