@@ -10,15 +10,15 @@
 		</lar-list> -->
 
 		<!-- 小程序 h5 app-->
-		<!-- <lar-list ref="mescrollItem" v-model="list" :apiUrl="apiUrl">
+		<lar-list ref="mescrollItem" v-model="list" :apiUrl="apiUrl">
 			<view v-for="(item , index) in list" :key="index">
 				<view class="item-wrap">
 					<view class="">
-						{{item.name}} - {{item.id}}
+						{# {{item.name}} - {{item.id}} #}
 					</view>
 				</view>
 			</view>
-		</lar-list> -->
+		</lar-list>
 	</view>
 </template>
 <script>
