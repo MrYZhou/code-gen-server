@@ -113,10 +113,8 @@ def html(username, request: Request):
 # jinja到文件
 @app.get("/render")
 def html():
+    content = {"username": "larry", "list": ["音乐", "游戏", "编码"]}
     template = jinjaEngine.get_template("1.html")
-    list = ["音乐", "游戏", "编码"]
-    content = template.render(list=list,username="larry")
-    content = {"username": "larry", "list": list}
     template.stream(content).dump('my_new_file.html')
     return "success"
 
