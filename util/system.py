@@ -2,8 +2,7 @@ import os
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from util.base import routeList
-from util import router
-
+import importlib
 # 路由注册
 def initRouter(app: FastAPI):
     # 解析规则:server模块下面的带router字符的文件
@@ -16,16 +15,15 @@ def initRouter(app: FastAPI):
     #             module = getattr(parentModule, file)
     #             app.include_router(module.router)
     # 解析规则:放在router模块下面的文件
-    modules = __import__("router")
     for root, dirs, files in os.walk(os.path.join(os.getcwd(), "router")):
         for file in files:
             if file.find("__init__") > -1 or file.find(".pyc") > -1:
                 continue
             file = file.replace(".py", "")
-            module = getattr(modules, file)
-            app.include_router(module.router)
+            m = importlib.import_module('router.'+file)
+            app.include_router(m.router)
 
-    # 解析规则:在模板里面手动注册的方式,需要自行导包到util.router,并且在路由文件使用registe注册
+    # 解析规则:在模板里面手动注册的方式,需要自行导包
     for route in routeList:
         app.include_router(route)
 
