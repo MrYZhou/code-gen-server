@@ -69,24 +69,24 @@ class App:
 # 通用常量
 mapKey = {
     "java": {
-        list: [
+        "list": [
             "/model/Info.java",
             "/model/Query.java",
             "/Controller.java",
             "/Entity.java",
-            "/model.xml",
+            "/Model.xml",
             "/Repository.java",
             "/Service.java",
         ]
     },
     "mobile": {
-        list: [
+        "list": [
             "/index.vue",
             "/form.vue",
         ]
     },
     "web": {
-        list: [
+        "list": [
             "/index.vue",
             "/form.vue",
         ]
