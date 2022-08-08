@@ -12,11 +12,11 @@ import time
 
 
 router = APIRouter(
-    prefix="/generate",
+    prefix="/generate2",
     tags=["代码生成"],
     responses={404: {"description": "Not found"}},
 )
-# registe(router)
+
 
 # 直接生成一个预览代码,返回一个缓存的key
 @router.post("/")

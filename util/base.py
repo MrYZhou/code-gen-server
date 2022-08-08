@@ -4,16 +4,22 @@ import zipfile
 import os
 
 from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
+routeList = []
+
+
+def registe(router: APIRouter):
+    routeList.append(router)
 
 
 class Common:
     @staticmethod
-    def randomkey(len:int = 10):
-        return ''.join(random.sample(string.ascii_letters + string.digits, len))
-        
+    def randomkey(len: int = 10):
+        return "".join(random.sample(string.ascii_letters + string.digits, len))
+
     @staticmethod
     def zipfile(src_dir, save_name="default"):
         """
@@ -54,9 +60,35 @@ class Common:
             return False
         return True
 
+
 class App:
     def __init__(self):
         self.je = jinjaEngine
 
-    
-      
+
+# 通用常量
+mapKey = {
+    "java": {
+        list: [
+            "/model/Info.java",
+            "/model/Query.java",
+            "/Controller.java",
+            "/Entity.java",
+            "/model.xml",
+            "/Repository.java",
+            "/Service.java",
+        ]
+    },
+    "mobile": {
+        list: [
+            "/index.vue",
+            "/form.vue",
+        ]
+    },
+    "web": {
+        list: [
+            "/index.vue",
+            "/form.vue",
+        ]
+    },
+}
