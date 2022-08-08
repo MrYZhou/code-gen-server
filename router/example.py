@@ -16,7 +16,6 @@ router = APIRouter(
     tags=["代码生成"],
     responses={404: {"description": "Not found"}},
 )
-# registe(router)
 
 # 直接生成一个预览代码,返回一个缓存的key
 @router.post("/")
