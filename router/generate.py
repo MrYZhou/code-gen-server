@@ -49,10 +49,6 @@ async def index(data=Body(None)):
     return
 
 
-# 保存连接的数据库信息
-@router.post("/database")
-async def index(data=Body(None)):
-    pass
 
 
 # 读取所有表信息,可以采用临时直接连接的,或者数据库的

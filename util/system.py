@@ -2,7 +2,9 @@ import os
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from util.base import routeList
+from db import engine
 import importlib
+from sqlmodel import create_engine,SQLModel
 # 路由注册
 def initRouter(app: FastAPI):
     # 解析规则:server模块下面的带router字符的文件
@@ -41,8 +43,11 @@ def initHttp(app: FastAPI):
         allow_headers=["*"],
     )
 
+def initDataBase():
+    SQLModel.metadata.create_all(engine)
 
 class Init:
     def do(app: FastAPI):
         initHttp(app)
         initRouter(app)
+        initDataBase()
