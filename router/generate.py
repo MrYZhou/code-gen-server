@@ -1,9 +1,9 @@
 import os
 from db import engine
-from fastapi import APIRouter, Body
+from fastapi import APIRouter,HTTPException
 from fastapi.responses import FileResponse
 from server.generate.dao import Config
-
+from nanoid import generate
 from server.generate.index import configParse
 from util.base import Common
 from sqlmodel import Session
@@ -44,14 +44,10 @@ async def index(data: Config = Config()):
     return FileResponse(url, filename=name + ".zip", status_code=200)
 
 
-# 保存生成的配置
-@router.get("/saveConfig")
-async def index(data=Body(None)):
-    return 1
 
     
 # 获取数据库的列表
-@router.get("/list",status_code=200)
+@router.post("/list",status_code=200)
 async def index():
     with Session(engine) as session:
         list = session.exec(select(Config).offset(0).limit(100)).all()
@@ -60,12 +56,30 @@ async def index():
 
 # 保存生成的配置
 @router.post("/saveConfig")
-async def index(data=Body(None)):
-    print(1)
-    return 1
-
-
-# 获取生成的配置
+async def index(data:Config):
+    with Session(engine) as session:
+        data.id = generate()
+        session.add(data)
+        session.commit()
+        session.refresh(data)
+        return data
+    
+# 获取生成的配置根据id
 @router.get("/config/{id}")
 async def index(id):
-    pass
+    with Session(engine) as session:
+        data = session.get(Config, id)
+        if not data:
+            raise HTTPException(status_code=404, detail="data not found")
+        return data
+
+# 删除生成的配置根据id
+@router.delete("/config/{id}")
+async def index(id):
+    with Session(engine) as session:
+        data = session.get(Config, id)
+        if not data:
+            raise HTTPException(status_code=404, detail="data not found")
+        session.delete(data)
+        session.commit()
+        return {"ok": True}
