@@ -1,15 +1,16 @@
 from sqlmodel import create_engine
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 env = os.environ
-DB_HOST = env.get("DB_HOST") if env.get("DB_HOST") else "localhost"
-DB_PORT = env.get("DB_PORT") if env.get("DB_PORT") else "3306"
-DB_USER = env.get("DB_USER") if env.get("DB_USER") else "root"
-DB_PASSWORD = env.get("DB_PASSWORD") if env.get("DB_PASSWORD") else "123456"
-DB_NAME = env.get("DB_NAME") if env.get("DB_NAME") else "study"
-DB_DRIVER = env.get("DB_DRIVER") if env.get("DB_DRIVER") else "mysql+pymysql"
+DB_HOST = os.getenv("DB_HOST") if os.getenv("DB_HOST") else "localhost"
+DB_PORT = os.getenv("DB_PORT") if os.getenv("DB_PORT") else "3306"
+DB_USER = os.getenv("DB_USER") if os.getenv("DB_USER") else "root"
+DB_PASSWORD = os.getenv("DB_PASSWORD") if os.getenv("DB_PASSWORD") else "123456"
+DB_NAME = os.getenv("DB_NAME") if os.getenv("DB_NAME") else "study"
+DB_DRIVER = os.getenv("DB_DRIVER") if os.getenv("DB_DRIVER") else "mysql+pymysql"
 SQLMODEL_ECHO = (
-    bool(env.get("SQLMODEL_ECHO")) if bool(env.get("SQLMODEL_ECHO")) else False
+    bool(os.getenv("SQLMODEL_ECHO")) if bool(os.getenv("SQLMODEL_ECHO")) else False
 )
 
 
