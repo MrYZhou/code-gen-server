@@ -1,15 +1,13 @@
-from asyncio.windows_events import NULL
-import imp
-from msilib.schema import tables
 import os
-from fastapi import APIRouter, Depends, HTTPException, Body
+from db import engine
+from fastapi import APIRouter, Body
 from fastapi.responses import FileResponse
 from server.generate.dao import Config
 
 from server.generate.index import configParse
-from util.base import Common, registe
-import time
-
+from util.base import Common
+from sqlmodel import Session
+from sqlmodel import select
 
 router = APIRouter(
     prefix="/generate",
@@ -27,6 +25,10 @@ async def index(data: Config):
 
     return {"cacheKey": data.cacheKey, "res": res}
 
+# 预览代码文档根据id
+@router.get("/{id}", tags=["web", "app"])
+async def index(id):
+    pass
 
 # 通过缓存下载
 @router.post("/download")
@@ -42,38 +44,25 @@ async def index(data: Config = Config()):
     return FileResponse(url, filename=name + ".zip", status_code=200)
 
 
-# todo 2022.8.15
-# 直接下载模板通过id.这时候要在解析一下
-@router.get("/download/{id}")
+# 保存生成的配置
+@router.get("/saveConfig")
 async def index(data=Body(None)):
-    return
+    return 1
 
-
-
-
-# 读取所有表信息,可以采用临时直接连接的,或者数据库的
-@router.get("/tableList")
-async def index(data=Body(None)):
-    pass
-
-
-# 预览文档根据id
-@router.get("/{id}", tags=["web", "app"])
-async def index(id):
-    pass
-
-
-# todo 2022.8.20
-# 获取所有生成的配置列表
-@router.get("/configList")
-async def index(id):
-    pass
-
+    
+# 获取数据库的列表
+@router.get("/list",status_code=200)
+async def index():
+    with Session(engine) as session:
+        list = session.exec(select(Config).offset(0).limit(100)).all()
+        return list    
+    
 
 # 保存生成的配置
 @router.post("/saveConfig")
 async def index(data=Body(None)):
-    pass
+    print(1)
+    return 1
 
 
 # 获取生成的配置
