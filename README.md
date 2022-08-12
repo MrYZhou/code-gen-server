@@ -30,7 +30,7 @@ uvicorn main:app --reload --port=8000
 ```
 5.add a dotenv file (optional)
 ```python
-DB_HOST = "localhost"
+DB_HOST = "192.168.20.43"
 DB_PORT = "3306"
 DB_USER = "root"
 DB_PASSWORD = "123456"

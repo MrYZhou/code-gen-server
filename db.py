@@ -1,9 +1,10 @@
 from sqlmodel import create_engine
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 env = os.environ
-DB_HOST = os.getenv("DB_HOST") if os.getenv("DB_HOST") else "localhost"
+DB_HOST = os.getenv("DB_HOST") if os.getenv("DB_HOST") else "127.0.0.1"
 DB_PORT = os.getenv("DB_PORT") if os.getenv("DB_PORT") else "3306"
 DB_USER = os.getenv("DB_USER") if os.getenv("DB_USER") else "root"
 DB_PASSWORD = os.getenv("DB_PASSWORD") if os.getenv("DB_PASSWORD") else "123456"
