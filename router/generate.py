@@ -1,15 +1,13 @@
-from asyncio.windows_events import NULL
-import imp
-from msilib.schema import tables
 import os
-from fastapi import APIRouter, Depends, HTTPException, Body
+from db import engine
+from fastapi import APIRouter,HTTPException
 from fastapi.responses import FileResponse
 from server.generate.dao import Config
-
+from nanoid import generate
 from server.generate.index import configParse
-from util.base import Common, registe
-import time
-
+from util.base import Common
+from sqlmodel import Session
+from sqlmodel import select
 
 router = APIRouter(
     prefix="/generate",
@@ -42,41 +40,43 @@ async def index(data: Config = Config()):
     return FileResponse(url, filename=name + ".zip", status_code=200)
 
 
-# todo 2022.8.15
-# 直接下载模板通过id.这时候要在解析一下
-@router.get("/download/{id}")
-async def index(data=Body(None)):
-    return
 
+    
+# 获取数据库的列表
 
-
-
-# 读取所有表信息,可以采用临时直接连接的,或者数据库的
-@router.get("/tableList")
-async def index(data=Body(None)):
-    pass
-
-
-# 预览文档根据id
-@router.get("/{id}", tags=["web", "app"])
-async def index(id):
-    pass
-
-
-# todo 2022.8.20
-# 获取所有生成的配置列表
-@router.get("/configList")
-async def index(id):
-    pass
+@router.get("/list",status_code=200)
+async def index():
+    with Session(engine) as session:
+        list = session.exec(select(Config).offset(0).limit(100)).all()
+        return list    
 
 
 # 保存生成的配置
 @router.post("/saveConfig")
-async def index(data=Body(None)):
-    pass
-
-
-# 获取生成的配置
+async def index(data:Config):
+    with Session(engine) as session:
+        data.id = generate()
+        session.add(data)
+        session.commit()
+        session.refresh(data)
+        return data
+    
+# 获取生成的配置根据id
 @router.get("/config/{id}")
 async def index(id):
-    pass
+    with Session(engine) as session:
+        data = session.get(Config, id)
+        if not data:
+            raise HTTPException(status_code=404, detail="data not found")
+        return data
+
+# 删除生成的配置根据id
+@router.delete("/config/{id}")
+async def index(id):
+    with Session(engine) as session:
+        data = session.get(Config, id)
+        if not data:
+            raise HTTPException(status_code=404, detail="data not found")
+        session.delete(data)
+        session.commit()
+        return {"ok": True}
