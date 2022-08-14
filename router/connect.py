@@ -2,10 +2,10 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from nanoid import generate
 from db import engine
-from server.connect.dao import DataBase
+from server.connect.dao import DataBase, Table
 from sqlmodel import Session
 from sqlmodel import SQLModel,select,update
-from server.connect.dao import savedb
+from server.connect.dao import savedb,dyConnect,getAllTable
 
 router = APIRouter(
     prefix="/connect",
@@ -43,10 +43,19 @@ async def index(dataBase: DataBase):
         return database
 
 
-# 读取所有表信息,可以采用临时直接连接的,或者数据库的
+# 读取所有表信息,动态连接数据库
 @router.post("/tableList")
 async def index(dataBase: DataBase):
-    pass
+    engine = dyConnect(dataBase)
+    list:List[Table] = getAllTable(engine)
+    map={}
+    for item in list:
+        key =item.dbName
+        if not key in map:
+            map[key]:List = List()
+            
+        map[key].append(item)
+    return map
 
 
 # 获取数据库的列表
@@ -58,6 +67,12 @@ async def index():
 
 
 # 删除
-@router.post("/database/{id}")
+@router.delete("/database/{id}",status_code=200)
 async def index(id):
-    pass
+    with Session(engine) as session:
+        data = session.get(DataBase, id)
+        if not data:
+            raise HTTPException(status_code=404, detail="data not found")
+        session.delete(data)
+        session.commit()
+        return {"ok": True}
