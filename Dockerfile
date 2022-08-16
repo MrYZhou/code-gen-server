@@ -1,39 +1,14 @@
-FROM python:alpine3.16
-
-COPY ./requirements.txt /app/requirements.txt
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-
-RUN apk add --no-cache --virtual build-dependencies \
-  python3-dev \
-  libffi-dev \
-  openssl-dev \
-  gcc \
-  libc-dev \
-  linux-headers \
-  freetds-dev \
-  make
-
-RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-
-RUN pip3 install --no-cache-dir -r /app/requirements.txt
-
-RUN apk del build-dependencies \
-  python3-dev \
-  libffi-dev \
-  openssl-dev \
-  gcc \
-  libc-dev \
-  linux-headers \
-  freetds-dev \
-  make
-
-COPY . /app
+FROM python:3.8-slim-buster
 
 WORKDIR /app
 
+COPY ./requirements.txt /app/requirements.txt
 
+RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+RUN pip3 install --no-cache-dir -r /app/requirements.txt
+
+COPY . /app
 
 CMD ["uvicorn", "main:app","--reload", "--host", "0.0.0.0", "--port", "8000"]
 
