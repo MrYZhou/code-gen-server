@@ -1,3 +1,4 @@
+## 使用最基础的镜像，构建时间久7分钟，构建大小1gb
 FROM python:3.10
 
 WORKDIR /code
@@ -11,3 +12,5 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY . /code
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+EXPOSE 8000
