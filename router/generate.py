@@ -8,6 +8,7 @@ from server.generate.index import configParse
 from util.base import Common
 from sqlmodel import Session
 from sqlmodel import select
+from fastapi.responses import StreamingResponse
 
 router = APIRouter(
     prefix="/generate",
@@ -38,6 +39,7 @@ async def index(data: Config = Config()):
     name = "模板" + data.cacheKey
     url = os.path.join(os.getcwd(), "static", name + ".zip")
     return FileResponse(url, filename=name + ".zip", status_code=200)
+
 
 
 
