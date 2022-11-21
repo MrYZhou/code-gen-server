@@ -26,6 +26,8 @@ services:
     environment:
       # root 密码
       MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      - custom-local-net  
   fast:
     build: 
       context: .
@@ -34,14 +36,19 @@ services:
     volumes:
       - .:/app/server
     environment:
-      PYTHONPATH: /app   
-  # web:
-  #   build:
-  #     context: ./web
-  #   ports:
-  #     - 5173:5173
-  #   volumes:
-  #     - ./:/app/web
-  #   tty: true
+      PYTHONPATH: /app
+    networks:
+      - custom-local-net
+      
+networks:
+  custom-local-net:
+    driver: bridge
+    ipam:
+      # 网络配置
+      config:
+        # 分配的子网网段
+        - subnet: 172.25.64.0/18
+        # 网关地址
+          gateway: 172.25.64.1      
 
   
