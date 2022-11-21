@@ -1,4 +1,4 @@
-FROM python:3.11-slim-buster
+FROM python:3.9-slim-buster
 
 WORKDIR /app
 
@@ -10,6 +10,7 @@ RUN pip3 install  -r /app/requirements.txt
 
 COPY . /app
 
+ENV PYTHONPATH = /app
 CMD ["uvicorn", "main:app","--reload", "--host", "0.0.0.0", "--port", "8000"]
 
 ## 网络监听端口

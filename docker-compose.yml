@@ -1,12 +1,47 @@
 version: "3.9"
 services:
-  web:
-    build: .
+  mysql:
+      # 容器名(以后的控制都通过这个)
+    container_name: mysql
+      # 重启策略
+    restart: always
+    image: mysql:5.7
+    ports:
+      - "3309:3306"
+    volumes:
+      # 挂挂载配置文件
+      - /D/Users/lg/Desktop/conf:/etc/mysql/conf.d
+      # 挂载日志
+      - /D/Users/lg/Desktop/logs:/logs
+      # 挂载数据
+      - /D/Users/lg/Desktop/data:/var/lib/mysql
+    command: [
+          'mysqld',
+          '--innodb-buffer-pool-size=80M',
+          '--character-set-server=utf8mb4',
+          '--collation-server=utf8mb4_unicode_ci',
+          '--default-time-zone=+8:00',
+          '--lower-case-table-names=1'
+        ]
+    environment:
+      # root 密码
+      MYSQL_ROOT_PASSWORD: 123456
+  fast:
+    build: 
+      context: .
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - .:/app/server
     environment:
-      ENV: development
-  # redis:
-  #   image: "redis:alpine"
+      PYTHONPATH: /app   
+  # web:
+  #   build:
+  #     context: ./web
+  #   ports:
+  #     - 5173:5173
+  #   volumes:
+  #     - ./:/app/web
+  #   tty: true
+
+  
