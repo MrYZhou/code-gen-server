@@ -1,11 +1,13 @@
 # 定义普通方法,组织业务
 
-from dataclasses import replace
 import os
 import time
+from dataclasses import replace
+
 from server.generate.dao import Config
-from util.cache import LRUCache
 from util.base import Common, jinjaEngine, mapKey
+from util.cache import LRUCache
+
 
 # 获取模板解析结果
 @LRUCache()

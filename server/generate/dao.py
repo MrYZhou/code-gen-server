@@ -1,7 +1,10 @@
 
 from typing import List
+
 from pydantic import BaseModel
 from sqlmodel import Field, Session, SQLModel
+
+
 class Column(SQLModel):
   label:str=None
   value:str=None
