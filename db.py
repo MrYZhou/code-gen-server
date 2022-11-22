@@ -17,6 +17,7 @@ SQLMODEL_ECHO = (
 DB_HOST = os.environ.get('DB_HOST') if os.environ.get('DB_HOST') else "127.0.0.1"
 DB_PORT = os.environ.get('DB_PORT') if os.environ.get('DB_PORT') else "3306"
 
+DB_HOST = 'mysql'
 DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
 print(f'连接地址:{DB_URL}')
 engine = create_engine(DB_URL, echo=SQLMODEL_ECHO)
