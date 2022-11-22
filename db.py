@@ -14,7 +14,6 @@ SQLMODEL_ECHO = (
     bool(os.getenv("SQLMODEL_ECHO")) if bool(os.getenv("SQLMODEL_ECHO")) else False
 )
 
-
-DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
-
+DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@host:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
+print(f'连接地址:{DB_URL}')
 engine = create_engine(DB_URL, echo=SQLMODEL_ECHO)
