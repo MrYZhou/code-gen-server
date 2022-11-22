@@ -2,6 +2,7 @@ version: "3.9"
 services:
   # 后台服务
   fast:
+    container_name: fast
     build: 
       context: .
     ports:
@@ -11,16 +12,17 @@ services:
       
     environment:
       PYTHONPATH: /app
-      DB_HOST: 192.168.3.16
+      # DB_HOST: 192.168.3.16
       DB_PORT: 3309
-    networks:
-      app-net:
+    # networks:
+    #   app-net:
     depends_on:
       - mysql  
     tty: true  
   mysql:
-      # 容器名(以后的控制都通过这个)
-      # 重启策略
+    # 容器名(以后的控制都通过这个)
+    container_name: mysql5.7
+    # 重启策略
     restart: always
     image: mysql:5.7
     ports:
@@ -63,17 +65,11 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s    
-    networks:
-      app-net:
-        aliases:
-          - mysqlhost
+    # networks:
+    #   app-net:
+    #     aliases:
+    #       - mysqlhost
         
   
-      
-# expose:
-#   - "3000"
-#   - "8000"
-#   - "5173"
-#   - "8080"
-networks:
-  app-net:  
+# networks:
+#   app-net:  
