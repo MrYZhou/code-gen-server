@@ -2,7 +2,7 @@ version: "3.9"
 services:
   mysql:
       # 容器名(以后的控制都通过这个)
-    container_name: mysql
+    container_name: mysql  
       # 重启策略
     restart: always
     image: mysql:5.7
@@ -28,27 +28,33 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
     networks:
       - custom-local-net  
+
   fast:
     build: 
       context: .
     ports:
       - "8000:8000"
     volumes:
-      - .:/app/server
+      - .:/app
     environment:
       PYTHONPATH: /app
+    links:
+      - "mysql:host"  
+    depends_on:
+     - mysql  
     networks:
       - custom-local-net
+    tty: true  
       
 networks:
   custom-local-net:
     driver: bridge
-    ipam:
-      # 网络配置
-      config:
-        # 分配的子网网段
-        - subnet: 172.25.64.0/18
-        # 网关地址
-          gateway: 172.25.64.1      
+    # ipam:
+    #   # 网络配置
+    #   config:
+    #     # 分配的子网网段
+    #     - subnet: 172.25.64.0/18
+    #     # 网关地址
+    #       gateway: 172.25.64.1      
 
   
