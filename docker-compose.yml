@@ -1,8 +1,25 @@
 version: "3.9"
 services:
+  # 后台服务
+  fast:
+    build: 
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      
+    environment:
+      PYTHONPATH: /app
+      DB_HOST: 192.168.3.16
+      DB_PORT: 3309
+    networks:
+      app-net:
+    depends_on:
+      - mysql  
+    tty: true  
   mysql:
       # 容器名(以后的控制都通过这个)
-    container_name: mysql  
       # 重启策略
     restart: always
     image: mysql:5.7
@@ -10,11 +27,13 @@ services:
       - "3309:3306"
     volumes:
       # 挂挂载配置文件
-      - /D/Users/lg/Desktop/conf:/etc/mysql/conf.d
+      - /D/mysql57/conf:/etc/mysql/conf.d
       # 挂载日志
-      - /D/Users/lg/Desktop/logs:/logs
+      - /D/mysql57/logs:/logs
       # 挂载数据
-      - /D/Users/lg/Desktop/data:/var/lib/mysql
+      - /D/mysql57/data:/var/lib/mysql
+      # 数据库初始化脚本，当Mysql容器首次启动时，会在 /docker-entrypoint-initdb.d目录下扫描 .sh，.sql，.sql.gz类型的文件。如果这些类型的文件存在，将执行它们来初始化一个数据库；
+      - .:/docker-entrypoint-initdb.d/
     command: [
           'mysqld',
           '--innodb-buffer-pool-size=80M',
@@ -26,35 +45,35 @@ services:
     environment:
       # root 密码
       MYSQL_ROOT_PASSWORD: 123456
+      #默认数据库
+      # MYSQL_DATABASE: study
+      TZ: Asia/Shanghai
+    # 部署配置
+    deploy:
+      #在此常规示例中，服务被限制为不超过 1024M 内存和（4CPU）， 并保留了内存和 CPU 时间（始终可用）。  
+      resources:
+        limits:
+          cpus: '4'
+          memory: 1024M
+        reservations:
+          cpus: '1'
+          memory: 200M  
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s    
     networks:
-      - custom-local-net  
-
-  fast:
-    build: 
-      context: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    environment:
-      PYTHONPATH: /app
-    links:
-      - "mysql:host"  
-    depends_on:
-     - mysql  
-    networks:
-      - custom-local-net
-    tty: true  
-      
-networks:
-  custom-local-net:
-    driver: bridge
-    # ipam:
-    #   # 网络配置
-    #   config:
-    #     # 分配的子网网段
-    #     - subnet: 172.25.64.0/18
-    #     # 网关地址
-    #       gateway: 172.25.64.1      
-
+      app-net:
+        aliases:
+          - mysqlhost
+        
   
+      
+# expose:
+#   - "3000"
+#   - "8000"
+#   - "5173"
+#   - "8080"
+networks:
+  app-net:  
