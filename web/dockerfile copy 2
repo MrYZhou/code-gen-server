@@ -1,0 +1,17 @@
+
+
+# node镜像
+FROM node:16-alpine as node16
+
+WORKDIR /app/web
+
+COPY . .
+
+# 设置淘宝npm镜像
+RUN npm config set registry https://registry.npmmirror.com
+# 安装依赖
+RUN npm install
+
+CMD npm run dev
+
+EXPOSE 5173
