@@ -118,3 +118,4 @@ dmypy.json
 static/
 
 # web
+node_modules
