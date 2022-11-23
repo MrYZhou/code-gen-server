@@ -9,7 +9,7 @@
 </template>
 <script setup>
 import dragPanel from "./components/dragPanel.vue";
-import Header from "./components/Header.vue";
+import Header from "./components/header.vue";
 </script>
 
 <style scoped>

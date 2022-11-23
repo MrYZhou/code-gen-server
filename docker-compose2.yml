@@ -1,12 +1,88 @@
 version: "3.9"
-services:
+services: 
+  mysql:
+    # 容器名(以后的控制都通过这个)
+    container_name: mysql5.7-debian
+    # 重启策略
+    restart: always
+    image: mysql:5.7-debian
+    ports:
+      - "3309:3306"
+    volumes:
+      # 挂挂载配置文件
+      - /D/mysql57/conf:/etc/mysql/conf.d
+      # 挂载日志
+      - /D/mysql57/logs:/logs
+      # 挂载数据
+      - /D/mysql57/data:/var/lib/mysql
+      # 数据库初始化脚本，当Mysql容器首次启动时，会在 /docker-entrypoint-initdb.d目录下扫描 .sh，.sql，.sql.gz类型的文件。如果这些类型的文件存在，将执行它们来初始化一个数据库；
+      - .:/docker-entrypoint-initdb.d/
+    command: [
+          'mysqld',
+          '--innodb-buffer-pool-size=80M',
+          '--character-set-server=utf8mb4',
+          '--collation-server=utf8mb4_unicode_ci',
+          '--default-time-zone=+8:00',
+          '--lower-case-table-names=1'
+        ]
+    environment:
+      # root 密码
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    # 部署配置
+    deploy:
+      #在此常规示例中，服务被限制为不超过 1024M 内存和（4CPU）， 并保留了内存和 CPU 时间（始终可用）。  
+      resources:
+        limits:
+          cpus: '4'
+          memory: 1024M
+        reservations:
+          cpus: '1'
+          memory: 200M  
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s    
+    networks:
+      app-net:
+        aliases:
+          - mysqlhost
+  #前端
   web:
-    build: .
+    container_name: vue-drag
+    build: ./web
+    ports:
+      - "6000:5173"
+    volumes:
+      - ./web:/home/web
+  # 后台服务
+  fast:
+    #定义显示的名字
+    container_name: fast
+    # dockerfile文件的位置,上下文对copy 的代码有影响，相当于只能在这个目录和子目录下复制文件
+    build: 
+      context: .
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+
+    #定义环境变量  
     environment:
-      ENV: development
+      PYTHONPATH: /app
+      #可以直接用服务名代表主机的地址
+      DB_HOST: mysql
+      # DB_PORT: 3306
+    networks:
+      app-net:
+
+    #依赖于mysql先启动  
+    # depends_on:
+    #   - mysql  
+    # tty: true
   # redis:
   #   image: "redis:alpine"
+#定义网络，默认是bridge     
+networks:
+  app-net:  
