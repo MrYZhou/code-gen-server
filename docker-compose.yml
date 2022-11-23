@@ -2,10 +2,10 @@ version: "3.9"
 services: 
   mysql:
     # 容器名(以后的控制都通过这个)
-    container_name: mysql5.7
+    container_name: mysql5.7-debian
     # 重启策略
     restart: always
-    image: mysql:5.7
+    image: mysql:5.7-debian
     ports:
       - "3309:3306"
     volumes:
@@ -51,22 +51,30 @@ services:
         
   # 后台服务
   fast:
+    #定义显示的名字
     container_name: fast
+    # dockerfile文件的位置,上下文对copy 的代码有影响，相当于只能在这个目录和子目录下复制文件
     build: 
       context: .
     ports:
       - "8000:8000"
     volumes:
       - .:/app
-      
+
+    #定义环境变量  
     environment:
       PYTHONPATH: /app
-      DB_HOST: 192.168.20.43 # nedd change your own host
-      DB_PORT: 3309
+      #可以直接用服务名代表主机的地址
+      DB_HOST: mysql
+      # DB_PORT: 3306
     networks:
       app-net:
-    depends_on:
-      - mysql  
-    # tty: true 
+
+    #依赖于mysql先启动  
+    # depends_on:
+    #   - mysql  
+    # tty: true
+
+#定义网络，默认是bridge     
 networks:
   app-net:  
