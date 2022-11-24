@@ -1,0 +1,11 @@
+
+
+FROM nginx:alpine
+
+WORKDIR /app/web/dist
+
+COPY ./dist .
+
+COPY ./nginx /etc/nginx/
+
+EXPOSE 80
