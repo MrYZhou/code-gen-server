@@ -28,46 +28,20 @@ services:
     environment:
       # root 密码
       MYSQL_ROOT_PASSWORD: 123456
-      TZ: Asia/Shanghai
-    # 部署配置
-    deploy:
-      #在此常规示例中，服务被限制为不超过 1024M 内存和（4CPU）， 并保留了内存和 CPU 时间（始终可用）。  
-      resources:
-        limits:
-          cpus: '4'
-          memory: 1024M
-        reservations:
-          cpus: '1'
-          memory: 200M  
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s    
+      TZ: Asia/Shanghai  
     networks:
       app-net:
-        aliases:
-          - mysqlhost
   #前端
   web:
-    container_name: vue-drag
-    build: ./web
+    container_name: larryane/gencode
     ports:
-      - "6000:5173"
-    volumes:
-      - ./web:/home/web
+      - "80:80"
   # 后台服务
   fast:
     #定义显示的名字
-    container_name: fast
-    # dockerfile文件的位置,上下文对copy 的代码有影响，相当于只能在这个目录和子目录下复制文件
-    build: 
-      context: .
+    container_name: larryane/genapi
     ports:
       - "8000:8000"
-    volumes:
-      - .:/app
-
     #定义环境变量  
     environment:
       PYTHONPATH: /app
@@ -76,13 +50,6 @@ services:
       # DB_PORT: 3306
     networks:
       app-net:
-
-    #依赖于mysql先启动  
-    # depends_on:
-    #   - mysql  
-    # tty: true
-  # redis:
-  #   image: "redis:alpine"
 #定义网络，默认是bridge     
 networks:
   app-net:  
