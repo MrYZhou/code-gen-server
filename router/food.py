@@ -1,10 +1,12 @@
 
 
 import os
+
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
 from server.generate.dao import Config
+
 router = APIRouter(
     prefix="/food",
     tags=["代码生成"],

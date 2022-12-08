@@ -1,10 +1,10 @@
+import os
 import random
 import string
 import zipfile
-import os
 
-from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter
+from fastapi.templating import Jinja2Templates
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")

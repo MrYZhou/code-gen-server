@@ -1,6 +1,9 @@
 from typing import Optional
-from db import engine
+
 from sqlmodel import Field, Session, SQLModel
+
+from db import engine
+
 
 class Table(SQLModel, table=True):
     __tablename__: str = "food_menu"

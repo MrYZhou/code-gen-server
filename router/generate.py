@@ -9,8 +9,6 @@ from db import engine
 from server.generate.dao import Config
 from server.generate.index import configParse
 from util.base import Common
-from sqlmodel import Session
-from sqlmodel import select
 
 router = APIRouter(
     prefix="/generate",

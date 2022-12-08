@@ -1,6 +1,7 @@
 # 简易版lru
 import collections
 
+
 class LRUCache:
     def __init__(self, capacity=9):
         self.list = None

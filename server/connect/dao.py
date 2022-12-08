@@ -1,8 +1,8 @@
 from typing import List, Optional
+
+from sqlmodel import Field, Session, SQLModel, create_engine
+
 from db import engine
-from sqlmodel import Field, Session
-from sqlmodel import create_engine, SQLModel
-from sqlmodel import Field, Session, SQLModel
 
 
 class Table:

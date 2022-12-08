@@ -7,3 +7,4 @@ sqlmodel
 pymysql
 nanoid
 python-dotenv
+isort
