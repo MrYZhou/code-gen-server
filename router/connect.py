@@ -1,11 +1,11 @@
 from typing import List
+
 from fastapi import APIRouter, HTTPException
 from nanoid import generate
+from sqlmodel import Session, SQLModel, select, update
+
 from db import engine
-from server.connect.dao import DataBase, Table
-from sqlmodel import Session
-from sqlmodel import SQLModel,select,update
-from server.connect.dao import savedb,dyConnect,getAllTable
+from server.connect.dao import DataBase, Table, dyConnect, getAllTable, savedb
 
 router = APIRouter(
     prefix="/connect",

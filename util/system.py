@@ -1,10 +1,14 @@
-import os
-from fastapi import FastAPI, APIRouter
-from fastapi.middleware.cors import CORSMiddleware
-from util.base import routeList
-from db import engine
 import importlib
-from sqlmodel import create_engine,SQLModel
+import os
+
+from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from sqlmodel import SQLModel, create_engine
+
+from db import engine
+from util.base import routeList
+
+
 # 路由注册
 def initRouter(app: FastAPI):
     # 解析规则:server模块下面的带router字符的文件
