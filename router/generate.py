@@ -1,6 +1,6 @@
 import os
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter,Body, HTTPException
 from fastapi.responses import FileResponse
 from nanoid import generate
 from sqlmodel import Session, select
@@ -17,6 +17,8 @@ router = APIRouter(
 )
 
 # 直接生成一个预览代码,返回一个缓存的key
+
+
 @router.post("/")
 async def index(data: Config):
     if not data.cacheKey:
@@ -41,11 +43,7 @@ async def index(data: Config = Config()):
     return FileResponse(url, filename=name + ".zip", status_code=200)
 
 
-
-    
 # 获取数据库的列表
-
-
 @router.get("/list", status_code=200)
 async def index():
     with Session(engine) as session:
@@ -84,3 +82,10 @@ async def index(id):
         session.delete(data)
         session.commit()
         return {"ok": True}
+
+
+# v2
+# 下载对应单表的代码
+@router.post("/tableInfo")
+async def index(dataBase:dict=Body(None)):
+    return getTable(dyConnect(dataBase), dataBase.get('name'), dataBase.get('table'))

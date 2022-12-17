@@ -1,11 +1,11 @@
-from typing import List
+from typing import Dict, List
 
 from fastapi import APIRouter, HTTPException
 from nanoid import generate
 from sqlmodel import Session, SQLModel, select, update
-
+from fastapi import Body
 from db import engine
-from server.connect.dao import DataBase, Table, dyConnect, getAllTable, savedb
+from server.connect.dao import DataBase, Table, dyConnect, getAllTable, getTable, savedb
 
 router = APIRouter(
     prefix="/connect",
@@ -14,6 +14,8 @@ router = APIRouter(
 )
 
 # 数据库表自动创建
+
+
 @router.get("/initDataBase")
 async def method():
     SQLModel.metadata.create_all(engine)
@@ -28,6 +30,8 @@ async def index(dataBase: DataBase):
     return dataBase
 
 # 编辑连接的数据库信息
+
+
 @router.post("/database/edit")
 async def index(dataBase: DataBase):
     with Session(engine) as session:
@@ -47,19 +51,24 @@ async def index(dataBase: DataBase):
 @router.post("/tableList")
 async def index(dataBase: DataBase):
     engine = dyConnect(dataBase)
-    list:List[Table] = getAllTable(engine)
-    map={}
+    list: List[Table] = getAllTable(engine, dataBase.name)
+    map = {}
     for item in list:
-        key =item.dbName
+        key = item.dbName
         if not key in map:
-            map[key]:List = List()
-            
+            map[key]: List = []
         map[key].append(item)
     return map
 
+# 读取单表信息
+@router.post("/tableInfo")
+async def index(dataBase:dict=Body(None)):
+    return getTable(dyConnect(dataBase), dataBase.get('name'), dataBase.get('table'))
+
+
 
 # 获取数据库的列表
-@router.get("/list",status_code=200)
+@router.get("/list", status_code=200)
 async def index():
     with Session(engine) as session:
         list = session.exec(select(DataBase).offset(0).limit(100)).all()
@@ -67,7 +76,7 @@ async def index():
 
 
 # 删除
-@router.delete("/database/{id}",status_code=200)
+@router.delete("/database/{id}", status_code=200)
 async def index(id):
     with Session(engine) as session:
         data = session.get(DataBase, id)

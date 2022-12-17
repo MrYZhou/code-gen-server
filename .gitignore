@@ -119,3 +119,9 @@ static/
 
 # web
 node_modules
+
+settings.json
+*.code-workspace
+
+template/
+.vscode/
