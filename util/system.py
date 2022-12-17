@@ -1,5 +1,7 @@
 import importlib
 import os
+from pickle import NONE
+from tkinter.messagebox import NO
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,6 +53,7 @@ def initDataBase():
     SQLModel.metadata.create_all(engine)
 
 class Init:
+    @staticmethod
     def do(app: FastAPI):
         initHttp(app)
         initRouter(app)
