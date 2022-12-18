@@ -2,7 +2,7 @@
 
 import os
 import time
-from dataclasses import replace
+from dataclasses import field, replace
 
 from server.generate.dao import Config
 from util.base import Common, jinjaEngine, mapKey
@@ -44,6 +44,40 @@ def configParse(key, config: Config):
         os.path.join(os.getcwd(), "static", basePath),
     )
     return res
+
+
+# 命令行使用
+async def configGen(list, dataBase):
+    # 过滤前缀
+    tablePrefix = dataBase["prefix"]["table"]
+    fieldPrefix = dataBase["prefix"]["field"]
+    
+    
+    # 生成目录信息
+    dataBase["table"] = dataBase["table"].replace(tablePrefix, "")
+    modelName = dataBase["table"].capitalize()
+    downName = modelName + "-" + Common.randomkey()
+    basePath = os.path.join(os.getcwd(), "static", downName)
+    if not os.path.exists(basePath):
+        os.makedirs(basePath)
+        
+    # 提供给模板文件的数据
+    config = {"list": list, "modelName": modelName, "fieldPrefix": fieldPrefix}
+    
+    # 遍历模板文件生成代码
+    list = mapKey["java"].get("list")
+    for genFile in list:
+        targetFile = os.path.join(basePath, modelName + genFile)
+
+        templatePath = "java/" + genFile
+        template = jinjaEngine.get_template(templatePath)
+
+        template.stream(config).dump(targetFile)
+
+    # 压缩文件
+    target = os.path.join(os.getcwd(), "static", basePath)
+    Common.zipfile(target, target)
+    return downName
 
 
 # 使用reder解析

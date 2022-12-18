@@ -70,13 +70,13 @@ class App:
 mapKey = {
     "java": {
         "list": [
-            "/model/Info.java",
-            "/model/Query.java",
-            "/Controller.java",
-            "/Entity.java",
-            "/Model.xml",
-            "/Repository.java",
-            "/Service.java",
+            "Info.java",
+            "Query.java",
+            "Controller.java",
+            "Entity.java",
+            "Model.xml",
+            "Repository.java",
+            "Service.java",
         ]
     },
     "mobile": {
