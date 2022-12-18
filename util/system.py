@@ -5,6 +5,7 @@ from tkinter.messagebox import NO
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel, create_engine
 
 from db import engine
@@ -51,10 +52,14 @@ def initHttp(app: FastAPI):
 
 def initDataBase():
     SQLModel.metadata.create_all(engine)
-
+def initStaticDir(app):
+    app.mount("/static", StaticFiles(directory="static"), name="static")  
 class Init:
     @staticmethod
     def do(app: FastAPI):
+        initDataBase()
         initHttp(app)
         initRouter(app)
-        initDataBase()
+        initStaticDir(app)
+        
+        

@@ -54,6 +54,10 @@ def getAllTable(engine,name):
         list:List[Table] = session.execute(sql).fetchall()
         return list  
 def getTable(engine,name,table):
+    """
+
+    :rtype: object
+    """
     with Session(engine) as session:
         sql = f"""SELECT TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL

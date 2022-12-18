@@ -1,13 +1,14 @@
 import os
 
-from fastapi import APIRouter,Body, HTTPException
+from fastapi import APIRouter, Body, HTTPException
 from fastapi.responses import FileResponse
 from nanoid import generate
 from sqlmodel import Session, select
 
 from db import engine
+from server.connect.dao import getTable, dyConnect
 from server.generate.dao import Config
-from server.generate.index import configParse
+from server.generate.index import configGen, configParse
 from util.base import Common
 
 router = APIRouter(
@@ -15,6 +16,7 @@ router = APIRouter(
     tags=["代码生成"],
     responses={404: {"description": "Not found"}},
 )
+
 
 # 直接生成一个预览代码,返回一个缓存的key
 
@@ -86,6 +88,19 @@ async def index(id):
 
 # v2
 # 下载对应单表的代码
-@router.post("/tableInfo")
-async def index(dataBase:dict=Body(None)):
-    return getTable(dyConnect(dataBase), dataBase.get('name'), dataBase.get('table'))
+@router.post("/code")
+async def index(dataBase: dict = Body(None)):
+    # 获取表的字段信息
+    list = getTable(dyConnect(dataBase), dataBase.get('name'), dataBase.get('table'))
+    # 模块解析
+    path = await configGen(list,dataBase)
+    url = f"./static/{path}.zip"
+    return FileResponse(url, filename=f"{url}.zip")
+    return res
+
+
+@router.get("/zipfile")
+async def root():
+    Common.zipfile("./template/java", "./template/java")
+    url = "./template/java.zip"
+    return FileResponse(url, filename="java.zip")
