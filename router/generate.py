@@ -96,7 +96,6 @@ async def index(dataBase: dict = Body(None)):
     path = await configGen(list,dataBase)
     url = f"./static/{path}.zip"
     return FileResponse(url, filename=f"{url}.zip")
-    return res
 
 
 @router.get("/zipfile")
