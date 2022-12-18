@@ -1,4 +1,4 @@
-package com.lar.main.plan;
+package com.{{config.table}};
 
 import lombok.Data;
 
@@ -7,13 +7,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "plan")
+
+@Table(name = "{{config.table}}")
 @Entity
 @Data
-public class PlanEntity {
-    @Id
-    @Column(name = "id")
-    private String id;
-    @Column(name = "name")
-    private String name;
+public class {{ config.modelName }}Entity {
+    {% for item in config.list -%}
+    {% if item.columnComment  -%}
+    /**
+    {{ item.columnComment  }}
+     */
+    {% endif -%}
+    {% if loop.index0 == 0 -%}
+    @Id{% endif %}
+    @Column(name = "{{item.columnName}}")
+    private String {{item.columnName|replace(config.fieldPrefix, "")}};
+    {% endfor %}
 }

@@ -51,32 +51,39 @@ async def configGen(list, dataBase):
     # 过滤前缀
     tablePrefix = dataBase["prefix"]["table"]
     fieldPrefix = dataBase["prefix"]["field"]
-    
-    
+
     # 生成目录信息
+    table = dataBase["table"]
     dataBase["table"] = dataBase["table"].replace(tablePrefix, "")
     modelName = dataBase["table"].capitalize()
     downName = modelName + "-" + Common.randomkey()
+    downName = modelName
     basePath = os.path.join(os.getcwd(), "static", downName)
     if not os.path.exists(basePath):
         os.makedirs(basePath)
-        
+
     # 提供给模板文件的数据
-    config = {"list": list, "modelName": modelName, "fieldPrefix": fieldPrefix}
-    
+    config = {
+        "list": list,
+        "table": table,
+        "modelName": modelName,
+        "fieldPrefix": fieldPrefix,
+        "tablePrefix": tablePrefix,
+    }
+
     # 遍历模板文件生成代码
-    list = mapKey["java"].get("list")
-    for genFile in list:
+    fileList = mapKey["java"].get("list")
+    for genFile in fileList:
         targetFile = os.path.join(basePath, modelName + genFile)
 
         templatePath = "java/" + genFile
         template = jinjaEngine.get_template(templatePath)
 
-        template.stream(config).dump(targetFile)
+        template.stream(config=config).dump(targetFile)
 
     # 压缩文件
     target = os.path.join(os.getcwd(), "static", basePath)
-    Common.zipfile(target, target)
+    # Common.zipfile(target, target)
     return downName
 
 
