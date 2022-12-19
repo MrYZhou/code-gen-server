@@ -1,11 +1,9 @@
- <select id="selectFlowPressLog" resultType="jnpf.model.flow.TenantFlowVO">
-    select `F_Id` as id, `F_TenantName` as tenantName , `F_FlowTitle` as flowTitle,
-    `F_BaseFlowName` as baseFlowName,`F_PressTime` as pressTime,`F_StartTime` as startTime,`F_NodeName` as nodeName from flow_log
-    where
-    F_TenantId = #{page.tenantId}
-
-    <if test="page.startTime != null and page.endTime != null ">
-    AND  F_PressTime BETWEEN #{page.startTime} and #{page.endTime}
-    </if>
-    limit ${(page.currentPage-1) * page.pageSize} ,${page.pageSize}
-</select>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- <mapper namespace="com.lar.book.BookMapper">
+    <select id="getList" resultType="com.lar.book.BookEntity">
+        select *
+        from book
+        where name = #{page.name}
+    </select>
+</mapper> -->
