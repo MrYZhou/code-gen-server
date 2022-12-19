@@ -65,10 +65,10 @@ async def configGen(list, dataBase):
     # 提供给模板文件的数据
     config = {
         "list": list,
-        "table": table,
+        "table": table.replace(tablePrefix,''),
         "modelName": modelName,
         "fieldPrefix": fieldPrefix,
-        "tablePrefix": tablePrefix,
+        "searchList":dataBase['searchList']
     }
 
     # 遍历模板文件生成代码

@@ -75,7 +75,7 @@ mapKey = {
             "Controller.java",
             "Entity.java",
             "Model.xml",
-            "Repository.java",
+            "Mapper.java",
             "Service.java",
         ]
     },
