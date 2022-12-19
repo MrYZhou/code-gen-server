@@ -77,6 +77,7 @@ mapKey = {
             "Model.xml",
             "Mapper.java",
             "Service.java",
+            "ServiceImpl.java"
         ]
     },
     "mobile": {
