@@ -20,9 +20,8 @@ public class {{ config.modelName }}Entity {
     {% endif -%}
     {% if loop.index0 == 0 -%}
     @TableId("{{item.columnName}}")
-    {% else loop.index0 == 0 -%}
-     @TableField(name = "{{item.columnName}}")
     {% endif -%}
+    @TableField(name = "{{item.columnName}}")
     private {% if item.dataType == 'datatime' -%}
     Date
     {% else %}

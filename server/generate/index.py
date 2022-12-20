@@ -57,7 +57,6 @@ async def configGen(list, dataBase):
     dataBase["table"] = dataBase["table"].replace(tablePrefix, "")
     modelName = dataBase["table"].capitalize()
     downName = modelName + "-" + Common.randomkey()
-    downName = modelName
     basePath = os.path.join(os.getcwd(), "static", downName)
     if not os.path.exists(basePath):
         os.makedirs(basePath)
@@ -83,7 +82,7 @@ async def configGen(list, dataBase):
 
     # 压缩文件
     target = os.path.join(os.getcwd(), "static", basePath)
-    # Common.zipfile(target, target)
+    Common.zipfile(target, target)
     return downName
 
 
