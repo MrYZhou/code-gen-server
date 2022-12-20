@@ -1,16 +1,16 @@
-package com.{{config.table}};
 
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-@Table(name = "{{config.table}}")
-@Entity
 @Data
+@TableName("{{config.table}}")
 public class {{ config.modelName }}Entity {
     {% for item in config.list -%}
     {% if item.columnComment  -%}
@@ -19,8 +19,15 @@ public class {{ config.modelName }}Entity {
      */
     {% endif -%}
     {% if loop.index0 == 0 -%}
-    @Id{% endif %}
-    @Column(name = "{{item.columnName}}")
-    private String {{item.columnName|replace(config.fieldPrefix, "")}};
+    @TableId("{{item.columnName}}")
+    {% else loop.index0 == 0 -%}
+     @TableField(name = "{{item.columnName}}")
+    {% endif -%}
+    private {% if item.dataType == 'datatime' -%}
+    Date
+    {% else %}
+    String
+    {% endif -%}
+    {{item.columnName|replace(config.fieldPrefix, "")}};
     {% endfor %}
 }
