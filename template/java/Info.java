@@ -5,11 +5,12 @@ import lombok.Data;
 @Data
 public class {{config.table|capitalize}}Info {
     {% for item in config.list -%}
-    private {% if item.dataType == 'datatime' -%}
-    Date
-    {% else %}
-    String
+    {% if item.dataType == 'datetime' -%}
+    private Date {{item.columnName|replace(config.fieldPrefix, "")}};
+    {% elif item.dataType == 'decimal' -%}
+    private BigDecimal {{item.columnName|replace(config.fieldPrefix, "")}};
+    {% else -%}
+    private String {{item.columnName|replace(config.fieldPrefix, "")}};
     {% endif -%}
-    String {{item.columnName|replace(config.fieldPrefix, "")}};
     {% endfor %}
 }
