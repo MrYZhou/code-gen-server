@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="lar">
-</mapper>
+<!-- <mapper namespace="com.lar.book.BookMapper">
+    <select id="getList" resultType="com.lar.book.BookEntity">
+        select *
+        from book
+        where name = #{page.name}
+    </select>
+</mapper> -->
