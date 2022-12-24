@@ -1,5 +1,4 @@
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.lar.{{table}}.model.{{table}}Page;
 
 import java.util.List;
 
