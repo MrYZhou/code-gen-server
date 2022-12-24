@@ -1,5 +1,6 @@
 # 定义普通方法,组织业务
 
+from glob import iglob
 import os
 import time
 from dataclasses import field, replace
@@ -72,6 +73,7 @@ async def configGen(list, dataBase):
 
     # 遍历模板文件生成代码
     fileList = mapKey["java"].get("list")
+    
     for genFile in fileList:
         targetFile = os.path.join(basePath, modelName + genFile)
 
