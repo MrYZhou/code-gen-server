@@ -66,6 +66,7 @@ async def configGen(list, dataBase):
     config = {
         "list": list,
         "table": table.replace(tablePrefix,''),
+        "tableName":table,
         "modelName": modelName,
         "fieldPrefix": fieldPrefix,
         "searchList":dataBase['searchList']
