@@ -1,5 +1,6 @@
 
 
+package jnpf.base.model.{{config.table|lower}};
 import lombok.Data;
 
 @Data
