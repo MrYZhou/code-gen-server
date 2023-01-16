@@ -1,11 +1,13 @@
+{% set table = config.table|capitalize -%}
+package jnpf.base.model.{{config.table|lower}};
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
+import jnpf.base.entity.{{table}}Entity;
 import javax.validation.constraints.NotNull;
 
-{% set table = config.table|capitalize %}
+
 
 @Data
 @EqualsAndHashCode(callSuper = false)

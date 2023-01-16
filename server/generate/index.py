@@ -55,8 +55,7 @@ async def configGen(list, dataBase):
 
     # 生成目录信息
     table = dataBase["table"]
-    dataBase["table"] = dataBase["table"].replace(tablePrefix, "")
-    modelName = dataBase["table"].capitalize()
+    modelName = dataBase["table"].replace(tablePrefix, "").capitalize()
     downName = modelName + "-" + Common.randomkey()
     basePath = os.path.join(os.getcwd(), "static", downName)
     if not os.path.exists(basePath):

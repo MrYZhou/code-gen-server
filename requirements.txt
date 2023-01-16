@@ -4,7 +4,7 @@ uvicorn[standard]
 jinja2
 aiofiles
 sqlmodel
-pymysql
 nanoid
+pymysql
 python-dotenv
 isort
