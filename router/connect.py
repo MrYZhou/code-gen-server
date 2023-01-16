@@ -4,7 +4,6 @@ from fastapi import APIRouter, HTTPException
 from nanoid import generate
 from sqlmodel import Session, SQLModel, select, update
 from fastapi import Body
-from db import engine
 from server.connect.dao import DataBase, Table, dyConnect, getAllTable, getTable, savedb
 
 router = APIRouter(

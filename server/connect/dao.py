@@ -2,8 +2,6 @@ from typing import List, Optional
 
 from sqlmodel import Field, Session, SQLModel, create_engine
 
-from db import engine
-
 
 class Table:
     dbName: str
