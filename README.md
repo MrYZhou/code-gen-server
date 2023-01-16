@@ -49,6 +49,7 @@ if you want build a docker image,you can use dockerfile.
 such as
 ```bash
 docker build -t fastweb .
+docker run -d -p 8000:8000 fastweb
 ```
 
 ## about dependency
