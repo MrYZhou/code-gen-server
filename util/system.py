@@ -6,7 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel, create_engine
 
-from db import engine
 from util.base import routeList
 
 
@@ -55,7 +54,6 @@ def initStaticDir(app):
 class Init:
     @staticmethod
     def do(app: FastAPI):
-        initDataBase()
         initHttp(app)
         initRouter(app)
         initStaticDir(app)
