@@ -18,10 +18,10 @@ public class {{ config.modelName }}Entity {
      */
     {%- endif -%}
     {% if loop.index0 == 0 -%}
-    @TableId("{{item.columnName}}")
+    @TableId("{{item.columnBase}}")
     private String  {{item.columnName|replace(config.fieldPrefix, "")}};
     {% else %}
-    @TableField("{{item.columnName}}")
+    @TableField("{{item.columnBase}}")
     {% if item.dataType == 'datetime' -%}
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh")
     private Date {{item.columnName|replace(config.fieldPrefix, "")}};

@@ -94,10 +94,11 @@ async def index(dataBase: dict = Body(None)):
     fieldPrefix = dataBase["prefix"]["field"]
     dataList =[]
     for item in list:
+        columnBase = item[1]
         column = item[1].replace(fieldPrefix,'')
         columnName = column[:1].lower()+column[1:]
         dataList.append({
-            **item,**{"columnName":columnName}
+            **item,**{"columnName":columnName,"columnBase":columnBase}
         })
         
     # 模块解析
