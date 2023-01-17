@@ -64,9 +64,9 @@ async def configGen(list, dataBase):
     # 提供给模板文件的数据
     config = {
         "list": list,
-        "table": table.replace(tablePrefix,''),
+        "table": Common._name_convert_to_camel(table.replace(tablePrefix,'')),
         "tableName":table,
-        "modelName": modelName,
+        "modelName": Common._name_convert_to_camel(modelName),
         "fieldPrefix": fieldPrefix,
         "searchList":dataBase['searchList']
     }
@@ -75,11 +75,10 @@ async def configGen(list, dataBase):
     fileList = mapKey["java"].get("list")
     
     for genFile in fileList:
-        targetFile = os.path.join(basePath, modelName + genFile)
+        targetFile = os.path.join(basePath, Common._name_convert_to_camel(modelName) + genFile)
 
         templatePath = "java/" + genFile
         template = jinjaEngine.get_template(templatePath)
-
         template.stream(config=config).dump(targetFile)
 
     # 压缩文件

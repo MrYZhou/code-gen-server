@@ -1,4 +1,5 @@
 
+{% set modelName = config.modelName -%}
 package jnpf.base.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
@@ -10,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @TableName("{{config.tableName}}")
-public class {{ config.modelName }}Entity {
+public class {{ modelName }}Entity {
     {% for item in config.list -%}
     {% if item.columnComment  -%}
     /**

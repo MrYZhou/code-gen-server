@@ -1,10 +1,11 @@
 
 
+{% set modelName = config.modelName -%}
 package jnpf.base.model.{{config.table|lower}};
 import lombok.Data;
 
 @Data
-public class {{config.table|capitalize}}Info {
+public class {{modelName}}Info {
     {% for item in config.list -%}
     {% if item.dataType == 'datetime' -%}
     private Date {{item.columnName|replace(config.fieldPrefix, "")}};

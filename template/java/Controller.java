@@ -1,4 +1,5 @@
 {% set table = config.table|capitalize -%}
+{% set modelName = config.modelName -%}
 package jnpf.base.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import jnpf.base.model.{{config.table}}.{{table}}Info;
 import jnpf.base.model.{{config.table}}.{{table}}Query;
 @RestController
 @RequestMapping("/{{config.table}}")
-public class  {{table}}Controller {
+public class  {{modelName}}Controller {
     @Autowired
     private {{table}}Service {{config.table}}Service;
     /**
