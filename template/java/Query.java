@@ -1,4 +1,5 @@
 {% set table = config.table|capitalize -%}
+{% set modelName = config.modelName -%}
 package jnpf.base.model.{{config.table|lower}};
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Date;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class {{table}}Query extends Page<{{table}}Entity> {
+public class {{modelName}}Query extends Page<{{modelName}}Entity> {
     {% for item in config.list -%}
     {% set fieldName = item.columnName|replace(config.fieldPrefix, "") -%}
     {% if fieldName in  config.searchList -%}

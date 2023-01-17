@@ -1,11 +1,12 @@
 {% set table = config.table|capitalize -%}
+{% set modelName = config.modelName -%}
 package jnpf.base.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import jnpf.base.entity.{{table}}Entity;
-import jnpf.base.mapper.{{table}}Mapper ;
-import jnpf.base.service.{{table}}Service;
+import jnpf.base.entity.{{modelName}}Entity;
+import jnpf.base.mapper.{{modelName}}Mapper ;
+import jnpf.base.service.{{modelName}}Service;
 @Service
-public class {{table}}ServiceImpl extends ServiceImpl<{{table}}Mapper, {{table}}Entity> implements {{table}}Service {
+public class {{modelName}}ServiceImpl extends ServiceImpl<{{modelName}}Mapper, {{modelName}}Entity> implements {{modelName}}Service {
     
 }
