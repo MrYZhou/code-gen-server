@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jnpf.base.entity.{{modelName}}Entity;
 import javax.validation.constraints.NotNull;
-
+import java.util.List;
 
 
 @Data
@@ -15,15 +15,17 @@ import javax.validation.constraints.NotNull;
 public class {{modelName}}Query extends Page<{{modelName}}Entity> {
     {% for item in config.list -%}
     {% set fieldName = item.columnName|replace(config.fieldPrefix, "") -%}
-    {% if fieldName in  config.searchList -%}
+    
     /**{{ item.columnComment  }}*/
     {% if item.dataType == 'datetime' -%}
-    private Date {{fieldName}};
+    private List<Date> {{fieldName}};
     {% elif item.dataType == 'decimal' -%}
     private BigDecimal {{fieldName}};
     {% else -%}
     private String {{fieldName}};
     {% endif -%}
-    {% endif -%}
+
     {% endfor %}
+
+    
 }

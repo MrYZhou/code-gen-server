@@ -26,6 +26,18 @@ public class  {{modelName}}Controller {
     @PostMapping("list")
     public ActionResult<?> list(@RequestBody @Validated {{modelName}}Query page) {
         QueryWrapper<{{modelName}}Entity> wrapper = new QueryWrapper<>();
+        // if (CollectionUtil.isNotEmpty(page.getPrintTimeRange())) {
+            // Date date = page.getPrintTimeRange().get(0);
+            // Date dateEnd = page.getPrintTimeRange().get(1);
+            // if(date.getTime() == dateEnd.getTime()){
+            //     dateEnd.setTime(date.getTime() + 60 * 60 * 24 * 1000);
+            // }
+            // wrapper.lambda().ge(PrintLogEntity::getPrintTime, date);
+            // wrapper.lambda().le(PrintLogEntity::getPrintTime, dateEnd);
+        // }
+        // if (StringUtils.isNoneBlank(page.getPrintId())) {
+        //     wrapper.lambda().eq(PrintLogEntity::getPrintId, page.getPrintId());
+        // }
         {% for item in config.searchList -%}
         if(page.get{{item|capitalize}}()!=null){
           wrapper.lambda().eq({{modelName}}Entity::get{{item|capitalize}}, page.get{{item|capitalize}}());
@@ -34,6 +46,16 @@ public class  {{modelName}}Controller {
         
         {{modelName}}Query info = {{config.table}}Service.page(page, wrapper);
         
+        // 转化名称
+        // List<PrintLogEntity> records = info.getRecords();
+        // List<String> collect = records.stream().map(m -> m.getPrintMan()).collect(Collectors.toList());
+        // List<UserEntity> list = userService.getBaseMapper().selectBatchIds(collect);
+        // Map<String, String> map = list.stream().collect(Collectors.toMap(UserEntity::getId, UserEntity::getRealName));
+        // for (PrintLogEntity record : records) {
+        //     record.setPrintMan(map.get(record.getPrintMan()));
+        // }
+        // info.setRecords(records);
+
         return ActionResult.success(info);
     }
     /**
