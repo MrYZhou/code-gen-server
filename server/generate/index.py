@@ -2,7 +2,7 @@
 
 from glob import iglob
 import os
-import time
+from pathlib import Path as op
 from dataclasses import field, replace
 
 from server.generate.dao import Config
@@ -14,7 +14,7 @@ from util.cache import LRUCache
 @LRUCache()
 def configParse(key, config: Config):
     res = {}
-    basePath = os.path.join(os.getcwd(), "static", "模板" + key)
+    basePath = op.joinpath(os.getcwd(), "static", "模板" + key)
     modelName = config.name.capitalize()
 
     for tag in mapKey:
@@ -73,7 +73,6 @@ async def configGen(list, dataBase):
 
     # 遍历模板文件生成代码
     fileList = mapKey["java"].get("list")
-    
     for genFile in fileList:
         targetFile = os.path.join(basePath, Common._name_convert_to_camel(modelName) + genFile)
 
