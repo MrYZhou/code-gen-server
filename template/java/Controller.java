@@ -6,33 +6,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jnpf.base.ActionResult;
-import jnpf.base.entity.{{table}}Entity;
-import jnpf.base.service.{{table}}Service;
+import jnpf.base.entity.{{modelName}}Entity;
+import jnpf.base.service.{{modelName}}Service;
 import jnpf.util.RandomUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import jnpf.base.model.{{config.table}}.{{table}}Info;
-import jnpf.base.model.{{config.table}}.{{table}}Query;
+import jnpf.base.model.{{config.table}}.{{modelName}}Info;
+import jnpf.base.model.{{config.table}}.{{modelName}}Query;
 @RestController
 @RequestMapping("/{{config.table}}")
 public class  {{modelName}}Controller {
     @Autowired
-    private {{table}}Service {{config.table}}Service;
+    private {{modelName}}Service {{config.table}}Service;
     /**
      * 获取列表
      * @param page
      * @return
      */
     @PostMapping("list")
-    public ActionResult<?> list(@RequestBody @Validated {{table}}Query page) {
-        QueryWrapper<{{table}}Entity> wrapper = new QueryWrapper<>();
+    public ActionResult<?> list(@RequestBody @Validated {{modelName}}Query page) {
+        QueryWrapper<{{modelName}}Entity> wrapper = new QueryWrapper<>();
         {% for item in config.searchList -%}
         if(page.get{{item|capitalize}}()!=null){
-          wrapper.lambda().eq({{table}}Entity::get{{item|capitalize}}, page.get{{item|capitalize}}());
+          wrapper.lambda().eq({{modelName}}Entity::get{{item|capitalize}}, page.get{{item|capitalize}}());
         }
         {% endfor %}
         
-        {{table}}Query info = {{config.table}}Service.page(page, wrapper);
+        {{modelName}}Query info = {{config.table}}Service.page(page, wrapper);
         
         return ActionResult.success(info);
     }
@@ -44,7 +44,7 @@ public class  {{modelName}}Controller {
     @GetMapping("/{id}")
     public ActionResult<?> info(@PathVariable String id) {
 
-        {{table}}Entity info = {{config.table}}Service.getById(id);
+        {{modelName}}Entity info = {{config.table}}Service.getById(id);
         return ActionResult.success(info);
     }
     /**
@@ -53,8 +53,8 @@ public class  {{modelName}}Controller {
      * @return
      */
     @PostMapping("save")
-    public ActionResult<?> save(@RequestBody @Validated {{table}}Info info) {
-        {{table}}Entity {{config.table}}Entity = BeanUtil.copyProperties(info, {{table}}Entity.class);
+    public ActionResult<?> save(@RequestBody @Validated {{modelName}}Info info) {
+        {{modelName}}Entity {{config.table}}Entity = BeanUtil.copyProperties(info, {{modelName}}Entity.class);
         {{config.table}}Entity.setId(RandomUtil.uuId());
         {{config.table}}Service.save({{config.table}}Entity);
         return ActionResult.success("保存成功");
@@ -65,9 +65,9 @@ public class  {{modelName}}Controller {
      * @return
      */
     @PutMapping("update")
-    public ActionResult<?> update(@RequestBody @Validated {{table}}Info info) {
+    public ActionResult<?> update(@RequestBody @Validated {{modelName}}Info info) {
 
-        {{table}}Entity {{config.table}}Entity = BeanUtil.copyProperties(info, {{table}}Entity.class);
+        {{modelName}}Entity {{config.table}}Entity = BeanUtil.copyProperties(info, {{modelName}}Entity.class);
         {{config.table}}Service.updateById({{config.table}}Entity);
         return ActionResult.success("更新成功");
     }

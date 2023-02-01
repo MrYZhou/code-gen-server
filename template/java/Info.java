@@ -3,7 +3,7 @@
 {% set modelName = config.modelName -%}
 package jnpf.base.model.{{config.table|lower}};
 import lombok.Data;
-
+import java.util.Date;
 @Data
 public class {{modelName}}Info {
     {% for item in config.list -%}

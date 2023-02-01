@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jnpf.base.entity.{{table}}Entity;
+import jnpf.base.entity.{{modelName}}Entity;
 import javax.validation.constraints.NotNull;
 
 
