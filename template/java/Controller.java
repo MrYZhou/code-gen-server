@@ -47,15 +47,18 @@ public class  {{modelName}}Controller {
         {{modelName}}Query info = {{config.table}}Service.page(page, wrapper);
         
         // 转化名称
+        // try{
         // List<PrintLogEntity> records = info.getRecords();
-        // List<String> collect = records.stream().map(m -> m.getPrintMan()).collect(Collectors.toList());
+        // List<String> collect = records.stream().map(PrintLogEntity::getPrintMan).filter(Objects::nonNull).collect(Collectors.toList());
         // List<UserEntity> list = userService.getBaseMapper().selectBatchIds(collect);
         // Map<String, String> map = list.stream().collect(Collectors.toMap(UserEntity::getId, UserEntity::getRealName));
         // for (PrintLogEntity record : records) {
         //     record.setPrintMan(map.get(record.getPrintMan()));
         // }
         // info.setRecords(records);
+        // }catch (Exception ignored){
 
+        // }
         return ActionResult.success(info);
     }
     /**
