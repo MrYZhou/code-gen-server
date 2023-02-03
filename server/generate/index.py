@@ -17,29 +17,29 @@ def configParse(key, config: Config):
     basePath = op.joinpath(os.getcwd(), "static", "模板" + key)
     modelName = config.name.capitalize()
 
-    for tag in mapKey:
-        list = mapKey[tag].get("list")
-        for path in list:
-            path = tag + path
-            template = jinjaEngine.get_template(path)
+    # 获取java
+    list = iglob("template/java/*")
+    tag = 'java'    
+    for path in list:
+        path = tag + path
+        template = jinjaEngine.get_template(path)
 
-            baseFile = os.path.basename(path)
-            filePath = path
-            if tag == "java":
-                filePath = path.replace(baseFile, modelName + baseFile)
-            folderPath = path.replace(baseFile, "")
+        baseFile = os.path.basename(path)
+        filePath = path
+        filePath = path.replace(baseFile, modelName + baseFile)
+        folderPath = path.replace(baseFile, "")
 
-            folderPath = folderPath.replace(tag, tag + "/" + config.name, 1)
-            filePath = filePath.replace(tag, tag + "/" + config.name, 1)
+        folderPath = folderPath.replace(tag, tag + "/" + config.name, 1)
+        filePath = filePath.replace(tag, tag + "/" + config.name, 1)
 
-            targetFolder = os.path.join(basePath, folderPath)
-            targetFile = os.path.join(basePath, filePath)
+        targetFolder = os.path.join(basePath, folderPath)
+        targetFile = os.path.join(basePath, filePath)
 
-            if not os.path.exists(targetFolder):
-                os.makedirs(targetFolder)
+        if not os.path.exists(targetFolder):
+            os.makedirs(targetFolder)
 
-            template.stream(config).dump(targetFile)
-            res[path] = targetFile
+        template.stream(config).dump(targetFile)
+        res[path] = targetFile
     Common.zipfile(
         os.path.join(os.getcwd(), "static", basePath),
         os.path.join(os.getcwd(), "static", basePath),
