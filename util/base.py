@@ -8,7 +8,7 @@ from fastapi import APIRouter
 from fastapi.templating import Jinja2Templates
 
 # 模板初始化
-jinjaEngine = Jinja2Templates("template")
+jinjaEngine = Jinja2Templates("")
 routeList = []
 
 
