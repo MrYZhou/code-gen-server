@@ -1,4 +1,4 @@
-# fastapi-le
+# code-gen-server
 
 fastapi document
 [https://fastapi.tiangolo.com/zh/tutorial/first-steps/](https://fastapi.tiangolo.com/zh/tutorial/first-steps/)
