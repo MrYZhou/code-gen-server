@@ -1,4 +1,3 @@
-walrus
 fastapi
 uvicorn[standard]
 jinja2
