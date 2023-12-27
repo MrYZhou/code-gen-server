@@ -35,20 +35,16 @@ class Common:
         return "".join(random.sample(string.ascii_letters + string.digits, len))
 
     @staticmethod
-    def zipfile(src_dir, save_name="default"):
+    def zipfile(src_dir, save_name):
         """
         压缩整个文件夹
         压缩文件夹下所有文件及文件夹
         默认压缩文件名：文件夹名
         默认压缩文件路径：文件夹上层目录
         """
-        if save_name == "default":
+        zip_name = save_name + ".zip"
+        if save_name is None or save_name == "":
             zip_name = src_dir + ".zip"
-        else:
-            if save_name is None or save_name == "":
-                zip_name = src_dir + ".zip"
-            else:
-                zip_name = save_name + ".zip"
 
         z = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
         for dirpath, dirnames, filenames in os.walk(src_dir):
