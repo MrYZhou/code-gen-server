@@ -14,7 +14,7 @@ class Table(SQLModel, table=True):
     menu_status: str = Field(default=None)
 
 
-def addFood():
+def addFood() -> None:
     food = Table(menu_name="foods1", menu_status="1")
     with Session(engine) as session:
         session.add(food)
