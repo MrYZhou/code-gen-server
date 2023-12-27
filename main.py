@@ -10,8 +10,7 @@ Init.do(app)
 
 @app.get("/")
 async def index():
-    
-    return   "index"
+    return "index"
 
 
 if __name__ == "__main__":
