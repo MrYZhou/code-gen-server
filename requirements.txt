@@ -1,9 +1,16 @@
+# web依赖
 fastapi
+# 服务器
 uvicorn[standard]
+# 模板
 jinja2
+# 文件
 aiofiles
+# orm
 sqlmodel
+# id生成器
 nanoid
+# mysql
 pymysql
+# env文件解析
 python-dotenv
-isort
