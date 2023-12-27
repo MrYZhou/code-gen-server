@@ -28,6 +28,7 @@ async def index(dataBase: DataBase):
     savedb(dataBase)
     return dataBase
 
+
 # 编辑连接的数据库信息
 
 
@@ -59,11 +60,11 @@ async def index(dataBase: DataBase):
         map[key].append(item)
     return map
 
+
 # 读取单表信息
 @router.post("/tableInfo")
-async def index(dataBase:dict=Body(None)):
-    return getTable(dyConnect(dataBase), dataBase.get('name'), dataBase.get('table'))
-
+async def index(dataBase: dict = Body(None)):
+    return getTable(dyConnect(dataBase), dataBase.get("name"), dataBase.get("table"))
 
 
 # 获取数据库的列表

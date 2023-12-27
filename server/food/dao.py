@@ -14,7 +14,6 @@ class Table(SQLModel, table=True):
     menu_status: str = Field(default=None)
 
 
-
 def addFood():
     food = Table(menu_name="foods1", menu_status="1")
     with Session(engine) as session:

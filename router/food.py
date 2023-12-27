@@ -1,5 +1,3 @@
-
-
 import os
 
 from fastapi import APIRouter
@@ -17,6 +15,6 @@ router = APIRouter(
 # 预览
 @router.get("/preview")
 async def preview(data: Config = Config()):
-    url = os.path.join(os.getcwd(), "static", "1.png" )
+    url = os.path.join(os.getcwd(), "static", "1.png")
     file_like = open(url, mode="rb")
     return StreamingResponse(file_like, media_type="image/jpg")

@@ -90,19 +90,19 @@ async def index(id):
 @router.post("/code")
 async def index(dataBase: dict = Body(None)):
     # 获取表的字段信息
-    list = getTable(dyConnect(dataBase), dataBase.get('name'), dataBase.get('table'))
+    list = getTable(dyConnect(dataBase), dataBase.get("name"), dataBase.get("table"))
     fieldPrefix = dataBase["prefix"]["field"]
-    dataList =[]
+    dataList = []
     for item in list:
         columnBase = item[1]
-        column = item[1].replace(fieldPrefix,'')
-        columnName = column[:1].lower()+column[1:]
-        dataList.append({
-            **item,**{"columnName":columnName,"columnBase":columnBase}
-        })
-        
+        column = item[1].replace(fieldPrefix, "")
+        columnName = column[:1].lower() + column[1:]
+        dataList.append(
+            {**item, **{"columnName": columnName, "columnBase": columnBase}}
+        )
+
     # 模块解析
-    path = await configGen(dataList,dataBase)
+    path = await configGen(dataList, dataBase)
     url = f"./static/{path}.zip"
     return FileResponse(url, filename=f"{url}.zip")
 
