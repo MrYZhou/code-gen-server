@@ -26,7 +26,7 @@ def initRouter(app: FastAPI):
             if file.find("__init__") > -1 or file.find(".pyc") > -1:
                 continue
             file = file.replace(".py", "")
-            m = importlib.import_module('router.'+file)
+            m = importlib.import_module("router." + file)
             app.include_router(m.router)
 
     # 解析规则:在模板里面手动注册的方式,需要自行导包
@@ -47,15 +47,18 @@ def initHttp(app: FastAPI):
         allow_headers=["*"],
     )
 
+
 def initDataBase():
     SQLModel.metadata.create_all(engine)
+
+
 def initStaticDir(app):
-    app.mount("/static", StaticFiles(directory="static"), name="static")  
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
 class Init:
     @staticmethod
     def do(app: FastAPI):
         initHttp(app)
         initRouter(app)
         initStaticDir(app)
-        
-        

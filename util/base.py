@@ -17,18 +17,17 @@ def registe(router: APIRouter):
 
 
 class Common:
-
     @staticmethod
     def tocamel(name: str) -> str:
         """下划线转驼峰(小驼峰)"""
-        return re.sub(r'(_[a-z])', lambda x: x.group(1)[1].upper(), name)
+        return re.sub(r"(_[a-z])", lambda x: x.group(1)[1].upper(), name)
 
     @staticmethod
     def tosnake(name: str) -> str:
         """驼峰转下划线"""
-        if '_' in name:
-            raise ValueError(f'{name}字符中包含下划线，无法转换')
-        return re.sub(r'([a-z])([A-Z])', r'\1_\2', name).lower()
+        if "_" in name:
+            raise ValueError(f"{name}字符中包含下划线，无法转换")
+        return re.sub(r"([a-z])([A-Z])", r"\1_\2", name).lower()
 
     @staticmethod
     def randomkey(len: int = 10):
@@ -87,7 +86,7 @@ mapKey = {
             "Model.xml",
             "Mapper.java",
             "Service.java",
-            "ServiceImpl.java"
+            "ServiceImpl.java",
         ]
     },
     "mobile": {

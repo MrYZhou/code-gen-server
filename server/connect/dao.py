@@ -24,34 +24,35 @@ class DataBase(SQLModel, table=True):
 
 
 def savedb(dataBase):
-
     with Session(engine) as session:
         session.add(dataBase)
         session.commit()
         session.refresh(dataBase)
 
 
-def dyConnect(dataBase:dict):
-    DB_HOST = dataBase.get('host')
-    DB_PORT = dataBase.get('port')
-    DB_USER = dataBase.get('user')
-    DB_PASSWORD = dataBase.get('password')
-    DB_NAME = dataBase.get('name')
-    DB_DRIVER = dataBase.get('driver') if dataBase.get('driver') else 'mysql+pymysql'
-    SQLMODEL_ECHO = dataBase.get('echo')
+def dyConnect(dataBase: dict):
+    DB_HOST = dataBase.get("host")
+    DB_PORT = dataBase.get("port")
+    DB_USER = dataBase.get("user")
+    DB_PASSWORD = dataBase.get("password")
+    DB_NAME = dataBase.get("name")
+    DB_DRIVER = dataBase.get("driver") if dataBase.get("driver") else "mysql+pymysql"
+    SQLMODEL_ECHO = dataBase.get("echo")
     DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
     engine = create_engine(DB_URL)
     return engine
 
 
-def getAllTable(engine,name):
+def getAllTable(engine, name):
     with Session(engine) as session:
         sql = f"""SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME"""
-        list:List[Table] = session.execute(sql).fetchall()
-        return list  
-def getTable(engine,name,table):
+        list: List[Table] = session.execute(sql).fetchall()
+        return list
+
+
+def getTable(engine, name, table):
     """
 
     :rtype: object
@@ -61,6 +62,5 @@ def getTable(engine,name,table):
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME 
                 and TB.TABLE_NAME='{table}'"""
-        list:List[Table] = session.execute(sql).fetchall()
-        return list      
-          
+        list: List[Table] = session.execute(sql).fetchall()
+        return list

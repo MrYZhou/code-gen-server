@@ -19,7 +19,7 @@ def configParse(key, config: Config):
 
     # 获取java
     list = iglob("template/java/*")
-    tag = 'java'
+    tag = "java"
     for path in list:
         path = tag + path
         template = jinjaEngine.get_template(path)
@@ -64,11 +64,11 @@ async def configGen(list, dataBase):
     # 提供给模板文件的数据
     config = {
         "list": list,
-        "table": Common.tocamel(table.replace(tablePrefix, '')),
-        "tableName":table,
+        "table": Common.tocamel(table.replace(tablePrefix, "")),
+        "tableName": table,
         "modelName": Common.tocamel(modelName),
         "fieldPrefix": fieldPrefix,
-        "searchList":dataBase['searchList']
+        "searchList": dataBase["searchList"],
     }
 
     # 遍历模板文件生成代码
