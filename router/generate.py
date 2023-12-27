@@ -9,6 +9,7 @@ from server.connect.dao import getTable, dyConnect
 from server.generate.dao import Config
 from server.generate.index import configGen, configParse
 from util.base import Common
+from db import engine
 
 router = APIRouter(
     prefix="/generate",

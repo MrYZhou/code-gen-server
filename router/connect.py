@@ -5,6 +5,7 @@ from nanoid import generate
 from sqlmodel import Session, SQLModel, select, update
 from fastapi import Body
 from server.connect.dao import DataBase, Table, dyConnect, getAllTable, getTable, savedb
+from db import engine
 
 router = APIRouter(
     prefix="/connect",
