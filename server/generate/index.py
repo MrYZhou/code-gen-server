@@ -19,7 +19,7 @@ def configParse(key, config: Config):
 
     # 获取java
     list = iglob("template/java/*")
-    tag = 'java'    
+    tag = 'java'
     for path in list:
         path = tag + path
         template = jinjaEngine.get_template(path)
@@ -64,9 +64,9 @@ async def configGen(list, dataBase):
     # 提供给模板文件的数据
     config = {
         "list": list,
-        "table": Common._name_convert_to_camel(table.replace(tablePrefix,'')),
+        "table": Common.tocamel(table.replace(tablePrefix, '')),
         "tableName":table,
-        "modelName": Common._name_convert_to_camel(modelName),
+        "modelName": Common.tocamel(modelName),
         "fieldPrefix": fieldPrefix,
         "searchList":dataBase['searchList']
     }
@@ -74,7 +74,7 @@ async def configGen(list, dataBase):
     # 遍历模板文件生成代码
     fileList = mapKey["java"].get("list")
     for genFile in fileList:
-        targetFile = os.path.join(basePath, Common._name_convert_to_camel(modelName) + genFile)
+        targetFile = os.path.join(basePath, Common.tocamel(modelName) + genFile)
 
         templatePath = "java/" + genFile
         template = jinjaEngine.get_template(templatePath)
