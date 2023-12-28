@@ -49,7 +49,7 @@ async def database(dataBase: DataBase):
 # 读取所有表信息,动态连接数据库
 @router.post("/tableList")
 async def tableList(dataBase: DataBase):
-    list: List[Table] = getAllTable(engine, dataBase.name)
+    list = getAllTable(engine, dataBase.name)
     map = {}
     for item in list:
         key = item.dbName
@@ -62,7 +62,7 @@ async def tableList(dataBase: DataBase):
 # 读取单表信息
 @router.post("/tableInfo")
 async def tableInfo(dataBase: dict = Body(None)):
-    return getTable(dyConnect(dataBase), dataBase.get("name"), dataBase.get("table"))
+    return getTable(engine, dataBase.get("name"), dataBase.get("table"))
 
 
 # 获取数据库的列表
