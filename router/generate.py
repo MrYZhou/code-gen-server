@@ -1,7 +1,7 @@
 import os
 
 from fastapi import APIRouter, Body, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from nanoid import generate
 from sqlmodel import Session, select
 
@@ -9,6 +9,7 @@ from server.connect.dao import getTable, dyConnect
 from server.generate.dao import Config
 from server.generate.index import configGen, configParse
 from util.base import Common
+from db import engine
 
 router = APIRouter(
     prefix="/generate",
@@ -42,7 +43,16 @@ async def downloadbycachekey(data: Config = Config()):
     name = "模板" + data.cacheKey
     url = os.path.join(os.getcwd(), "static", name + ".zip")
     return FileResponse(url, filename=name + ".zip", status_code=200)
-
+# 预览
+@router.get("/preview")
+async def preview():
+    try:
+        url = os.path.join(os.getcwd(), "static", "logo.ico")
+        file_like = open(url, mode="rb")
+        
+        return StreamingResponse(file_like, media_type="image/jpg")
+    except FileNotFoundError:
+        return {"msg": "文件不存在"}    
 
 # 获取数据库的列表
 @router.get("/list", status_code=200)
