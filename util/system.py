@@ -52,7 +52,7 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase():
-    SQLModel.metadata.create_all(engine.get_db())
+    SQLModel.metadata.create_all(engine.getdb())
 
 
 def initStaticDir(app):
