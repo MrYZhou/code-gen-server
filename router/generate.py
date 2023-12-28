@@ -47,7 +47,7 @@ async def downloadbycachekey(data: Config = Config()):
 # 获取数据库的列表
 @router.get("/list", status_code=200)
 async def list():
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         list = session.exec(select(Config).offset(0).limit(100)).all()
         return list
 
@@ -55,7 +55,7 @@ async def list():
 # 保存生成的配置
 @router.post("/saveConfig")
 async def saveConfig(data: Config):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         data.id = generate()
         session.add(data)
         session.commit()
@@ -66,7 +66,7 @@ async def saveConfig(data: Config):
 # 获取生成的配置根据id
 @router.get("/config/{id}")
 async def configid(id):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         data = session.get(Config, id)
         if not data:
             raise HTTPException(status_code=404, detail="data not found")
@@ -76,7 +76,7 @@ async def configid(id):
 # 删除生成的配置根据id
 @router.delete("/config/{id}")
 async def configdelete(id):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         data = session.get(Config, id)
         if not data:
             raise HTTPException(status_code=404, detail="data not found")

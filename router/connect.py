@@ -12,9 +12,8 @@ from server.connect.dao import (
     getTable,
     savedb,
 )
-from db import DB
+from db import engine
 
-engine = DB()
 
 router = APIRouter(
     prefix="/connect",
@@ -34,7 +33,7 @@ async def databasein(dataBase: DataBase):
 # 编辑连接的数据库信息
 @router.post("/database/edit")
 async def database(dataBase: DataBase):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         database = session.get(DataBase, dataBase.id)
         if not database:
             raise HTTPException(status_code=404, detail="数据不存在")
@@ -53,7 +52,7 @@ async def tableList(dataBase: DataBase):
     list: List[Table] = getAllTable(engine, dataBase.name)
     map = {}
     for item in list:
-        key = item.dbName
+        key = itemdbName
         if key not in map:
             map[key] = []
         map[key].append(item)
@@ -69,7 +68,7 @@ async def tableInfo(dataBase: dict = Body(None)):
 # 获取数据库的列表
 @router.get("/list", status_code=200)
 async def list():
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         list = session.exec(select(DataBase).offset(0).limit(100)).all()
         return list
 
@@ -77,7 +76,7 @@ async def list():
 # 删除
 @router.delete("/database/{id}", status_code=200)
 async def index(id):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         data = session.get(DataBase, id)
         if not data:
             raise HTTPException(status_code=404, detail="data not found")

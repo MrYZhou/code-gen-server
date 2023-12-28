@@ -14,6 +14,6 @@ class Table(SQLModel, table=True):
 
 def addFood() -> None:
     food = Table(menu_name="foods1", menu_status="1")
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         session.add(food)
         session.commit()

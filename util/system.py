@@ -5,11 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel
-from db import DB
 
-from .base import routeList
-
-engine = DB()
+from util.base import routeList
 
 
 # 路由注册
@@ -52,7 +49,8 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase():
-    SQLModel.metadata.create_all(engine.getdb())
+    engine1 = SQLModel.metadata.bind # type: ignore
+    SQLModel.metadata.create_all(engine1)
 
 
 def initStaticDir(app):
