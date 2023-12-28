@@ -52,7 +52,7 @@ async def tableList(dataBase: DataBase):
     list: List[Table] = getAllTable(engine, dataBase.name)
     map = {}
     for item in list:
-        key = itemdbName
+        key = item.dbName
         if key not in map:
             map[key] = []
         map[key].append(item)

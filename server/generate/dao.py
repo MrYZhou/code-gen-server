@@ -5,8 +5,8 @@ from sqlmodel import Field, Session, SQLModel
 
 
 class Column(SQLModel):
-    label: str = None
-    value: str = None
+    label: str = ""
+    value: str = ""
 
 
 class Config(SQLModel, table=True):
