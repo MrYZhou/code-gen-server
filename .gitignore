@@ -126,3 +126,5 @@ settings.json
 .vscode/
 .idea/
 static/*-*
+
+.VSCodeCounter/*
