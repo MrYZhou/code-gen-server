@@ -1,7 +1,9 @@
 from typing import List
 
 from sqlmodel import Field, Session, SQLModel, create_engine
+from db import DB
 
+engine = DB()
 
 class Table:
     dbName: str
@@ -20,43 +22,43 @@ class DataBase(SQLModel, table=True):
     password: str = ""
     name: str = ""
     driver: str = "mysql+pymysql"
-    echo: str = True
+    echo: bool = True
 
 
 def savedb(dataBase):
-    with Session(engine) as session:
+    with Session(engine.get_db()) as session:
         session.add(dataBase)
         session.commit()
         session.refresh(dataBase)
 
 
-def dyConnect(dataBase: dict):
+def dyConnect(dataBase: DataBase):
     DB_HOST = dataBase.get("host")
     DB_PORT = dataBase.get("port")
     DB_USER = dataBase.get("user")
     DB_PASSWORD = dataBase.get("password")
     DB_NAME = dataBase.get("name")
     DB_DRIVER = dataBase.get("driver") if dataBase.get("driver") else "mysql+pymysql"
-    SQLMODEL_ECHO = dataBase.get("echo")
     DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
-    engine = create_engine(DB_URL)
+    engine = create_engine(DB_URL, echo=True)
     return engine
 
 
-def getAllTable(engine, name) -> List[Table]:
-    with Session(engine) as session:
+def getAllTable(engine, name):
+    with Session(engine.get_db()) as session:
         sql: str = f"""SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME"""
-        list: List[Table] = session.exec(sql).fetchall()
+
+        list = session.exec(sql)
         return list
 
 
 def getTable(engine, name, table):
-    with Session(engine) as session:
+    with Session(engine.get_db()) as session:
         sql = f"""SELECT TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME 
                 and TB.TABLE_NAME='{table}'"""
-        list: List[Table] = session.exec(sql).fetchall()
+        list: List[Table] = session.execute(sql).fetchall()
         return list

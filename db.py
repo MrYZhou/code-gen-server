@@ -7,11 +7,12 @@ from sqlmodel import create_engine
 
 class DB:
     __instance = None
-    
+
     def __new__(cls):
         if not cls.__instance:
             cls.__instance = super(DB, cls).__new__(cls)
         return cls.__instance
+
     def __init__(self) -> None:
         load_dotenv()
         DB_HOST = os.getenv("DB_HOST") if os.getenv("DB_HOST") else "127.0.0.1"
@@ -35,9 +36,7 @@ class DB:
         DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
         print(f"连接地址 : {DB_URL}")
         print(f"打印sql  : {SQLMODEL_ECHO}")
-
         self.engine = create_engine(DB_URL, echo=SQLMODEL_ECHO)
-    
+
     def get_db(self) -> Engine:
-        
         return self.engine
