@@ -7,7 +7,9 @@ from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel
 
 from util.base import routeList
-from db import engine
+from db import engine,rdb
+
+
 
 # 路由注册
 def initRouter(app: FastAPI):

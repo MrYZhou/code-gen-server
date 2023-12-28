@@ -1,7 +1,7 @@
 from typing import List
 
 from sqlmodel import Field, Session, SQLModel, create_engine
-from db import engine
+from db import engine,rdb
 
 
 class Table:
@@ -54,10 +54,13 @@ def getAllTable(engine, name):
 
 
 def getTable(engine, name, table):
-    with Session(engine) as session:
-        sql = f"""SELECT TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
+    sql = f"""SELECT TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME 
                 and TB.TABLE_NAME='{table}'"""
-        list: List[Table] = session.execute(sql).fetchall()
-        return list
+    sql ='''
+SELECT * from config
+'''
+    rows = rdb.query(f'{sql}')
+    print(rows)
+    return rows

@@ -62,7 +62,8 @@ async def tableList(dataBase: DataBase):
 # 读取单表信息
 @router.post("/tableInfo")
 async def tableInfo(dataBase: dict = Body(None)):
-    return getTable(engine, dataBase.get("name"), dataBase.get("table"))
+    getTable(engine, dataBase.get("name"), dataBase.get("table"))
+    return {"data":'1'}
 
 
 # 获取数据库的列表

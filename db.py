@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from sqlmodel import SQLModel, create_engine
-
+import records
 
 
 load_dotenv()
@@ -20,3 +20,6 @@ DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?c
 print(f"连接地址 : {DB_URL}")
 print(f"打印sql  : {SQLMODEL_ECHO}")
 engine = create_engine(DB_URL, echo=SQLMODEL_ECHO)
+
+
+rdb = records.Database(f"{DB_URL}")
