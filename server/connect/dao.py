@@ -1,9 +1,8 @@
 from typing import List
 
 from sqlmodel import Field, Session, SQLModel, create_engine
-from db import DB
+from db import engine
 
-engine = DB()
 
 class Table:
     dbName: str
@@ -26,7 +25,7 @@ class DataBase(SQLModel, table=True):
 
 
 def savedb(dataBase):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         session.add(dataBase)
         session.commit()
         session.refresh(dataBase)
@@ -45,7 +44,7 @@ def dyConnect(dataBase: DataBase):
 
 
 def getAllTable(engine, name):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         sql: str = f"""SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME"""
@@ -55,7 +54,7 @@ def getAllTable(engine, name):
 
 
 def getTable(engine, name, table):
-    with Session(engine.getdb()) as session:
+    with Session(engine) as session:
         sql = f"""SELECT TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME 
