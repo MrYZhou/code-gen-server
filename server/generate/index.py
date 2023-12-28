@@ -7,11 +7,7 @@ from dataclasses import field, replace
 
 from server.generate.dao import Config
 from util.base import Common, jinjaEngine, mapKey
-from util.cache import LRUCache
 
-
-# 获取模板解析结果
-@LRUCache()
 def configParse(key, config: Config):
     res = {}
     basePath = op.joinpath(os.getcwd(), "static", "模板" + key)
