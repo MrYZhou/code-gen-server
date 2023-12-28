@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel
 
 from util.base import routeList
-
+from db import engine
 
 # 路由注册
 def initRouter(app: FastAPI):
@@ -49,8 +49,8 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase():
-    engine1 = SQLModel.metadata.bind # type: ignore
-    SQLModel.metadata.create_all(engine1)
+    # engine1 = SQLModel.metadata.bind # type: ignore
+    SQLModel.metadata.create_all(engine)
 
 
 def initStaticDir(app):
