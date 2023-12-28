@@ -2,8 +2,6 @@ from typing import Optional
 
 from sqlmodel import Field, Session, SQLModel
 
-from db import engine
-
 
 class Table(SQLModel, table=True):
     __tablename__: str = "food_menu"
@@ -16,6 +14,6 @@ class Table(SQLModel, table=True):
 
 def addFood() -> None:
     food = Table(menu_name="foods1", menu_status="1")
-    with Session(engine) as session:
+    with Session(engine.get_db()) as session:
         session.add(food)
         session.commit()

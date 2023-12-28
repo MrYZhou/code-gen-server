@@ -1,25 +1,28 @@
 import importlib
 import os
 
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel
+from db import DB
 
-from util.base import routeList
+from .base import routeList
+
+engine = DB()
 
 
 # 路由注册
 def initRouter(app: FastAPI):
     # 解析规则:server模块下面的带router字符的文件
-    # modulesServer = __import__("server")
-    # for root, dirs, files in os.walk(os.path.join(os.getcwd(), "server")):
-    #     for file in files:
-    #         if not file.find("router") == -1:
-    #             file = file.replace(".py", "")
-    #             parentModule = getattr(modulesServer, os.path.basename(root))
-    #             module = getattr(parentModule, file)
-    #             app.include_router(module.router)
+    modulesServer = __import__("server")
+    for root, dirs, files in os.walk(os.path.join(os.getcwd(), "server")):
+        for file in files:
+            if not file.find("router") == -1:
+                file = file.replace(".py", "")
+                parentModule = getattr(modulesServer, os.path.basename(root))
+                module = getattr(parentModule, file)
+                app.include_router(module.router)
     # 解析规则:放在router模块下面的文件
     for root, dirs, files in os.walk(os.path.join(os.getcwd(), "router")):
         for file in files:
@@ -49,7 +52,7 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase():
-    SQLModel.metadata.create_all(engine)
+    SQLModel.metadata.create_all(engine.get_db())
 
 
 def initStaticDir(app):
@@ -61,4 +64,5 @@ class Init:
     def do(app: FastAPI):
         initHttp(app)
         initRouter(app)
+        initDataBase()
         initStaticDir(app)

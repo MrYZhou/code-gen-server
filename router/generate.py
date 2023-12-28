@@ -9,7 +9,6 @@ from server.connect.dao import getTable, dyConnect
 from server.generate.dao import Config
 from server.generate.index import configGen, configParse
 from util.base import Common
-from db import engine
 
 router = APIRouter(
     prefix="/generate",
@@ -33,7 +32,7 @@ async def index(data: Config):
 
 # 通过缓存下载
 @router.post("/download")
-async def index(data: Config = Config()):
+async def downloadbycachekey(data: Config = Config()):
     # 解析模板
     if not data.cacheKey:
         data.cacheKey = Common.randomkey()
@@ -47,16 +46,16 @@ async def index(data: Config = Config()):
 
 # 获取数据库的列表
 @router.get("/list", status_code=200)
-async def index():
-    with Session(engine) as session:
+async def list():
+    with Session(engine.get_db()) as session:
         list = session.exec(select(Config).offset(0).limit(100)).all()
         return list
 
 
 # 保存生成的配置
 @router.post("/saveConfig")
-async def index(data: Config):
-    with Session(engine) as session:
+async def saveConfig(data: Config):
+    with Session(engine.get_db()) as session:
         data.id = generate()
         session.add(data)
         session.commit()
@@ -66,8 +65,8 @@ async def index(data: Config):
 
 # 获取生成的配置根据id
 @router.get("/config/{id}")
-async def index(id):
-    with Session(engine) as session:
+async def configid(id):
+    with Session(engine.get_db()) as session:
         data = session.get(Config, id)
         if not data:
             raise HTTPException(status_code=404, detail="data not found")
@@ -76,8 +75,8 @@ async def index(id):
 
 # 删除生成的配置根据id
 @router.delete("/config/{id}")
-async def index(id):
-    with Session(engine) as session:
+async def configdelete(id):
+    with Session(engine.get_db()) as session:
         data = session.get(Config, id)
         if not data:
             raise HTTPException(status_code=404, detail="data not found")
@@ -89,7 +88,7 @@ async def index(id):
 # v2
 # 下载对应单表的代码
 @router.post("/code")
-async def index(dataBase: dict = Body(None)):
+async def codedown(dataBase: dict = Body(None)) -> FileResponse:
     # 获取表的字段信息
     list = getTable(dyConnect(dataBase), dataBase.get("name"), dataBase.get("table"))
     fieldPrefix = dataBase["prefix"]["field"]
