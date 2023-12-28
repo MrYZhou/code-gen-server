@@ -2,7 +2,6 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException
 from nanoid import generate
-from sqlalchemy import Engine
 from sqlmodel import Session, select
 from fastapi import Body
 from server.connect.dao import (
@@ -35,7 +34,7 @@ async def databasein(dataBase: DataBase):
 # 编辑连接的数据库信息
 @router.post("/database/edit")
 async def database(dataBase: DataBase):
-    with Session(engine.get_db()) as session:
+    with Session(engine.getdb()) as session:
         database = session.get(DataBase, dataBase.id)
         if not database:
             raise HTTPException(status_code=404, detail="数据不存在")
@@ -70,7 +69,7 @@ async def tableInfo(dataBase: dict = Body(None)):
 # 获取数据库的列表
 @router.get("/list", status_code=200)
 async def list():
-    with Session(engine.get_db()) as session:
+    with Session(engine.getdb()) as session:
         list = session.exec(select(DataBase).offset(0).limit(100)).all()
         return list
 
@@ -78,7 +77,7 @@ async def list():
 # 删除
 @router.delete("/database/{id}", status_code=200)
 async def index(id):
-    with Session(engine.get_db()) as session:
+    with Session(engine.getdb()) as session:
         data = session.get(DataBase, id)
         if not data:
             raise HTTPException(status_code=404, detail="data not found")
