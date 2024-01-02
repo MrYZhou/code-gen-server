@@ -21,5 +21,3 @@ print(f"连接地址 : {DB_URL}")
 print(f"打印sql  : {SQLMODEL_ECHO}")
 engine = create_engine(DB_URL, echo=SQLMODEL_ECHO)
 
-
-# rdb = records.Database(f"{DB_URL}")
