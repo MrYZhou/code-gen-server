@@ -3,7 +3,5 @@ uvicorn[standard]
 jinja2
 aiofiles
 sqlmodel
-records
 nanoid
 pymysql
-python-dotenv
