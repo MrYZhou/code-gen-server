@@ -1,7 +1,7 @@
 from typing import List
 
 from sqlmodel import Field, Session, SQLModel, create_engine
-from db import engine, rdb
+from db import engine
 
 
 class Table:
