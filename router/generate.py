@@ -43,16 +43,19 @@ async def downloadbycachekey(data: Config = Config()):
     name = "模板" + data.cacheKey
     url = os.path.join(os.getcwd(), "static", name + ".zip")
     return FileResponse(url, filename=name + ".zip", status_code=200)
+
+
 # 预览
 @router.get("/preview")
 async def preview():
     try:
         url = os.path.join(os.getcwd(), "static", "logo.ico")
         file_like = open(url, mode="rb")
-        
+
         return StreamingResponse(file_like, media_type="image/jpg")
     except FileNotFoundError:
-        return {"msg": "文件不存在"}    
+        return {"msg": "文件不存在"}
+
 
 # 获取数据库的列表
 @router.get("/list", status_code=200)
