@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel
 
 from util.base import routeList
-from db import engine, rdb
+from db import engine
 
 
 # 路由注册
