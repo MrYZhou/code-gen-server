@@ -1,7 +1,7 @@
 from typing import List
 
 from sqlmodel import Field, Session, SQLModel, create_engine
-from db import engine,rdb
+from db import engine, rdb
 
 
 class Table:
@@ -58,9 +58,9 @@ def getTable(engine, name, table):
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME 
                 and TB.TABLE_NAME='{table}'"""
-    sql ='''
+    sql = """
 SELECT * from config
-'''
-    rows = rdb.query(f'{sql}')
+"""
+    rows = rdb.query(f"{sql}")
     print(rows)
     return rows
