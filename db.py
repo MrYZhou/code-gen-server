@@ -1,8 +1,6 @@
-
 from sqlmodel import create_engine
 from starlette.config import Config
 
-  
 
 config = Config(".env")
 
@@ -12,7 +10,9 @@ DB_USER = config.get("DB_USER", default="root")
 DB_PASSWORD = config.get("DB_PASSWORD", default="123456")
 DB_NAME = config.get("DB_NAME", default="study")
 DB_DRIVER = config.get("DB_DRIVER", default="mysql+pymysql")
-SQLMODEL_ECHO = True if config.get("SQLMODEL_ECHO",default='False') == "True" else False
+SQLMODEL_ECHO = (
+    True if config.get("SQLMODEL_ECHO", default="False") == "True" else False
+)
 
 
 DB_URL = f"{DB_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"

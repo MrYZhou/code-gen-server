@@ -4,19 +4,20 @@ import re
 import string
 import zipfile
 
-from fastapi import APIRouter
 from fastapi.templating import Jinja2Templates
+from walrus import Database as RedisDatabase
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
-routeList = []
-
-
-def registe(router: APIRouter):
-    routeList.append(router)
 
 
 class Common:
+    @staticmethod
+    def rate():
+        db = RedisDatabase(host="localhost", port=6379)
+        rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
+        return rate
+
     @staticmethod
     def tocamel(name: str) -> str:
         """下划线转驼峰(小驼峰)"""
@@ -68,11 +69,6 @@ class Common:
             print("This is not zip")
             return False
         return True
-
-
-class App:
-    def __init__(self):
-        self.je = jinjaEngine
 
 
 # 通用常量
