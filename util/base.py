@@ -12,7 +12,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
 
-Session = sessionmaker(bind=engine)
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
 
 
 class Common:
