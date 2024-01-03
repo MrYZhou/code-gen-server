@@ -58,7 +58,7 @@ def initDataBase():
 
 
 def initStaticDir(app):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    app.mount("/static", StaticFiles(directory="resources/static"), name="static")
 
 
 def initEnv():
@@ -72,8 +72,8 @@ def initEnv():
             f.write("DB_DRIVER=mysql+pymysql\n")
             f.write("SQLMODEL_ECHO=False\n")
 
-    if not os.path.exists("static"):
-        os.makedirs("static")
+    if not os.path.exists("resources/static"):
+        os.makedirs("resources/static")
 
 
 class Init:
