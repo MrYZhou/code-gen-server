@@ -6,12 +6,27 @@ import zipfile
 
 from fastapi.templating import Jinja2Templates
 from walrus import Database as RedisDatabase
+from db import engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
 
+Session = sessionmaker(bind=engine)
+
 
 class Common:
+    @staticmethod
+    def get_session():
+        """
+        Get a database session.
+        """
+        # Use the session factory to create a new session
+        session = Session()
+        try:
+            yield session
+        finally:
+            session.close()
     @staticmethod
     def rate():
         db = RedisDatabase(host="localhost", port=6379)
