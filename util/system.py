@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel
 
-from db import engine
+
 
 
 # 路由注册
@@ -46,17 +46,31 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase():
+    from db import engine
     SQLModel.metadata.create_all(engine)
 
 
 def initStaticDir(app):
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
+def initEnv():
+    if not os.path.exists(".env"):
+        with open(".env", "w") as f:
+            f.write("DB_HOST=127.0.0.1\n")
+            f.write("DB_PORT=3306\n")
+            f.write("DB_USER=root\n")
+            f.write("DB_PASSWORD=root\n")
+            f.write("DB_NAME=study\n")
+            f.write("DB_DRIVER=mysql+pymysql\n")
+            f.write("SQLMODEL_ECHO=False\n")
 
+    if not os.path.exists("static"):
+        os.makedirs("static")   
 class Init:
     @staticmethod
     def do(app: FastAPI):
+        initEnv()
+        initDataBase()
         initHttp(app)
         initRouter(app)
-        initDataBase()
         initStaticDir(app)
