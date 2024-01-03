@@ -1,12 +1,13 @@
 import importlib
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import SQLModel
+from walrus import RateLimitException
 
-
+from fastapi.responses import JSONResponse
 
 
 # 路由注册
@@ -30,7 +31,6 @@ def initRouter(app: FastAPI):
             app.include_router(m.router)
 
 
-
 def initHttp(app: FastAPI):
     # 资源访问
     origins = [
@@ -44,14 +44,22 @@ def initHttp(app: FastAPI):
         allow_headers=["*"],
     )
 
+    # 限流处理器
+    @app.exception_handler(RateLimitException)
+    async def handle(request: Request, exc: RateLimitException):
+        msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
+        return JSONResponse(status_code=412, content=msg)
+
 
 def initDataBase():
     from db import engine
+
     SQLModel.metadata.create_all(engine)
 
 
 def initStaticDir(app):
     app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 def initEnv():
     if not os.path.exists(".env"):
@@ -65,7 +73,9 @@ def initEnv():
             f.write("SQLMODEL_ECHO=False\n")
 
     if not os.path.exists("static"):
-        os.makedirs("static")   
+        os.makedirs("static")
+
+
 class Init:
     @staticmethod
     def do(app: FastAPI):
