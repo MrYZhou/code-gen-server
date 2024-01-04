@@ -11,8 +11,8 @@ rate = Common.rate()
 
 
 @app.get("/")
-async def root() -> dict[str, str | int]:
-    return {"code": 200, "msg": "success"}
+def root():
+    return  {"code": 200, "msg": "success"}
 
 
 # 限流
