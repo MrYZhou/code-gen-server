@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 from db import engine
 
 
@@ -49,7 +49,7 @@ def getAllTable(engine, name):
                 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
                 Where TB.TABLE_SCHEMA ='{name}' AND TB.TABLE_NAME = COL.TABLE_NAME"""
 
-        list = session.execute(sql).fetchall()
+        list = session.exec(select(sql)).all()
         return list
 
 

@@ -28,6 +28,7 @@ class Common:
             yield session
         finally:
             session.close()
+
     @staticmethod
     def rate():
         db = RedisDatabase(host="localhost", port=6379)

@@ -8,11 +8,6 @@ app = FastAPI()
 Init.do(app)
 
 
-
-
 @app.get("/")
 def root():
-    return  {"code": 200, "msg": "success"}
-
-
-
+    return "https://www.baidu.com"

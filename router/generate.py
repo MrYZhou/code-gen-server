@@ -103,7 +103,6 @@ async def configdelete(id):
 # 下载对应单表的代码,并且下载限流
 @router.post("/code")
 @rate.rate_limited(lambda request: request.client.host)
-
 async def codedown(dataBase: DataBase = Body(DataBase)) -> FileResponse:
     # 获取表的字段信息
     list = getTable(dyConnect(dataBase), dataBase.get("name"), dataBase.get("table"))
