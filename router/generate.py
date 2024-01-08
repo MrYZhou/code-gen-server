@@ -4,12 +4,13 @@ from fastapi import APIRouter, Body, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
 from nanoid import generate
 from sqlmodel import Session, select
-
-from server.connect.dao import getTable, dyConnect
+from server.connect.dao import DataBase, getTable, dyConnect
 from server.generate.dao import Config
 from server.generate.index import configGen, configParse
 from util.base import Common
 from db import engine
+
+rate = Common.rate()
 
 router = APIRouter(
     prefix="/generate",
@@ -99,9 +100,11 @@ async def configdelete(id):
 
 
 # v2
-# 下载对应单表的代码
+# 下载对应单表的代码,并且下载限流
 @router.post("/code")
-async def codedown(dataBase: dict = Body(None)) -> FileResponse:
+@rate.rate_limited(lambda request: request.client.host)
+
+async def codedown(dataBase: DataBase = Body(DataBase)) -> FileResponse:
     # 获取表的字段信息
     list = getTable(dyConnect(dataBase), dataBase.get("name"), dataBase.get("table"))
     fieldPrefix = dataBase["prefix"]["field"]
