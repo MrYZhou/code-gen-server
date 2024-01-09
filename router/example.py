@@ -1,4 +1,5 @@
 import os
+from typing import List
 from fastapi import APIRouter, Request, Header, Body
 from fastapi.responses import (
     RedirectResponse,
@@ -6,7 +7,9 @@ from fastapi.responses import (
     StreamingResponse,
 )
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import text
 from walrus import Database as RedisDatabase
+from server.connect.dao import Table
 
 from server.generate.dao import Config
 
@@ -29,17 +32,16 @@ db = RedisDatabase(host="localhost", port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 
-@router.get("/dynamicConnect")
-async def dynamicConnect():
-    sql = """
-    SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
+@router.get("/dynamicConnect",response_model=list[Table])
+async def dynamicConnect() ->List[Table]:
+    sql = """SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
-Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME
-    """
-    DB_URL = "mysql+pymysql://root:123456@localhost:3307/study?charset=utf8mb4"
+Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
+    DB_URL = "mysql+pymysql://root:root@localhost:3306/study?charset=utf8mb4"
     engine = create_engine(DB_URL)
     with Session(engine) as session:
-        list = session.exec(select(sql)).all()
+        list:List[Table] = session.execute(sql).fetchall()
+        #  list:List[Table]  = session.exec(select(text(sql))).all()
         return list
 
 
