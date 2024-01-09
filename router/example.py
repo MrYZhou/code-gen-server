@@ -13,7 +13,7 @@ from server.connect.dao import Table
 
 from server.generate.dao import Config
 
-from util.base import Common,jinjaEngine
+from util.base import Common, jinjaEngine
 
 
 from sqlmodel import create_engine, SQLModel, Session
@@ -26,23 +26,21 @@ router = APIRouter(
 )
 
 
-
 db = RedisDatabase(host="localhost", port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 
 @router.get("/dynamicConnect")
-async def dynamicConnect(session: Session = Depends( Common.get_session) ):
+async def dynamicConnect(session: Session = Depends(Common.get_session)):
     sql = """SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
 Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
     DB_URL = "mysql+pymysql://root:root@localhost:3306/study?charset=utf8mb4"
     engine = create_engine(DB_URL)
-    
+
     # list:List[Table] = session.execute(sql).fetchall()
     # list:List[Table]  = session.exec(select(text(sql))).all()
     return []
-        
 
 
 # 预览图片
@@ -51,9 +49,6 @@ async def preview(data: Config = Body(Config)):
     url = os.path.join(os.getcwd(), "static", "1.png")
     file_like = open(url, mode="rb")
     return StreamingResponse(file_like, media_type="image/jpg")
-
-
-
 
 
 # 获取路径参数
@@ -119,9 +114,6 @@ def render():
     template = jinjaEngine.get_template("1.html")
     template.stream(content).dump("my_new_file.html")
 
-    #    with open ( "index.html" , 'w' ) as file:
-    #      content = template.render(data = {})
-    #      file.write(html_content)  # 写入模板 生成html
     return "success"
 
 
