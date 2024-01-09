@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Sequence
 from fastapi import APIRouter, Request, Header, Body
 from fastapi import Depends
 from fastapi.responses import (
@@ -16,7 +16,7 @@ from server.generate.dao import Config
 from util.base import Common, jinjaEngine
 
 
-from sqlmodel import create_engine, SQLModel, Session
+from sqlmodel import create_engine, SQLModel, Session, select
 
 
 router = APIRouter(
@@ -31,17 +31,24 @@ rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 
 @router.get("/dynamicConnect")
-async def dynamicConnect(session: Session = Depends(Common.get_session)):
+async def dynamicConnect():
     sql = """SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
 Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
     DB_URL = "mysql+pymysql://root:root@localhost:3306/study?charset=utf8mb4"
     engine = create_engine(DB_URL)
-
-    # list:List[Table] = session.execute(sql).fetchall()
-    # list:List[Table]  = session.exec(select(text(sql))).all()
+    with Session(engine) as session:
+        # list:List[Table] = session.execute(sql).fetchall()
+        # list:List[Table]  = session.exec(select(text(sql))).all()
+        pass
     return []
 
+@router.get("/dependSession")
+async def dependSession(session: Session = Depends(Common.get_session)):
+   
+    print(id(session))
+    config: Sequence[Config] = session.exec(select(Config)).all()
+    return config
 
 # 预览图片
 @router.get("/preview")
