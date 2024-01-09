@@ -12,7 +12,7 @@ class Column(SQLModel):
 class Config(SQLModel, table=True):
     __tablename__: str = "config"
     id: str = Field(primary_key=True)
-    cacheKey: str = None
-    pk: str = None
-    name: str = None
-    columnList: str = None
+    cacheKey: str = ""
+    pk: str = ""
+    name: str = ""
+    columnList: str = ""

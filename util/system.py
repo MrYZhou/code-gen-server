@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 
 # 路由注册
 def initRouter(app: FastAPI):
-    # 解析规则:server模块下面的带router字符的文件
+    # 解析规则:server模块下面的带router字符的文件 (文件夹下特定文件)
     # modulesServer = __import__("server")
     # for root, dirs, files in os.walk(os.path.join(os.getcwd(), "server")):
     #     for file in files:
@@ -21,7 +21,7 @@ def initRouter(app: FastAPI):
     #             parentModule = getattr(modulesServer, os.path.basename(root))
     #             module = getattr(parentModule, file)
     #             app.include_router(module.router)
-    # 解析规则:放在router模块下面的文件
+    # 解析规则:放在router模块下面的文件 (文件夹下文件)
     for root, dirs, files in os.walk(os.path.join(os.getcwd(), "router")):
         for file in files:
             if file.find("__init__") > -1 or file.find(".pyc") > -1:
