@@ -7,13 +7,13 @@ from fastapi.responses import (
     FileResponse,
     StreamingResponse,
 )
-from fastapi.templating import Jinja2Templates
+
 from walrus import Database as RedisDatabase
 from server.connect.dao import Table
 
 from server.generate.dao import Config
 
-from util.base import Common
+from util.base import Common,jinjaEngine
 
 
 from sqlmodel import create_engine, SQLModel, Session
@@ -25,15 +25,14 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# 模板初始化
-jinjaEngine = Jinja2Templates("template")
+
 
 db = RedisDatabase(host="localhost", port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 
-@router.get("/dynamicConnect",response_model=list[Table])
-async def dynamicConnect(session: Session = Depends( Common.get_session) ) ->List[Table]:
+@router.get("/dynamicConnect")
+async def dynamicConnect(session: Session = Depends( Common.get_session) ):
     sql = """SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
 Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
