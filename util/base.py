@@ -5,15 +5,15 @@ import string
 import zipfile
 
 from fastapi.templating import Jinja2Templates
+from sqlmodel import Session
 from walrus import Database as RedisDatabase
 from db import engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-# 模板初始化
-jinjaEngine = Jinja2Templates("template")
 
-session_factory = sessionmaker(bind=engine)
-Session = scoped_session(session_factory)
+
+# session_factory = sessionmaker(bind=engine)
+# Session = scoped_session(session_factory)
 
 
 class Common:
@@ -23,9 +23,10 @@ class Common:
         Get a database session.
         """
         # Use the session factory to create a new session
-        session = Session()
+        
         try:
-            yield session
+            with Session(engine) as session:
+                yield session
         finally:
             session.close()
 
