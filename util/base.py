@@ -11,12 +11,12 @@ from db import engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 
-
 # session_factory = sessionmaker(bind=engine)
 # Session = scoped_session(session_factory)
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
+
 
 class Common:
     @staticmethod
@@ -25,7 +25,7 @@ class Common:
         Get a database session.
         """
         # Use the session factory to create a new session
-        
+
         try:
             with Session(engine) as session:
                 yield session
