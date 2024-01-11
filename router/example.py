@@ -1,18 +1,21 @@
 import os
+from typing import List, Sequence
 from fastapi import APIRouter, Request, Header, Body
+from fastapi import Depends
 from fastapi.responses import (
     RedirectResponse,
     FileResponse,
     StreamingResponse,
 )
-from fastapi.templating import Jinja2Templates
+
 from walrus import Database as RedisDatabase
+from server.connect.dao import Table
 
 from server.generate.dao import Config
 
-from util.base import Common
+from util.base import Common, jinjaEngine
 
-from db import engine
+
 from sqlmodel import create_engine, SQLModel, Session, select
 
 
@@ -22,8 +25,6 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# 模板初始化
-jinjaEngine = Jinja2Templates("template")
 
 db = RedisDatabase(host="localhost", port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
@@ -31,17 +32,23 @@ rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 @router.get("/dynamicConnect")
 async def dynamicConnect():
-    sql = """
-    SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
+    sql = """SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
 FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
-Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME
-    """
-    DB_URL = "mysql+pymysql://root:123456@localhost:3307/study?charset=utf8mb4"
+Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
+    DB_URL = "mysql+pymysql://root:root@localhost:3306/study?charset=utf8mb4"
     engine = create_engine(DB_URL)
     with Session(engine) as session:
-        list = session.execute(sql).fetchall()
-        return list
+        # list:List[Table] = session.execute(sql).fetchall()
+        # list:List[Table]  = session.exec(select(text(sql))).all()
+        pass
+    return []
 
+@router.get("/dependSession")
+async def dependSession(session: Session = Depends(Common.get_session)):
+   
+    print(id(session))
+    config: Sequence[Config] = session.exec(select(Config)).all()
+    return config
 
 # 预览图片
 @router.get("/preview")
@@ -49,13 +56,6 @@ async def preview(data: Config = Body(Config)):
     url = os.path.join(os.getcwd(), "static", "1.png")
     file_like = open(url, mode="rb")
     return StreamingResponse(file_like, media_type="image/jpg")
-
-
-# 初始化数据库
-@router.get("/initDataBase")
-async def method():
-    SQLModel.metadata.create_all(engine)
-    return "success"
 
 
 # 获取路径参数
@@ -121,9 +121,6 @@ def render():
     template = jinjaEngine.get_template("1.html")
     template.stream(content).dump("my_new_file.html")
 
-    #    with open ( "index.html" , 'w' ) as file:
-    #      content = template.render(data = {})
-    #      file.write(html_content)  # 写入模板 生成html
     return "success"
 
 
