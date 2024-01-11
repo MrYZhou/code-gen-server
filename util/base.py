@@ -1,3 +1,4 @@
+from functools import lru_cache
 import os
 import random
 import re
@@ -5,29 +6,26 @@ import string
 import zipfile
 
 from fastapi.templating import Jinja2Templates
+from sqlmodel import Session
+
 from walrus import Database as RedisDatabase
 from db import engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
 
-session_factory = sessionmaker(bind=engine)
-Session = scoped_session(session_factory)
-
 
 class Common:
     @staticmethod
+    # 缓存lru注解
+    @lru_cache(maxsize=1024)
+
     def get_session():
         """
         Get a database session.
         """
-        # Use the session factory to create a new session
-        session = Session()
-        try:
-            yield session
-        finally:
-            session.close()
+        with Session(engine) as session:
+            return session
 
     @staticmethod
     def rate():

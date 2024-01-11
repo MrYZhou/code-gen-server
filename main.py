@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 
 from util.system import Init
@@ -10,4 +11,4 @@ Init.do(app)
 
 @app.get("/")
 def root():
-    return "https://www.baidu.com"
+    return RedirectResponse("https://www.baidu.com")
