@@ -39,7 +39,7 @@ Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME
     DB_URL = "mysql+pymysql://root:123456@localhost:3307/study?charset=utf8mb4"
     engine = create_engine(DB_URL)
     with Session(engine) as session:
-        list = session.exec(select(sql)).all()
+        list = session.execute(sql).fetchall()
         return list
 
 
