@@ -1,9 +1,11 @@
 import os
+import time
 
 from fastapi import APIRouter, Body, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
 from nanoid import generate
 from sqlmodel import Session, select
+from aiodb import PPA
 from server.connect.dao import DataBase, getTable, dyConnect
 from server.generate.dao import Config
 from server.generate.index import configGen, configParse
@@ -62,9 +64,25 @@ async def preview():
 @router.get("/list", status_code=200)
 async def list():
     with Session(engine) as session:
-        list = session.exec(select(Config).offset(0).limit(100)).all()
+        start_time = time.time()
+        for _ in range(10):
+            list = session.exec(select(Config).offset(0).limit(1)).all()
+        end_time = time.time()
+        execution_time = end_time - start_time
+
+        print(f"代码执行时间: {execution_time} 秒")  
         return list
 
+@router.get("/config")
+async def get_config():
+    start_time = time.time()
+    for _ in range(10):
+        result = await PPA.exec("SELECT * FROM config")
+    end_time = time.time()
+    execution_time = end_time - start_time
+
+    print(f"代码执行时间aio: {execution_time} 秒")    
+    return result
 
 # 保存生成的配置
 @router.post("/saveConfig")

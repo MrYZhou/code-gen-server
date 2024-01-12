@@ -1,5 +1,6 @@
 import os
-from typing import List, Sequence
+import time
+from typing import Sequence
 from fastapi import APIRouter, Request, Header, Body
 from fastapi import Depends
 from fastapi.responses import (
@@ -9,14 +10,14 @@ from fastapi.responses import (
 )
 
 from walrus import Database as RedisDatabase
-from server.connect.dao import Table
+from aiodb import PPA
 
 from server.generate.dao import Config
 
 from util.base import Common, jinjaEngine
 
 
-from sqlmodel import create_engine, SQLModel, Session, select
+from sqlmodel import create_engine, Session, select
 
 
 router = APIRouter(
@@ -42,6 +43,17 @@ Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
         # list:List[Table]  = session.exec(select(text(sql))).all()
         pass
     return []
+
+@router.get("/config")
+async def get_config():
+    start_time = time.time()
+    for _ in range(10):
+        result = await PPA.exec("SELECT * FROM config")
+    end_time = time.time()
+    execution_time = end_time - start_time
+
+    print(f"代码执行时间aio: {execution_time} 秒")    
+    return result
 
 @router.get("/dependSession")
 async def dependSession(session: Session = Depends(Common.get_session)):
