@@ -19,7 +19,6 @@ class Common:
     @staticmethod
     # 缓存lru注解
     @lru_cache(maxsize=1024)
-
     def get_session():
         """
         Get a database session.
