@@ -54,9 +54,9 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase(app):
-    
     PPA.init_app(app)
     from db import engine
+
     SQLModel.metadata.create_all(engine)
 
 

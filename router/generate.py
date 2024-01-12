@@ -70,8 +70,9 @@ async def list():
         end_time = time.time()
         execution_time = end_time - start_time
 
-        print(f"代码执行时间: {execution_time} 秒")  
+        print(f"代码执行时间: {execution_time} 秒")
         return list
+
 
 @router.get("/config")
 async def get_config():
@@ -81,8 +82,9 @@ async def get_config():
     end_time = time.time()
     execution_time = end_time - start_time
 
-    print(f"代码执行时间aio: {execution_time} 秒")    
+    print(f"代码执行时间aio: {execution_time} 秒")
     return result
+
 
 # 保存生成的配置
 @router.post("/saveConfig")

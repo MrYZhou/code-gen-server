@@ -45,13 +45,16 @@ Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
         pass
     return []
 
+
 @router.get("/config")
 async def get_config():
     start_time = time.time()
-      # 创建并发任务
+    # 创建并发任务
     tasks = [
-        PPA.exec("SELECT * FROM config where id!=0"),
-        PPA.exec("SELECT * FROM config where id!=1"),
+        PPA.exec("SELECT * FROM config where id!={name}",{"name":1}),
+        # PPA.exec("SELECT * FROM config where id!=1"),
+        # PPA.exec("SELECT * FROM config where id!=?",[1]),
+        # PPA.exec("SELECT * FROM config where id!=?", (1,)),
     ]
 
     # 并发执行并获取结果
@@ -59,15 +62,16 @@ async def get_config():
     end_time = time.time()
     execution_time = end_time - start_time
 
-    print(f"代码执行时间aio: {execution_time} 秒")    
+    print(f"代码执行时间aio: {execution_time} 秒")
     return results[0]
+
 
 @router.get("/dependSession")
 async def dependSession(session: Session = Depends(Common.get_session)):
-   
     print(id(session))
     config: Sequence[Config] = session.exec(select(Config)).all()
     return config
+
 
 # 预览图片
 @router.get("/preview")
