@@ -5,4 +5,5 @@ aiofiles
 sqlmodel
 nanoid
 pymysql
+aiomysql
 walrus
