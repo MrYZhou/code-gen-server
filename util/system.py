@@ -9,6 +9,8 @@ from walrus import RateLimitException
 
 from fastapi.responses import JSONResponse
 
+from aiodb import PPA
+
 
 # 路由注册
 def initRouter(app: FastAPI):
@@ -51,9 +53,10 @@ def initHttp(app: FastAPI):
         return JSONResponse(status_code=412, content=msg)
 
 
-def initDataBase():
+def initDataBase(app):
+    
+    PPA.init_app(app)
     from db import engine
-
     SQLModel.metadata.create_all(engine)
 
 
@@ -80,7 +83,7 @@ class Init:
     @staticmethod
     def do(app: FastAPI):
         initEnv()
-        initDataBase()
+        initDataBase(app)
         initHttp(app)
         initRouter(app)
         initStaticDir(app)
