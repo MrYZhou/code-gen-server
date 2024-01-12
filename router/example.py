@@ -1,7 +1,7 @@
 import asyncio
 import os
 import time
-from typing import Sequence
+from typing import List, Sequence
 from fastapi import APIRouter, Request, Header, Body
 from fastapi import Depends
 from fastapi.responses import (
@@ -51,17 +51,19 @@ async def get_config():
     start_time = time.time()
     # 创建并发任务
     tasks = [
-        PPA.exec("SELECT * FROM config where id!={name}",{"name":1}),
-        # PPA.exec("SELECT * FROM config where id!=1"),
+        PPA.exec("SELECT * FROM config where id!=1"),
+        # PPA.exec("SELECT * FROM config where id!={name}",{"name":1}),
         # PPA.exec("SELECT * FROM config where id!=?",[1]),
         # PPA.exec("SELECT * FROM config where id!=?", (1,)),
     ]
 
     # 并发执行并获取结果
     results = await asyncio.gather(*tasks)
+    print(results)
     end_time = time.time()
     execution_time = end_time - start_time
-
+    for i in results:
+        print(i[0].get('id'))
     print(f"代码执行时间aio: {execution_time} 秒")
     return results[0]
 

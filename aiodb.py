@@ -41,25 +41,16 @@ class PPA:
 
     @classmethod
     async def exec(cls, sql: str, params: Union[Dict[str, any], tuple, list] = None):
-        # 校验params中sql参数的合法性
+        # 校验params的合法性
         if params is not None and not isinstance(params, (dict, tuple, list)):
             raise TypeError("params must be a dict, tuple or list")
         # sql注入攻击过滤处理
         sql = sql.replace("?", "%s")
         
         if isinstance(params, (dict)):
-            # 参数化查询（使用字典）
-            temp_params=tuple(params.values())
-            
-            sql = sql.format_map(dict.fromkeys(params.keys()))
-            # safe_params = [f"{k}" for k in params.keys()]
-            # sql = sql.replace( "{".join(safe_params).join("}"),'%s')
-            params = temp_params
-        elif isinstance(params, (list, tuple)):
-            # 参数化查询（使用元组或列表）
-            # safe_params = [f"{p}" for p in range(len(params))]
-            # sql = sql.replace("?", ", ".join(safe_params))
-            pass
+            # 参数化查询（使用字典）,转元组
+            sql = sql.format_map(dict.fromkeys(params.keys(),'%s'))
+            params=tuple(params.values())
 
         async with cls.pool.acquire() as conn:
             async with conn.cursor(aiomysql.DictCursor) as cur:
