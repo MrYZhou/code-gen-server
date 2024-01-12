@@ -41,9 +41,7 @@ class PPA:
 
     @classmethod
     async def exec(cls, sql: str, params: Union[Dict[str, any], tuple, list] = None):
-        # 校验params的合法性
-        if params is not None and not isinstance(params, (dict, tuple, list)):
-            raise TypeError("params must be a dict, tuple or list")
+      
         # sql注入攻击过滤处理
         sql = sql.replace("?", "%s")
         
