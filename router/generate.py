@@ -1,5 +1,6 @@
 import os
 import time
+from typing import List
 
 from fastapi import APIRouter, Body, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
@@ -77,8 +78,9 @@ async def list():
 @router.get("/config")
 async def get_config():
     start_time = time.time()
-    for _ in range(10):
-        result = await PPA.exec("SELECT * FROM config")
+    for _ in range(1):
+        result:List[Config] = await PPA.exec("SELECT * FROM config")
+        print(result[0].get('id'))
     end_time = time.time()
     execution_time = end_time - start_time
 
