@@ -49,15 +49,18 @@ Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
         pass
     return []
 
+
 @table("config")
 class Config1:
-    id:str = FieldDescriptor(primary=True)
-    name:str = FieldDescriptor()
+    id: str = FieldDescriptor(primary=True)
+    name: str = FieldDescriptor()
+
 
 @router.get("/config2")
 async def get_config2():
-    res = await  Config1.get(1)
-    return {"result":res}
+    res = await Config1.get(1)
+    return {"result": res}
+
 
 @router.get("/config")
 async def get_config():
@@ -76,7 +79,7 @@ async def get_config():
     end_time = time.time()
     execution_time = end_time - start_time
     for i in results:
-        print(i[0].get('id'))
+        print(i[0].get("id"))
     print(f"代码执行时间aio: {execution_time} 秒")
     return results[0]
 

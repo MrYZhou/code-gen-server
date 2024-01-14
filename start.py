@@ -4,9 +4,9 @@
 import uvicorn
 
 if __name__ == "__main__":
-    # 输出无日志 
+    # 输出无日志
     # log_path =os.path.join(os.path.expanduser("~"),"laorm","logfile.log")  # Get the name of the script
-    
+
     # if not os.path.exists(log_path):
     #     os.makedirs(os.path.dirname(log_path), exist_ok=True)
     # log_config = {
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     #         "level": "INFO",
     #     },
     # }
-    log_config={}
+    log_config = {}
     uvicorn.run(
         app="main:app",
         host="127.0.0.1",
