@@ -5,14 +5,18 @@ import os
 import uvicorn
 
 if __name__ == "__main__":
-    name_app = os.path.basename(__file__)[0:-3]  # Get the name of the script
+    
+    log_path =os.path.join(os.path.expanduser("~"),"laorm","logfile.log")  # Get the name of the script
+    
+    if not os.path.exists(log_path):
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
     log_config = {
         "version": 1,
         "disable_existing_loggers": True,
         "handlers": {
             "file_handler": {
                 "class": "logging.FileHandler",
-                "filename": "logfile.log",
+                "filename": log_path,
             },
         },
         "root": {

@@ -1,15 +1,14 @@
-import turtle
 from typing import Dict, Union
 import aiomysql
 from fastapi import FastAPI
 
 
-class PPA:
+class PPA1:
     _instance = None
     pool = None
 
     @classmethod
-    def init_app(cls, app: FastAPI, **kwargs):
+    def init_app(cls, app: FastAPI, *args):
         if cls._instance is None:
             default_values = {
                 "host": "127.0.0.1",
@@ -20,12 +19,13 @@ class PPA:
                 "charset": "utf8mb4",
                 "autocommit": True,
             }
-            kwargs.update(default_values)
+            
+            args={**default_values,**args[0]} if len(args)==1 else default_values
 
             cls._instance = cls()
 
-            # 将更新后的kwargs传递给startup方法以便初始化数据库连接池
-            cls.startup_params = kwargs
+            # 将更新后的args传递给startup方法以便初始化数据库连接池
+            cls.startup_params = args
             app.add_event_handler("startup", cls.startup)
             app.add_event_handler("shutdown", cls.shutdown)
 
@@ -53,4 +53,7 @@ class PPA:
         async with cls.pool.acquire() as conn:
             async with conn.cursor(aiomysql.DictCursor) as cur:
                 await cur.execute(sql,params)
-                return await cur.fetchall()
+                result = await cur.fetchall()
+                
+                return result if len(result) >0 else []
+

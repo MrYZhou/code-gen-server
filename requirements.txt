@@ -7,3 +7,4 @@ nanoid
 pymysql
 aiomysql
 walrus
+cryptography

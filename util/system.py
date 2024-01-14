@@ -9,7 +9,9 @@ from walrus import RateLimitException
 
 from fastapi.responses import JSONResponse
 
-from aiodb import PPA
+from laorm.fastapi.PPAFastAPI import PPAFastAPI
+
+# from aiodb import PPA
 
 
 # 路由注册
@@ -54,10 +56,11 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase(app):
-    PPA.init_app(app)
+    
     from db import engine
-
     SQLModel.metadata.create_all(engine)
+
+    PPAFastAPI.init_app(app)
 
 
 def initStaticDir(app):
