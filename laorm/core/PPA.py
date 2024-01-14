@@ -5,6 +5,10 @@ import aiomysql
 class PPA:
     _instance = None
     pool = None
+    showSql = True
+    @classmethod   
+    def showSql(cls,show:bool):
+        cls.showSql = show
 
     @classmethod
     async def startup(cls):

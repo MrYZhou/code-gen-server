@@ -61,7 +61,7 @@ def initDataBase(app):
     SQLModel.metadata.create_all(engine)
 
     PPAFastAPI.init_app(app)
-
+    # PPAFastAPI.showSql(False)
 
 def initStaticDir(app):
     app.mount("/static", StaticFiles(directory="resources/static"), name="static")

@@ -1,7 +1,7 @@
 import asyncio
 import os
 import time
-from typing import List, Sequence
+from typing import Sequence
 from fastapi import APIRouter, Request, Header, Body
 from fastapi import Depends
 from fastapi.responses import (
@@ -9,8 +9,10 @@ from fastapi.responses import (
     FileResponse,
     StreamingResponse,
 )
+# from sqlalchemy import table
 
 from walrus import Database as RedisDatabase
+from laorm.core.stream import FieldDescriptor, table
 
 from laorm.fastapi import PPA
 
@@ -47,6 +49,15 @@ Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
         pass
     return []
 
+@table("config")
+class Config1:
+    id:str = FieldDescriptor(primary=True)
+    name:str = FieldDescriptor()
+
+@router.get("/config2")
+async def get_config2():
+    res = await  Config1.get(1)
+    return res
 
 @router.get("/config")
 async def get_config():
