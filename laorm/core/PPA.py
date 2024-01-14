@@ -12,8 +12,7 @@ class PPA:
 
     @classmethod
     async def startup(cls):
-        cls.pool = await aiomysql.create_pool(**cls.startup_params)
-        
+        PPA.pool = await aiomysql.create_pool(**cls.startup_params)
     @classmethod
     async def shutdown(cls):
         if cls.pool is not None:
