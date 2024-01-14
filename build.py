@@ -1,3 +1,4 @@
+import os
 from PyInstaller import __main__ as pyi
 
 # 打包快捷设置,避免手动输入命令
@@ -5,14 +6,19 @@ from PyInstaller import __main__ as pyi
 params = [
     # "-F",
     # '-w',
-    # "--hidden-import=main",
+    "--hidden-import=aiomysql",
     # static目录纳入打包
-    # '--add-data', 'main:app',
+    '--collect-submodules', 'util',
+    '--collect-submodules', 'router',
+    '--collect-submodules', 'server',
+    '--add-data', 'util:util',
+    '--add-data', 'router:router',
+    '--add-data', 'server:server',
     # 每次打包前清楚build 和 dist目录
+    '--paths', os.getcwd(),  # 添加搜索路径
     "--clean",
     # 无需用户确认
     "--noconfirm",
-    "start.py",
+    "main.py",
 ]
-# pyinstaller -F main.py
 pyi.run(params)

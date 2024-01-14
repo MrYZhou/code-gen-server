@@ -4,7 +4,7 @@ jinja2
 aiofiles
 sqlmodel
 nanoid
-pymysql
+# pymysql
 aiomysql
 walrus
 cryptography
