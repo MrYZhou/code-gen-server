@@ -120,13 +120,14 @@ class LaModel(metaclass=ABCMeta):
     async def get(cls: type[T], primaryId: int|str):
         if primaryId:
             cls.state_machine.process_keyword('WHERE', f'{cls.primaryKey}={primaryId}')
-        return await cls.exec()
+        return await cls.exec(True)
     @classmethod
-    async def exec(cls):
+    async def exec(cls,fetch_one:bool):
         sql = cls.state_machine.finalize()
         if PPA.showSql:
             print(sql)
-        return  await PPA.exec(sql)  
+        res = await PPA.exec(sql,{},fetch_one)
+        return   res
     @classmethod
     def getList(cls: type[T], primaryIdList: list[int] | list[str] ):
         if primaryIdList:

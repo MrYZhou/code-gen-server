@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 import aiomysql
 
 
@@ -21,7 +21,7 @@ class PPA:
             await cls.pool.wait_closed()
 
     @classmethod
-    async def exec(cls, sql: str, params: Union[Dict[str, any], tuple, list] = None):
+    async def exec(cls, sql: str, params: Union[Dict[str, any], tuple, list] = None,execOne:Optional[bool]=False):
       
         # sql注入攻击过滤处理
         sql = sql.replace("?", "%s")
@@ -34,4 +34,4 @@ class PPA:
         async with cls.pool.acquire() as conn:
             async with conn.cursor(aiomysql.DictCursor) as cur:
                 await cur.execute(sql,params)
-                return await cur.fetchall()
+                return await cur.fetchone()  if execOne else await cur.fetchall()     

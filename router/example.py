@@ -57,7 +57,7 @@ class Config1:
 @router.get("/config2")
 async def get_config2():
     res = await  Config1.get(1)
-    return res
+    return {"result":res}
 
 @router.get("/config")
 async def get_config():
