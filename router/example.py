@@ -11,7 +11,9 @@ from fastapi.responses import (
 )
 
 from walrus import Database as RedisDatabase
-from aiodb import PPA
+
+from laorm.fastapi import PPA
+
 
 from server.generate.dao import Config
 
@@ -51,7 +53,7 @@ async def get_config():
     start_time = time.time()
     # 创建并发任务
     tasks = [
-        PPA.exec("SELECT * FROM config where id!=1"),
+        PPA.exec("SELECT * FROM config where id=1"),
         # PPA.exec("SELECT * FROM config where id!={name}",{"name":1}),
         # PPA.exec("SELECT * FROM config where id!=?",[1]),
         # PPA.exec("SELECT * FROM config where id!=?", (1,)),
