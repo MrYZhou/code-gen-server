@@ -1,6 +1,6 @@
 from typing import TypeVar
 from abc import ABCMeta
-from laorm.core.PPA import PPA
+from laorm.fastapi import PPA
 
 class SqlStateMachine:
     def __init__(self,*args):
@@ -18,7 +18,6 @@ class SqlStateMachine:
         }
     def process_keyword(self, keyword, value=None):
         keyword = keyword.upper()
-        print( self.sql_parts)
         # 异常返回
         if self.current_state == 'SELECT' and  keyword not in ['BY','FROM']:
             return
@@ -46,7 +45,7 @@ class SqlStateMachine:
             pass  # 其他可能的状态处理
 
     def finalize(self):
-        # 改成模板方法进行构建步骤
+        self.execute_sql = ''
         if not self.sql_parts['select']:
             self.sql_parts['select'] = ['*']
         execute_sql = f"SELECT {' ,'.join(self.sql_parts['select'])} FROM {self.sql_parts['from']} "
@@ -61,6 +60,14 @@ class SqlStateMachine:
         
         self.execute_sql = execute_sql
         self.current_state = 'FINAL'
+        self.sql_parts = {
+            'select': [],
+            'from': self.sql_parts['from'],
+            'where': [],
+            'group_by': [],
+            'having': [],
+            'order_by': []
+        }
         return self.execute_sql
 
 
@@ -110,16 +117,16 @@ class LaModel(metaclass=ABCMeta):
 
     # 结束方法,需要进行sql的构建,执行
     @classmethod
-    def get(cls: type[T], primaryId: int|str):
+    async def get(cls: type[T], primaryId: int|str):
         if primaryId:
             cls.state_machine.process_keyword('WHERE', f'{cls.primaryKey}={primaryId}')
-        cls.exec()
+        return await cls.exec()
     @classmethod
-    def exec(cls):
-        print(cls.sql())
-        if not cls.state_machine.execute_sql:
-            cls.state_machine.finalize()
-        PPA.exec(cls.state_machine.execute_sql)  
+    async def exec(cls):
+        sql = cls.state_machine.finalize()
+        if PPA.showSql:
+            print(sql)
+        return  await PPA.exec(sql)  
     @classmethod
     def getList(cls: type[T], primaryIdList: list[int] | list[str] ):
         if primaryIdList:

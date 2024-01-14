@@ -16,7 +16,7 @@ class PPAFastAPI(PPA):
                 "password": "root",
                 "db": "study",
                 "charset": "utf8mb4",
-                "autocommit": True,
+                "autocommit": True
             }
             
             args={**default_values,**args[0]} if len(args)==1 else default_values
