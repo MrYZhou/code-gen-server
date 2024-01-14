@@ -4,14 +4,11 @@ import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from sqlmodel import SQLModel
 from walrus import RateLimitException
 
 from fastapi.responses import JSONResponse
 
 from laorm.fastapi.PPAFastAPI import PPAFastAPI
-
-# from aiodb import PPA
 
 
 # 路由注册
@@ -56,12 +53,10 @@ def initHttp(app: FastAPI):
 
 
 def initDataBase(app):
-    
-    from db import engine
-    SQLModel.metadata.create_all(engine)
-
+    # SQLModel.metadata.create_all(engine)
     PPAFastAPI.init_app(app)
     # PPAFastAPI.showSql(False)
+
 
 def initStaticDir(app):
     app.mount("/static", StaticFiles(directory="resources/static"), name="static")
