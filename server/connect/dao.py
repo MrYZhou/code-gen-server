@@ -1,7 +1,6 @@
-from typing import List
 
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-from db import engine
+engine =None
 
 
 class Table:

@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 
 from walrus import Database as RedisDatabase
-from db import engine
+engine =None
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")

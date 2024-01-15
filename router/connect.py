@@ -1,4 +1,3 @@
-from typing import List
 
 from fastapi import APIRouter, HTTPException
 from nanoid import generate
@@ -6,13 +5,11 @@ from sqlmodel import Session, select
 from fastapi import Body
 from server.connect.dao import (
     DataBase,
-    Table,
-    dyConnect,
     getAllTable,
     getTable,
     savedb,
 )
-from db import engine
+engine =None
 
 
 router = APIRouter(
