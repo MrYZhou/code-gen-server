@@ -14,7 +14,7 @@ from fastapi.responses import (
 from walrus import Database as RedisDatabase
 from laorm.core.stream import FieldDescriptor, table
 
-from laorm.fastapi import PPA
+from laorm.core import PPA
 
 
 from server.generate.dao import Config
