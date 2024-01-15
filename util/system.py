@@ -22,20 +22,18 @@ def initRouter(app: FastAPI):
     #             parentModule = getattr(modulesServer, os.path.basename(root))
     #             module = getattr(parentModule, file)
     #             app.include_router(module.router)
-    # 解析规则:放在router模块下面的文件 (文件夹下文件)
-    if getattr(sys, 'frozen', False):  # 是否为已打包环境
-        base_path =  os.path.join(sys._MEIPASS,'router')
 
+    # 是否为已打包环境
+    if getattr(sys, 'frozen', False):  
+        base_path =  os.path.join(sys._MEIPASS,'router')
     else:
         base_path = os.path.join(os.getcwd(),'router')
 
-    print(base_path)
     # 获取当前目录下所有非目录项（即文件）
     files_in_current_dir = [f for f in os.listdir(base_path) if os.path.isfile(os.path.join(base_path, f))]
 
-    # 打印当前目录下的所有文件名
+    # 解析规则:放在router模块下面的文件 (文件夹下文件)
     for file in files_in_current_dir:
-        print(file)
         file = file.replace(".py", "")
         if file in ["__init__",'.pyc']:    
             continue
