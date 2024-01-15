@@ -102,14 +102,8 @@ class LaModel(metaclass=ABCMeta):
         return cls.state_machine.finalize()
 
     @classmethod
-    def where(cls: type[T], *args):
-        if len(args) % 2 != 0:
-            raise ValueError(
-                "Invalid argument length. It should contain an even number of elements for key-value pairs."
-            )
-
-        # 使用zip将键和值配对，然后通过列表推导式生成条件子句并调用process_keyword方法
-        for key, value in zip(*[iter(args)] * 2):
+    def where(cls: type[T], **kwargs):
+        for key, value in kwargs.items():
             cls.state_machine.process_keyword("WHERE", f"{key}={value}")
         return cls
 
@@ -137,13 +131,13 @@ class LaModel(metaclass=ABCMeta):
 
     # 结束方法,需要进行sql的构建,执行
     @classmethod
-    async def get(cls: type[T], primaryId: int | str):
+    async def get(cls: type[T], primaryId: int | str = None):
         if primaryId:
             cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
         return await cls.exec(True)
 
     @classmethod
-    async def exec(cls, fetch_one: bool):
+    async def exec(cls, fetch_one: bool = False):
         sql = cls.state_machine.finalize()
         if PPA.showSql:
             print(sql)
@@ -151,12 +145,12 @@ class LaModel(metaclass=ABCMeta):
         return res
 
     @classmethod
-    def getList(cls: type[T], primaryIdList: list[int] | list[str]):
+    async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None):
         if primaryIdList:
             cls.state_machine.process_keyword(
                 "WHERE", f"{cls.primaryKey} in {primaryIdList}"
             )
-        cls.exec()
+        return await cls.exec()
 
 
 class FieldDescriptor:
