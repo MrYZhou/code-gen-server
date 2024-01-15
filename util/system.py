@@ -1,5 +1,6 @@
 import importlib
 import os
+import sys
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +10,6 @@ from walrus import RateLimitException
 from fastapi.responses import JSONResponse
 
 from laorm.fastapi.PPAFastAPI import PPAFastAPI
-
 
 # 路由注册
 def initRouter(app: FastAPI):
@@ -23,13 +23,24 @@ def initRouter(app: FastAPI):
     #             module = getattr(parentModule, file)
     #             app.include_router(module.router)
     # 解析规则:放在router模块下面的文件 (文件夹下文件)
-    for root, dirs, files in os.walk(os.path.join(os.getcwd(), "router")):
-        for file in files:
-            if file.find("__init__") > -1 or file.find(".pyc") > -1:
-                continue
-            file = file.replace(".py", "")
-            m = importlib.import_module("router." + file)
-            app.include_router(m.router)
+    if getattr(sys, 'frozen', False):  # 是否为已打包环境
+        base_path =  os.path.join(sys._MEIPASS,'router')
+
+    else:
+        base_path = os.path.join(os.getcwd(),'router')
+
+    print(base_path)
+    # 获取当前目录下所有非目录项（即文件）
+    files_in_current_dir = [f for f in os.listdir(base_path) if os.path.isfile(os.path.join(base_path, f))]
+
+    # 打印当前目录下的所有文件名
+    for file in files_in_current_dir:
+        print(file)
+        if file in ["__init__",'.pyc']> -1:    
+            continue
+        file = file.replace(".py", "")
+        m = importlib.import_module("router." + file)
+        app.include_router(m.router)
 
 
 def initHttp(app: FastAPI):
