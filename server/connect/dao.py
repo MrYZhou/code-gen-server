@@ -1,6 +1,6 @@
-
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-engine =None
+
+engine = None
 
 
 class Table:

@@ -8,14 +8,20 @@ from util.system import Init
 app = FastAPI()
 Init.do(app)
 
+
 @app.get("/")
 def root():
     return RedirectResponse("https://www.baidu.com")
+
+
 if __name__ == "__main__":
     import uvicorn
     import os
+
     # 输出无日志
-    log_path =os.path.join(os.path.expanduser("~"),"laorm","logfile.log")  # Get the name of the script
+    log_path = os.path.join(
+        os.path.expanduser("~"), "laorm", "logfile.log"
+    )  # Get the name of the script
 
     if not os.path.exists(log_path):
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
@@ -33,7 +39,8 @@ if __name__ == "__main__":
             "level": "INFO",
         },
     }
-    uvicorn.run(app=app,
+    uvicorn.run(
+        app=app,
         host="127.0.0.1",
         port=8000,
         reload=False,
