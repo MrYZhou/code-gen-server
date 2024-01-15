@@ -36,9 +36,9 @@ def initRouter(app: FastAPI):
     # 打印当前目录下的所有文件名
     for file in files_in_current_dir:
         print(file)
-        if file in ["__init__",'.pyc']> -1:    
-            continue
         file = file.replace(".py", "")
+        if file in ["__init__",'.pyc']:    
+            continue
         m = importlib.import_module("router." + file)
         app.include_router(m.router)
 
