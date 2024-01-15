@@ -80,6 +80,7 @@ def initEnv():
 class Init:
     @staticmethod
     def do(app: FastAPI):
+        print("初始化系统")
         initEnv()
         initDataBase(app)
         initHttp(app)

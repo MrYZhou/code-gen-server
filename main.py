@@ -6,7 +6,7 @@ from util.system import Init
 
 
 app = FastAPI()
-Init.do(app)
+
 
 
 @app.get("/")
@@ -15,6 +15,7 @@ def root():
 if __name__ == "__main__":
     import uvicorn
     import os
+    Init.do(app)
     # 输出无日志
     log_path =os.path.join(os.path.expanduser("~"),"laorm","logfile.log")  # Get the name of the script
 

@@ -8,15 +8,14 @@ params = [
     # '-w',
     "--hidden-import=aiomysql",
     # static目录纳入打包
-    '--collect-submodules', 'util',
-    '--collect-submodules', 'router',
-    '--collect-submodules', 'server',
-    '--add-data', 'util:util',
-    '--add-data', 'router:router',
-    '--add-data', 'server:server',
+    # '--collect-submodules', 'util',
+    # '--collect-submodules', 'router',
+    # '--collect-submodules', 'server',
+    # '--add-data', 'util;util',
+    # '--add-data', 'router;router',
+    # '--add-data', 'server;server',
     # 每次打包前清楚build 和 dist目录
-    '--paths', os.getcwd(),  # 添加搜索路径
-    "--clean",
+    # "--clean",
     # 无需用户确认
     "--noconfirm",
     "main.py",
