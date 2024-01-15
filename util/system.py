@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 
 from laorm.fastapi.PPAFastAPI import PPAFastAPI
 
+
 # 路由注册
 def initRouter(app: FastAPI):
     # 解析规则:server模块下面的带router字符的文件 (文件夹下特定文件)
@@ -24,18 +25,20 @@ def initRouter(app: FastAPI):
     #             app.include_router(module.router)
 
     # 是否为已打包环境
-    if getattr(sys, 'frozen', False):  
-        base_path =  os.path.join(sys._MEIPASS,'router')
+    if getattr(sys, "frozen", False):
+        base_path = os.path.join(sys._MEIPASS, "router")
     else:
-        base_path = os.path.join(os.getcwd(),'router')
+        base_path = os.path.join(os.getcwd(), "router")
 
     # 获取当前目录下所有非目录项（即文件）
-    files_in_current_dir = [f for f in os.listdir(base_path) if os.path.isfile(os.path.join(base_path, f))]
+    files_in_current_dir = [
+        f for f in os.listdir(base_path) if os.path.isfile(os.path.join(base_path, f))
+    ]
 
     # 解析规则:放在router模块下面的文件 (文件夹下文件)
     for file in files_in_current_dir:
         file = file.replace(".py", "")
-        if file in ["__init__",'.pyc']:    
+        if file in ["__init__", ".pyc"]:
             continue
         m = importlib.import_module("router." + file)
         app.include_router(m.router)

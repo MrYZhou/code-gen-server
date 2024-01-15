@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException
 from nanoid import generate
 from sqlmodel import Session, select
@@ -9,7 +8,8 @@ from server.connect.dao import (
     getTable,
     savedb,
 )
-engine =None
+
+engine = None
 
 
 router = APIRouter(
