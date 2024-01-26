@@ -75,8 +75,8 @@ async def addone():
 @router.delete("/config2/delete")
 async def deleteone():
    
-    config1 = await Config1.where(name=22).get()
-    await config1.delete()
+    # config1 = await Config1.where(name=1).get()
+    await Config1.delete(1)
     
     # Config1.delete()
     # res = await Config1.where(name=22).delete()
