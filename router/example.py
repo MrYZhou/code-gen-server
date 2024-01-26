@@ -76,11 +76,13 @@ async def addone():
 async def deleteone():
    
     config1 = await Config1.where(name=22).get()
-    config1.delete()
-    res = await Config1.where(name=22).delete()
-    return {"result": res}
+    await config1.delete(1)
+    
+    # Config1.delete()
+    # res = await Config1.where(name=22).delete()
+    return {"result": "success"}
 
-@router.update("/config2/update")
+@router.put("/config2/update")
 async def updateone():
     res = await Config1.valueIn().where(name=22).update()
     return {"result": res}

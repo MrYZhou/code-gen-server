@@ -83,6 +83,21 @@ class SqlStateMachine:
 
 
 T = TypeVar("T", bound="LaModel")
+# 元类装饰器实现
+def table(_table_name: str = None):
+    def wrapper(cls):
+        class DecoratedModel(LaModel, cls):
+            # 将表名存储到类属性中
+            tablename = _table_name if _table_name else cls.__name__.lower()
+            typeClass = cls()
+            def __init_subclass__(cls) -> None:
+                # 初始化内容
+                return super().__init_subclass__()
+            
+
+        return DecoratedModel
+
+    return wrapper
 
 
 class LaModel(metaclass=ABCMeta):
@@ -140,23 +155,25 @@ class LaModel(metaclass=ABCMeta):
         pass
         return cls
 
-    
     @classmethod
-    async def get(cls: type[T], primaryId: int | str | list[int] | list[str] = None):
-        """
-        结束方法,需要进行sql的构建,执行
-        """
-        flag = False
-        if primaryId and not isinstance(primaryId, (list, tuple)):
-            primaryId = [primaryId]
-            flag = True
+    async def get(cls: type[T], primaryId: int | str = None):
         if primaryId:
+            cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
+        res= await cls.exec(True)
+        for key, _ in cls.dictMap.items():
+            setattr(cls.typeClass, key, res.get(key))
+        for name in ['delete','get','post','update']:
+            method = getattr(cls, name)
+            if callable(method):
+                setattr(cls.typeClass, name, method)
+        return cls.typeClass
+    @classmethod
+    async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None):
+        if primaryIdList:
             cls.state_machine.process_keyword(
-                "WHERE", f"{cls.primaryKey} in {primaryId}"
+                "WHERE", f"{cls.primaryKey} in {primaryIdList}"
             )
-        res: T | list[T] = await cls.exec(flag) 
-        return res
-    
+        return await cls.exec()
     @classmethod
     async def post(cls: type[T], data: T | list[T] = None):
         
@@ -168,8 +185,11 @@ class LaModel(metaclass=ABCMeta):
         return await cls.exec(True)
     
     @classmethod
-    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str] = None):
-        
+    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str] | None):
+        """
+        primaryId参数是对主键进行限制
+        """
+        print(111)
         return await cls.exec(True)
     
     
@@ -198,17 +218,5 @@ class FieldDescriptor:
             owner.primaryKey = name
 
 
-# 元类装饰器实现
-def table(_table_name: str = None):
-    def wrapper(cls):
-        class DecoratedModel(LaModel, cls):
-            # 将表名存储到类属性中
-            tablename = _table_name if _table_name else cls.__name__.lower()
 
-            def __init_subclass__(cls) -> None:
-                # 初始化内容
-                return super().__init_subclass__()
 
-        return DecoratedModel
-
-    return wrapper
