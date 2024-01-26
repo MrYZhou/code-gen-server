@@ -5,6 +5,7 @@ from laorm.core.PPA import PPA
 
 class SqlStateMachine:
     def __init__(self, *args):
+        self.mode = 'select'
         self.states = [
             "INITIAL",
             "SELECT",
@@ -54,9 +55,7 @@ class SqlStateMachine:
             # self.sql_parts['order_by'].append(value)
             self.current_state = "BY"
             pass  # 其他可能的状态处理
-
-    def finalize(self):
-        self.execute_sql = ""
+    def selectMode(self):
         if not self.sql_parts["select"]:
             self.sql_parts["select"] = ["*"]
         execute_sql = f"SELECT {' ,'.join(self.sql_parts['select'])} FROM {self.sql_parts['from']} "
@@ -68,8 +67,26 @@ class SqlStateMachine:
             execute_sql += f"HAVING {' AND '.join(self.sql_parts['having'])} "
         if self.sql_parts["order_by"]:
             execute_sql += f"ORDER BY {' ,'.join(self.sql_parts['order_by'])} "
+        return execute_sql    
+    def updateMode(self):
+        pass
+    def postMode(self):
+        pass
+    def deleteMode(self):
+        execute_sql = f"DELETE FROM {self.sql_parts['from']} "
+        if self.sql_parts["where"]:
+            execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
+        
+        return execute_sql    
+    def finalize(self):
+        self.execute_sql = ""
+        if self.mode == 'select':
+            self.execute_sql = self.selectMode()
+        if self.mode == 'delete':
+            self.execute_sql = self.deleteMode()    
+        
 
-        self.execute_sql = execute_sql
+
         self.current_state = "FINAL"
         self.sql_parts = {
             "select": [],
@@ -92,8 +109,6 @@ def table(_table_name: str = None):
             def __init_subclass__(cls) -> None:
                 # 初始化内容
                 return super().__init_subclass__()
-            
-
         return DecoratedModel
 
     return wrapper
@@ -155,12 +170,14 @@ class LaModel(metaclass=ABCMeta):
         return cls
 
     @classmethod
-    async def get(cls: type[T], primaryId: int | str = None):
+    async def get(cls: type[T], primaryId: int | str = None)->T:
+        cls.state_machine.mode = 'select'
         if primaryId:
             cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
         res= await cls.exec(True)
-        for key, _ in cls.dictMap.items():
-            setattr(cls, key, res.get(key))
+        if res:
+            for key, _ in cls.dictMap.items():
+                setattr(cls, key, res.get(key))
         return cls
     @classmethod
     async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None)->T:
@@ -180,14 +197,16 @@ class LaModel(metaclass=ABCMeta):
         return await cls.exec(True)
     
     @classmethod
-    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str] | None)->T:
+    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str]  = None)->T:
         """
         primaryId参数是对主键进行限制
         """
+        cls.state_machine.mode = 'delete'
+
         if primaryId:
             cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
-        print(111)
-        return await cls.exec(True)
+        await cls.exec(True)
+        return cls
     
     
     @classmethod
