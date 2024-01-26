@@ -9,7 +9,7 @@ class PPA:
 
     @classmethod
     def showSql(cls, show: bool):
-        cls.showMode = show
+        PPA.showMode = show
 
     @classmethod
     async def startup(cls):
