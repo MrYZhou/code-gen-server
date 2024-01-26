@@ -56,10 +56,32 @@ class Config1:
     name: str = FieldDescriptor()
 
 
-@router.get("/config2")
+@router.get("/config2/get")
 async def get_config2():
     res = await Config1.where(name=22).get()
     return {"result": res}
+@router.post("/config2/add")
+async def addone():
+    configlist = [
+        Config1(id=1, name=22),
+        Config1(id=2, name=23),
+        Config1(id=3, name=24),
+    ]
+    config1= Config1(id=2321, name=22)
+    res = await Config1.post(configlist)
+    res = await Config1.post(config1)
+    return {"result": res}
+
+@router.delete("/config2/delete")
+async def deleteone():
+    res = await Config1.where(name=22).delete()
+    return {"result": res}
+
+@router.update("/config2/update")
+async def updateone():
+    res = await Config1.valueIn().where(name=22).update()
+    return {"result": res}
+
 
 
 @router.get("/config")

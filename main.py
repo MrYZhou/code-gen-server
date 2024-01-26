@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     # 输出无日志
     log_path = os.path.join(
-        os.path.expanduser("~"), "laorm", "logfile.log"
+        os.path.expanduser("~"), "code-gen-server", "logfile.log"
     )  # Get the name of the script
 
     if not os.path.exists(log_path):
