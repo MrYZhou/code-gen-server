@@ -63,7 +63,7 @@ class SqlStateMachine:
 
     def selectMode(self):
         if self.mode != "select":
-            return
+            return True 
         if not self.sql_parts["select"]:
             self.sql_parts["select"] = ["*"]
         execute_sql = f"SELECT {' ,'.join(self.sql_parts['select'])} FROM {self.sql_parts['from']} "
@@ -79,7 +79,7 @@ class SqlStateMachine:
 
     def postMode(self):
         if self.mode != "post":
-            return
+            return True
         values_str_list = [
             f"({', '.join(map(str, row))})" for row in self.sql_parts["value"]
         ]
@@ -89,24 +89,21 @@ class SqlStateMachine:
 
     def deleteMode(self):
         if self.mode != "delete":
-            return
+            return True
         self.execute_sql = f"DELETE FROM {self.sql_parts['from']} "
         if self.sql_parts["where"]:
             self.execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
 
     def updateMode(self):
         if self.mode != "update":
-            return
+            return True
         self.execute_sql = f"update {self.sql_parts['from']} "
         return self.execute_sql
 
     def finalize(self):
         self.execute_sql = ""
 
-        self.selectMode()
-        self.postMode()
-        self.deleteMode()
-        self.updateMode()
+        self.selectMode() and self.postMode() and self.updateMode()  and self.deleteMode()
 
         self.current_state = "FINAL"
         self.sql_parts = {
