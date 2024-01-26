@@ -1,12 +1,11 @@
 from typing import TypeVar
 from abc import ABCMeta
 from laorm.core.PPA import PPA
-import builtins
 
 
 class SqlStateMachine:
     def __init__(self, *args):
-        self.mode = 'select'
+        self.mode = "select"
         self.states = [
             "INITIAL",
             "SELECT",
@@ -24,7 +23,7 @@ class SqlStateMachine:
             "select": [],
             "from": "",
             "where": [],
-            "field":[],
+            "field": [],
             "value": [],
             "group_by": [],
             "having": [],
@@ -58,10 +57,13 @@ class SqlStateMachine:
         elif keyword == "insertField":
             self.sql_parts["field"].append(value)
         elif keyword == "insertValue":
-            self.sql_parts["value"].append(value)     
-              
+            self.sql_parts["value"].append(value)
+
             pass  # 其他可能的状态处理
+
     def selectMode(self):
+        if self.mode != "select":
+            return
         if not self.sql_parts["select"]:
             self.sql_parts["select"] = ["*"]
         execute_sql = f"SELECT {' ,'.join(self.sql_parts['select'])} FROM {self.sql_parts['from']} "
@@ -73,34 +75,39 @@ class SqlStateMachine:
             execute_sql += f"HAVING {' AND '.join(self.sql_parts['having'])} "
         if self.sql_parts["order_by"]:
             execute_sql += f"ORDER BY {' ,'.join(self.sql_parts['order_by'])} "
-        return execute_sql    
+        self.execute_sql = execute_sql
+
     def postMode(self):
-        # 将数据转换为所需的字符串格式
-        values_str_list = [f"({', '.join(map(str, row))})" for row in self.sql_parts['value']]
+        if self.mode != "post":
+            return
+        values_str_list = [
+            f"({', '.join(map(str, row))})" for row in self.sql_parts["value"]
+        ]
 
         # 合并成一条INSERT语句
-        execute_sql = f"INSERT INTO {self.sql_parts['from']} ({', '.join(self.sql_parts['field'])}) VALUES {', '.join(values_str_list)};"
+        self.execute_sql = f"INSERT INTO {self.sql_parts['from']} ({', '.join(self.sql_parts['field'])}) VALUES {', '.join(values_str_list)};"
 
-        return execute_sql
     def deleteMode(self):
-        execute_sql = f"DELETE FROM {self.sql_parts['from']} "
+        if self.mode != "delete":
+            return
+        self.execute_sql = f"DELETE FROM {self.sql_parts['from']} "
         if self.sql_parts["where"]:
-            execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "       
-        return execute_sql    
+            self.execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
+
     def updateMode(self):
-        execute_sql = f"update {self.sql_parts['from']} "
-        return execute_sql
+        if self.mode != "update":
+            return
+        self.execute_sql = f"update {self.sql_parts['from']} "
+        return self.execute_sql
+
     def finalize(self):
         self.execute_sql = ""
-        if self.mode == 'select':
-            self.execute_sql = self.selectMode()
-        elif self.mode == 'post':
-            self.execute_sql = self.postMode()       
-        elif self.mode == 'delete':
-            self.execute_sql = self.deleteMode()
-        elif self.mode == 'update':
-            self.execute_sql = self.updateMode()         
-    
+
+        self.selectMode()
+        self.postMode()
+        self.deleteMode()
+        self.updateMode()
+
         self.current_state = "FINAL"
         self.sql_parts = {
             "select": [],
@@ -108,23 +115,27 @@ class SqlStateMachine:
             "where": [],
             "group_by": [],
             "having": [],
-            "field":[],
-            "value":[],
+            "field": [],
+            "value": [],
             "order_by": [],
         }
         return self.execute_sql
 
 
 T = TypeVar("T", bound="LaModel")
+
+
 # 元类装饰器实现
 def table(_table_name: str = None):
     def wrapper(cls):
         class DecoratedModel(LaModel, cls):
             # 将表名存储到类属性中
             tablename = _table_name if _table_name else cls.__name__.lower()
+
             def __init_subclass__(cls) -> None:
                 # 初始化内容
                 return super().__init_subclass__()
+
         return DecoratedModel
 
     return wrapper
@@ -137,7 +148,7 @@ class LaModel(metaclass=ABCMeta):
 
     excuteSql = ""
     state_machine = SqlStateMachine()
-    
+
     @classmethod
     def select(cls: type[T], params: str = "*") -> type[T]:
         cls.state_machine.process_keyword("SELECT", params)
@@ -146,24 +157,23 @@ class LaModel(metaclass=ABCMeta):
     @classmethod
     def sql(cls: type[T]):
         return cls.state_machine.finalize()
-   
-    
+
     @classmethod
     def where(cls: type[T], **kwargs):
         """
         识别参数 key=value 的键值对
-        
+
         Config.where(name='admin')
         """
         for key, value in kwargs.items():
             cls.state_machine.process_keyword("WHERE", f"{key}={value}")
         return cls
-   
+
     @classmethod
     def match(cls: type[T], *args):
         """
         用逗号分隔传的方式，必须是偶数，同时能构成正确的键值对顺序
-        
+
         Config.match('name',larry,'age',18)
         """
         if len(args) % 2 != 0:
@@ -187,55 +197,62 @@ class LaModel(metaclass=ABCMeta):
         return cls
 
     @classmethod
-    async def get(cls: type[T], primaryId: int | str = None)->T:
-        cls.state_machine.mode = 'select'
+    async def get(cls: type[T], primaryId: int | str = None) -> T:
+        cls.state_machine.mode = "select"
         if primaryId:
             cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
-        res= await cls.exec(True)
+        res = await cls.exec(True)
         if res:
             for key, _ in cls.dictMap.items():
                 setattr(cls, key, res.get(key))
         return cls
+
     @classmethod
-    async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None)->T:
+    async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None) -> T:
         if primaryIdList:
             cls.state_machine.process_keyword(
                 "WHERE", f"{cls.primaryKey} in {primaryIdList}"
             )
         return await cls.exec()
+
     @classmethod
     async def post(cls: type[T], data: T | list[T] = None):
-        cls.state_machine.mode = 'post'
+        cls.state_machine.mode = "post"
         if data and not isinstance(data, (list, tuple)):
             data = [data]
-        
+
         for key, _ in cls.dictMap.items():
-            cls.state_machine.process_keyword("insertField",key)    
+            cls.state_machine.process_keyword("insertField", key)
         for item in data:
-            cls.state_machine.process_keyword("insertValue",[getattr(item,key) for  key, _ in cls.dictMap.items()])
-        return await cls.exec(True) 
-    
+            cls.state_machine.process_keyword(
+                "insertValue", [getattr(item, key) for key, _ in cls.dictMap.items()]
+            )
+        return await cls.exec(True)
+
     @classmethod
     async def update(cls: type[T], data: T | list[T] = None):
-        cls.state_machine.mode = 'update'
+        cls.state_machine.mode = "update"
         if data.get(cls.primaryKey):
-            cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={data.get(cls.primaryKey)}")
+            cls.state_machine.process_keyword(
+                "WHERE", f"{cls.primaryKey}={data.get(cls.primaryKey)}"
+            )
         await cls.exec(True)
         return cls
-    
+
     @classmethod
-    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str]  = None)->T:
+    async def delete(
+        cls: type[T], primaryId: int | str | list[int] | list[str] = None
+    ) -> T:
         """
         primaryId参数是对主键进行限制
         """
-        cls.state_machine.mode = 'delete'
+        cls.state_machine.mode = "delete"
 
         if primaryId:
             cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
         await cls.exec(True)
         return cls
-    
-    
+
     @classmethod
     async def exec(cls, fetch_one: bool = False):
         """
@@ -259,7 +276,3 @@ class FieldDescriptor:
         owner.dictMap[name]["primary"] = self.primary
         if self.primary:
             owner.primaryKey = name
-
-
-
-

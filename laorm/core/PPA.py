@@ -10,6 +10,7 @@ class PPA:
     @classmethod
     def showSql(cls, show: bool):
         cls.showMode = show
+
     @classmethod
     async def startup(cls):
         PPA.pool = await aiomysql.create_pool(**cls.startup_params)
@@ -28,8 +29,6 @@ class PPA:
         params: Union[Dict[str, any], tuple, list] = None,
         execOne: Optional[bool] = False,
     ):
-       
-
         # sql注入攻击过滤处理
         sql = sql.replace("?", "%s")
 
@@ -37,7 +36,7 @@ class PPA:
             # 参数化查询（使用字典）,转元组
             sql = sql.format_map(dict.fromkeys(params.keys(), "%s"))
             params = tuple(params.values())
-        
+
         try:
             async with cls.pool.acquire() as conn:
                 async with conn.cursor(aiomysql.DictCursor) as cur:
@@ -46,5 +45,3 @@ class PPA:
         except Exception as e:
             print(e)
             return None
-
-        
