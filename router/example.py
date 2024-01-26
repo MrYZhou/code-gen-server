@@ -60,36 +60,38 @@ class Config1:
 async def get_config2():
     res = await Config1.where(name=22).get()
     return {"result": res}
+
+
 @router.post("/config2/add")
 async def addone():
     await Config1.delete(1)
     await Config1.delete(2)
-    config1= Config1()
+    config1 = Config1()
     config1.id = 1
     config1.name = 123
-    config12= Config1()
+    config12 = Config1()
     config12.id = 2
     config12.name = 456
-    configlist = [config1,config12 ]
+    configlist = [config1, config12]
     await Config1.post(config1)
     await Config1.post(configlist)
     return {"result": "success"}
 
+
 @router.delete("/config2/delete")
 async def deleteone():
-   
     # config1 = await Config1.where(name=1).get()
     await Config1.delete(1)
-    
+
     # Config1.delete()
     # res = await Config1.where(name=22).delete()
     return {"result": "success"}
+
 
 @router.put("/config2/update")
 async def updateone():
     res = await Config1.valueIn().where(name=22).update()
     return {"result": res}
-
 
 
 @router.get("/config")
