@@ -90,7 +90,10 @@ async def deleteone():
 
 @router.put("/config2/update")
 async def updateone():
-    res = await Config1.valueIn().where(name=22).update()
+    config1 = Config1()
+    config1.id = 1
+    config1.name = 123
+    res = await Config1.where(name=22).update(config1)
     return {"result": res}
 
 
