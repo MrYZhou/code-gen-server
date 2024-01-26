@@ -100,17 +100,26 @@ class LaModel(metaclass=ABCMeta):
     @classmethod
     def sql(cls: type[T]):
         return cls.state_machine.finalize()
-    # 识别参数 key=value 的键值对
-    # Config.where(name='admin')
+   
+    
     @classmethod
     def where(cls: type[T], **kwargs):
+        """
+        识别参数 key=value 的键值对
+        
+        Config.where(name='admin')
+        """
         for key, value in kwargs.items():
             cls.state_machine.process_keyword("WHERE", f"{key}={value}")
         return cls
-    # 用逗号分隔传的方式，必须是偶数，同时能构成正确的键值对顺序
-    # Config.match('name',larry,'age',18)
+   
     @classmethod
     def match(cls: type[T], *args):
+        """
+        用逗号分隔传的方式，必须是偶数，同时能构成正确的键值对顺序
+        
+        Config.match('name',larry,'age',18)
+        """
         if len(args) % 2 != 0:
             raise ValueError(
                 "Invalid argument length. It should contain an even number of elements for key-value pairs."
@@ -131,9 +140,12 @@ class LaModel(metaclass=ABCMeta):
         pass
         return cls
 
-    # 结束方法,需要进行sql的构建,执行
+    
     @classmethod
     async def get(cls: type[T], primaryId: int | str | list[int] | list[str] = None):
+        """
+        结束方法,需要进行sql的构建,执行
+        """
         flag = False
         if primaryId and not isinstance(primaryId, (list, tuple)):
             primaryId = [primaryId]
@@ -142,17 +154,30 @@ class LaModel(metaclass=ABCMeta):
             cls.state_machine.process_keyword(
                 "WHERE", f"{cls.primaryKey} in {primaryId}"
             )
-        return await cls.exec(flag)
+        res: T | list[T] = await cls.exec(flag) 
+        return res
     
     @classmethod
-    async def post(cls: type[T], primaryId: int | str = None):
+    async def post(cls: type[T], data: T | list[T] = None):
+        
+        return await cls.exec(True)
+    
+    @classmethod
+    async def update(cls: type[T], data: T | list[T] = None):
+        
+        return await cls.exec(True)
+    
+    @classmethod
+    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str] = None):
         
         return await cls.exec(True)
     
     
-    # 执行sql fetch_one true是返回单条数据,fetch_many是返回列表数据
     @classmethod
     async def exec(cls, fetch_one: bool = False):
+        """
+        执行sql fetch_one true是返回单条数据,fetch_many是返回列表数据
+        """
         sql = cls.state_machine.finalize()
         if PPA.showSql:
             print(sql)
