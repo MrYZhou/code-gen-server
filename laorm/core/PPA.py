@@ -21,6 +21,7 @@ class PPA:
             cls.pool.close()
             await cls.pool.wait_closed()
 
+    # 执行sql
     @classmethod
     async def exec(
         cls,
