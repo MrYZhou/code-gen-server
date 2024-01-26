@@ -23,6 +23,7 @@ class SqlStateMachine:
             "select": [],
             "from": "",
             "where": [],
+            "value": [],
             "group_by": [],
             "having": [],
             "order_by": [],
@@ -52,8 +53,9 @@ class SqlStateMachine:
             self.sql_parts["order_by"].append(value)
             self.current_state = "ORDER_BY"
         elif keyword == "BY":
-            # self.sql_parts['order_by'].append(value)
             self.current_state = "BY"
+        elif keyword == "VALUESET":
+            self.sql_parts["value"].append(value)   
             pass  # 其他可能的状态处理
     def selectMode(self):
         if not self.sql_parts["select"]:
@@ -68,25 +70,35 @@ class SqlStateMachine:
         if self.sql_parts["order_by"]:
             execute_sql += f"ORDER BY {' ,'.join(self.sql_parts['order_by'])} "
         return execute_sql    
-    def updateMode(self):
-        pass
     def postMode(self):
-        pass
+        execute_sql = f"insert into {self.sql_parts['from']} "
+        fields=''
+        values=''
+        for i in self.sql_parts['value']:
+            fields += i[0]+","
+            values += i[1]+","
+        if self.sql_parts["where"]:
+            execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
+        return execute_sql
     def deleteMode(self):
         execute_sql = f"DELETE FROM {self.sql_parts['from']} "
         if self.sql_parts["where"]:
-            execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
-        
+            execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "       
         return execute_sql    
+    def updateMode(self):
+        execute_sql = f"update {self.sql_parts['from']} "
+        return execute_sql
     def finalize(self):
         self.execute_sql = ""
         if self.mode == 'select':
             self.execute_sql = self.selectMode()
-        if self.mode == 'delete':
-            self.execute_sql = self.deleteMode()    
-        
-
-
+        elif self.mode == 'post':
+            self.execute_sql = self.postMode()       
+        elif self.mode == 'delete':
+            self.execute_sql = self.deleteMode()
+        elif self.mode == 'update':
+            self.execute_sql = self.updateMode()         
+    
         self.current_state = "FINAL"
         self.sql_parts = {
             "select": [],
@@ -94,6 +106,7 @@ class SqlStateMachine:
             "where": [],
             "group_by": [],
             "having": [],
+            "value":[],
             "order_by": [],
         }
         return self.execute_sql
@@ -188,13 +201,19 @@ class LaModel(metaclass=ABCMeta):
         return await cls.exec()
     @classmethod
     async def post(cls: type[T], data: T | list[T] = None):
-        
-        return await cls.exec(True)
+        cls.state_machine.mode = 'post'
+        for key, _ in cls.dictMap.items():
+            cls.state_machine.process_keyword("valueSet",[key,data.get(key)])
+        await cls.exec(True)
+        return cls
     
     @classmethod
     async def update(cls: type[T], data: T | list[T] = None):
-        
-        return await cls.exec(True)
+        cls.state_machine.mode = 'update'
+        if data.get(cls.primaryKey):
+            cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={data.get(cls.primaryKey)}")
+        await cls.exec(True)
+        return cls
     
     @classmethod
     async def delete(cls: type[T], primaryId: int | str | list[int] | list[str]  = None)->T:
