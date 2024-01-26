@@ -89,7 +89,6 @@ def table(_table_name: str = None):
         class DecoratedModel(LaModel, cls):
             # 将表名存储到类属性中
             tablename = _table_name if _table_name else cls.__name__.lower()
-            typeClass = cls()
             def __init_subclass__(cls) -> None:
                 # 初始化内容
                 return super().__init_subclass__()
@@ -161,14 +160,10 @@ class LaModel(metaclass=ABCMeta):
             cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
         res= await cls.exec(True)
         for key, _ in cls.dictMap.items():
-            setattr(cls.typeClass, key, res.get(key))
-        for name in ['delete','get','post','update']:
-            method = getattr(cls, name)
-            if callable(method):
-                setattr(cls.typeClass, name, method)
-        return cls.typeClass
+            setattr(cls, key, res.get(key))
+        return cls
     @classmethod
-    async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None):
+    async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None)->T:
         if primaryIdList:
             cls.state_machine.process_keyword(
                 "WHERE", f"{cls.primaryKey} in {primaryIdList}"
@@ -185,10 +180,12 @@ class LaModel(metaclass=ABCMeta):
         return await cls.exec(True)
     
     @classmethod
-    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str] | None):
+    async def delete(cls: type[T], primaryId: int | str | list[int] | list[str] | None)->T:
         """
         primaryId参数是对主键进行限制
         """
+        if primaryId:
+            cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
         print(111)
         return await cls.exec(True)
     
