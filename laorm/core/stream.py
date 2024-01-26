@@ -30,7 +30,6 @@ class SqlStateMachine:
         }
 
     def process_keyword(self, keyword, value=None):
-        keyword = keyword.upper()
         # 异常返回
         if self.current_state == "SELECT" and keyword not in ["BY", "FROM"]:
             return
@@ -54,8 +53,11 @@ class SqlStateMachine:
             self.current_state = "ORDER_BY"
         elif keyword == "BY":
             self.current_state = "BY"
-        elif keyword == "VALUESET":
-            self.sql_parts["value"].append(value)   
+        elif keyword == "insertFiled":
+            self.sql_parts["value"].append(value)
+        elif keyword == "insertValue":
+            self.sql_parts["value"].append(value)     
+              
             pass  # 其他可能的状态处理
     def selectMode(self):
         if not self.sql_parts["select"]:
@@ -117,6 +119,9 @@ T = TypeVar("T", bound="LaModel")
 def table(_table_name: str = None):
     def wrapper(cls):
         class DecoratedModel(LaModel, cls):
+            def __init__(self, *args, **kwargs):
+                # 将所有参数传递给原始模型类的__init__
+                cls.__init__(self, *args, **kwargs)
             # 将表名存储到类属性中
             tablename = _table_name if _table_name else cls.__name__.lower()
             def __init_subclass__(cls) -> None:
@@ -203,7 +208,8 @@ class LaModel(metaclass=ABCMeta):
     async def post(cls: type[T], data: T | list[T] = None):
         cls.state_machine.mode = 'post'
         for key, _ in cls.dictMap.items():
-            cls.state_machine.process_keyword("valueSet",[key,data.get(key)])
+            cls.state_machine.process_keyword("insertFiled",key)
+            cls.state_machine.process_keyword("insertValue",data.get(key))
         await cls.exec(True)
         return cls
     

@@ -68,7 +68,9 @@ async def addone():
     #     Config1(id=3, name=24),
     # ]
     # res = await Config1.post(configlist)
-    config1= Config1(id=2321, name=22)
+    config1= Config1()
+    config1.id = 2321
+    config1.name = 22
     res = await Config1.post(config1)
     return {"result": res}
 
