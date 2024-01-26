@@ -62,17 +62,18 @@ async def get_config2():
     return {"result": res}
 @router.post("/config2/add")
 async def addone():
-    # configlist = [
-    #     Config1(id=1, name=22),
-    #     Config1(id=2, name=23),
-    #     Config1(id=3, name=24),
-    # ]
-    # res = await Config1.post(configlist)
+    await Config1.delete(1)
+    await Config1.delete(2)
     config1= Config1()
-    config1.id = 2321
-    config1.name = 22
-    res = await Config1.post(config1)
-    return {"result": res}
+    config1.id = 1
+    config1.name = 123
+    config12= Config1()
+    config12.id = 2
+    config12.name = 456
+    configlist = [config1,config12 ]
+    await Config1.post(config1)
+    await Config1.post(configlist)
+    return {"result": "success"}
 
 @router.delete("/config2/delete")
 async def deleteone():

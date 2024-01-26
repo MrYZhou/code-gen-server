@@ -1,6 +1,7 @@
 from typing import TypeVar
 from abc import ABCMeta
 from laorm.core.PPA import PPA
+import builtins
 
 
 class SqlStateMachine:
@@ -23,6 +24,7 @@ class SqlStateMachine:
             "select": [],
             "from": "",
             "where": [],
+            "field":[],
             "value": [],
             "group_by": [],
             "having": [],
@@ -53,8 +55,8 @@ class SqlStateMachine:
             self.current_state = "ORDER_BY"
         elif keyword == "BY":
             self.current_state = "BY"
-        elif keyword == "insertFiled":
-            self.sql_parts["value"].append(value)
+        elif keyword == "insertField":
+            self.sql_parts["field"].append(value)
         elif keyword == "insertValue":
             self.sql_parts["value"].append(value)     
               
@@ -73,14 +75,12 @@ class SqlStateMachine:
             execute_sql += f"ORDER BY {' ,'.join(self.sql_parts['order_by'])} "
         return execute_sql    
     def postMode(self):
-        execute_sql = f"insert into {self.sql_parts['from']} "
-        fields=''
-        values=''
-        for i in self.sql_parts['value']:
-            fields += i[0]+","
-            values += i[1]+","
-        if self.sql_parts["where"]:
-            execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
+        # 将数据转换为所需的字符串格式
+        values_str_list = [f"({', '.join(map(str, row))})" for row in self.sql_parts['value']]
+
+        # 合并成一条INSERT语句
+        execute_sql = f"INSERT INTO {self.sql_parts['from']} ({', '.join(self.sql_parts['field'])}) VALUES {', '.join(values_str_list)};"
+
         return execute_sql
     def deleteMode(self):
         execute_sql = f"DELETE FROM {self.sql_parts['from']} "
@@ -108,6 +108,7 @@ class SqlStateMachine:
             "where": [],
             "group_by": [],
             "having": [],
+            "field":[],
             "value":[],
             "order_by": [],
         }
@@ -119,9 +120,6 @@ T = TypeVar("T", bound="LaModel")
 def table(_table_name: str = None):
     def wrapper(cls):
         class DecoratedModel(LaModel, cls):
-            def __init__(self, *args, **kwargs):
-                # 将所有参数传递给原始模型类的__init__
-                cls.__init__(self, *args, **kwargs)
             # 将表名存储到类属性中
             tablename = _table_name if _table_name else cls.__name__.lower()
             def __init_subclass__(cls) -> None:
@@ -135,10 +133,11 @@ def table(_table_name: str = None):
 class LaModel(metaclass=ABCMeta):
     def __init_subclass__(self) -> None:
         self.state_machine.process_keyword("FROM", self.tablename)
+        self.getValue = dict().get
 
     excuteSql = ""
     state_machine = SqlStateMachine()
-
+    
     @classmethod
     def select(cls: type[T], params: str = "*") -> type[T]:
         cls.state_machine.process_keyword("SELECT", params)
@@ -207,11 +206,14 @@ class LaModel(metaclass=ABCMeta):
     @classmethod
     async def post(cls: type[T], data: T | list[T] = None):
         cls.state_machine.mode = 'post'
+        if data and not isinstance(data, (list, tuple)):
+            data = [data]
+        
         for key, _ in cls.dictMap.items():
-            cls.state_machine.process_keyword("insertFiled",key)
-            cls.state_machine.process_keyword("insertValue",data.get(key))
-        await cls.exec(True)
-        return cls
+            cls.state_machine.process_keyword("insertField",key)    
+        for item in data:
+            cls.state_machine.process_keyword("insertValue",[getattr(item,key) for  key, _ in cls.dictMap.items()])
+        return await cls.exec(True) 
     
     @classmethod
     async def update(cls: type[T], data: T | list[T] = None):
@@ -240,7 +242,7 @@ class LaModel(metaclass=ABCMeta):
         执行sql fetch_one true是返回单条数据,fetch_many是返回列表数据
         """
         sql = cls.state_machine.finalize()
-        if PPA.showSql:
+        if PPA.showMode:
             print(sql)
         res = await PPA.exec(sql, {}, fetch_one)
         return res
