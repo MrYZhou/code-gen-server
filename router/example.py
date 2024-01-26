@@ -76,7 +76,7 @@ async def addone():
 async def deleteone():
    
     config1 = await Config1.where(name=22).get()
-    await config1.delete(1)
+    await config1.delete()
     
     # Config1.delete()
     # res = await Config1.where(name=22).delete()
