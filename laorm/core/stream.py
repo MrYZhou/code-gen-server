@@ -1,3 +1,4 @@
+import inspect
 from typing import TypeVar
 from abc import ABCMeta
 from laorm.core.PPA import PPA
@@ -63,7 +64,7 @@ class SqlStateMachine:
 
     def selectMode(self):
         if self.mode != "select":
-            return True 
+            return True
         if not self.sql_parts["select"]:
             self.sql_parts["select"] = ["*"]
         execute_sql = f"SELECT {' ,'.join(self.sql_parts['select'])} FROM {self.sql_parts['from']} "
@@ -97,17 +98,18 @@ class SqlStateMachine:
     def updateMode(self):
         if self.mode != "update":
             return True
-        
-        data_dict = dict(zip(self.sql_parts['field'], self.sql_parts["value"]))
-        set_clause = ', '.join([f"{key} = '{value}'" for key, value in data_dict.items()])
+
+        data_dict = dict(zip(self.sql_parts["field"], self.sql_parts["value"]))
+        set_clause = ", ".join(
+            [f"{key} = '{value}'" for key, value in data_dict.items()]
+        )
         self.execute_sql = f"UPDATE {self.sql_parts['from']} SET {set_clause}"
         self.execute_sql += f" WHERE {' AND '.join(self.sql_parts['where'])}"
-        
 
     def finalize(self):
         self.execute_sql = ""
 
-        self.selectMode() and self.postMode() and self.updateMode()  and self.deleteMode()
+        self.selectMode() and self.postMode() and self.updateMode() and self.deleteMode()
 
         self.current_state = "FINAL"
         self.sql_parts = {
@@ -122,25 +124,7 @@ class SqlStateMachine:
         }
         return self.execute_sql
 
-
 T = TypeVar("T", bound="LaModel")
-
-
-# 元类装饰器实现
-def table(_table_name: str = None):
-    def wrapper(cls):
-        class DecoratedModel(LaModel, cls):
-            # 将表名存储到类属性中
-            tablename = _table_name if _table_name else cls.__name__.lower()
-
-            def __init_subclass__(cls) -> None:
-                # 初始化内容
-                return super().__init_subclass__()
-
-        return DecoratedModel
-
-    return wrapper
-
 
 class LaModel(metaclass=ABCMeta):
     def __init_subclass__(self) -> None:
@@ -149,6 +133,13 @@ class LaModel(metaclass=ABCMeta):
 
     excuteSql = ""
     state_machine = SqlStateMachine()
+
+    @classmethod
+    def dynamic(
+        cls: type[T], dynamicSql: str, params: dict[str, any] | tuple | list = None
+    ):
+        # 翻译dynamicSql
+        print("get ---", dynamicSql, params)
 
     @classmethod
     def select(cls: type[T], params: str = "*") -> type[T]:
@@ -235,7 +226,7 @@ class LaModel(metaclass=ABCMeta):
         cls.state_machine.mode = "update"
         if data and not isinstance(data, (list, tuple)):
             data = [data]
-        
+
         for item in data:
             cls.state_machine.process_keyword(
                 "WHERE", f"{cls.primaryKey}={getattr(item, cls.primaryKey)}"
@@ -244,7 +235,9 @@ class LaModel(metaclass=ABCMeta):
                 if key == cls.primaryKey:
                     continue
                 cls.state_machine.process_keyword("insertField", key)
-                cls.state_machine.process_keyword("insertValue", str(getattr(item, key)))
+                cls.state_machine.process_keyword(
+                    "insertValue", str(getattr(item, key))
+                )
             await cls.exec(True)
         return True
 
@@ -285,3 +278,46 @@ class FieldDescriptor:
         owner.dictMap[name]["primary"] = self.primary
         if self.primary:
             owner.primaryKey = name
+
+
+# 装饰器
+def table(_table_name: str = None):
+    def wrapper(cls):
+        class DecoratedModel(LaModel, cls):
+            # 将表名存储到类属性中
+            tablename = _table_name if _table_name else cls.__name__.lower()
+
+            def __init_subclass__(cls) -> None:
+                # 初始化内容
+                return super().__init_subclass__()
+
+        return DecoratedModel
+
+    return wrapper
+
+def sql(func):
+   
+    sig = inspect.signature(func)
+    return_annotation = sig.return_annotation
+    def wrapper(*args, **kwargs):
+        
+        # 获取方法名和参数
+        method_name = func.__name__
+        method_cache_name = func.__qualname__
+        params = [str(arg) for arg in args]
+        print(params, method_name,method_cache_name)
+          
+        # 检查并处理返回类型
+        
+        print(f"Method '{method_name}' has a return type annotation of: {return_annotation}")
+
+        # 翻译方法成SQL语句
+        if method_name == 'selectByAccountAndPassword':
+            # 这里模拟根据return_annotation返回对应类型的值,比如列表处理为列表,单个处理单个对象
+            # todo 后期优化为从对象内部的局部map获取类定义，然后用反射创建对象
+
+            return params[1:]
+        raise ValueError(f"Unsupported SQL operation for method: {method_name}")
+
+    # 转换为类方法并返回
+    return classmethod(wrapper)
