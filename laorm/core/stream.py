@@ -1,4 +1,3 @@
-from functools import lru_cache
 import inspect
 import re
 from typing import TypeVar
@@ -10,18 +9,18 @@ class SqlStateMachine:
     def __init__(self, *args):
         self.mode = "select"
         self.states = [
-            "INITIAL",
-            "SELECT",
-            "FROM",
-            "WHERE",
-            "GROUP_BY",
-            "HAVING",
-            "ORDER_BY",
-            "FINAL",
+            "initial",
+            "select",
+            "from",
+            "where",
+            "group_by",
+            "having",
+            "order_by",
+            "final",
         ]
-        self.current_state = "INITIAL"
+        self.current_state = "initial"
         self.execute_sql = ""
-        self.keyword = ["SELECT", "FROM", "WHERE", "GROUP BY", "HAVING", "ORDER BY"]
+        self.keyword = ["select", "from", "where", "GROUP by", "having", "ORDER by"]
         self.sql_parts = {
             "select": [],
             "from": "",
@@ -35,28 +34,28 @@ class SqlStateMachine:
 
     def process_keyword(self, keyword, value=None):
         # 异常返回
-        if self.current_state == "SELECT" and keyword not in ["BY", "FROM"]:
+        if self.current_state == "select" and keyword not in ["by", "from"]:
             return
-        if keyword == "SELECT":
+        if keyword == "select":
             self.sql_parts["select"].append(value)
-            self.current_state = "SELECT"
-        elif keyword == "FROM":
+            self.current_state = "select"
+        elif keyword == "from":
             self.sql_parts["from"] = value
-            self.current_state = "FROM"
-        elif keyword == "WHERE":
+            self.current_state = "from"
+        elif keyword == "where":
             self.sql_parts["where"].append(value)
-            self.current_state = "WHERE"
-        elif keyword == "GROUP_BY":
+            self.current_state = "where"
+        elif keyword == "group_by":
             self.sql_parts["group_by"].append(value)
-            self.current_state = "GROUP_BY"
-        elif keyword == "HAVING":
+            self.current_state = "group_by"
+        elif keyword == "having":
             self.sql_parts["having"].append(value)
-            self.current_state = "HAVING"
-        elif keyword == "ORDER_BY":
+            self.current_state = "having"
+        elif keyword == "order_by":
             self.sql_parts["order_by"].append(value)
-            self.current_state = "ORDER_BY"
-        elif keyword == "BY":
-            self.current_state = "BY"
+            self.current_state = "order_by"
+        elif keyword == "by":
+            self.current_state = "by"
         elif keyword == "insertField":
             self.sql_parts["field"].append(value)
         elif keyword == "insertValue":
@@ -69,15 +68,15 @@ class SqlStateMachine:
             return True
         if not self.sql_parts["select"]:
             self.sql_parts["select"] = ["*"]
-        execute_sql = f"SELECT {' ,'.join(self.sql_parts['select'])} FROM {self.sql_parts['from']} "
+        execute_sql = f"select {' ,'.join(self.sql_parts['select'])} from {self.sql_parts['from']} "
         if self.sql_parts["where"]:
-            execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
+            execute_sql += f"where {' AND '.join(self.sql_parts['where'])} "
         if self.sql_parts["group_by"]:
-            execute_sql += f"GROUP BY {' ,'.join(self.sql_parts['group_by'])} "
+            execute_sql += f"GROUP by {' ,'.join(self.sql_parts['group_by'])} "
         if self.sql_parts["having"]:
-            execute_sql += f"HAVING {' AND '.join(self.sql_parts['having'])} "
+            execute_sql += f"having {' AND '.join(self.sql_parts['having'])} "
         if self.sql_parts["order_by"]:
-            execute_sql += f"ORDER BY {' ,'.join(self.sql_parts['order_by'])} "
+            execute_sql += f"ORDER by {' ,'.join(self.sql_parts['order_by'])} "
         self.execute_sql = execute_sql
 
     def postMode(self):
@@ -93,9 +92,9 @@ class SqlStateMachine:
     def deleteMode(self):
         if self.mode != "delete":
             return True
-        self.execute_sql = f"DELETE FROM {self.sql_parts['from']} "
+        self.execute_sql = f"DELETE from {self.sql_parts['from']} "
         if self.sql_parts["where"]:
-            self.execute_sql += f"WHERE {' AND '.join(self.sql_parts['where'])} "
+            self.execute_sql += f"where {' AND '.join(self.sql_parts['where'])} "
 
     def updateMode(self):
         if self.mode != "update":
@@ -106,14 +105,14 @@ class SqlStateMachine:
             [f"{key} = '{value}'" for key, value in data_dict.items()]
         )
         self.execute_sql = f"UPDATE {self.sql_parts['from']} SET {set_clause}"
-        self.execute_sql += f" WHERE {' AND '.join(self.sql_parts['where'])}"
+        self.execute_sql += f" where {' AND '.join(self.sql_parts['where'])}"
 
     def finalize(self):
         self.execute_sql = ""
 
         self.selectMode() and self.postMode() and self.updateMode() and self.deleteMode()
 
-        self.current_state = "FINAL"
+        self.current_state = "final"
         self.sql_parts = {
             "select": [],
             "from": self.sql_parts["from"],
@@ -130,47 +129,49 @@ T = TypeVar("T", bound="LaModel")
 
 class LaModel(metaclass=ABCMeta):
     def __init_subclass__(self) -> None:
-        self.state_machine.process_keyword("FROM", self.tablename)
+        self.state_machine.process_keyword("from", self.tablename)
         self.getValue = dict().get
 
     excuteSql = ""
     state_machine = SqlStateMachine()
     cacheSql = {}
     @classmethod
-    def dynamic(
+    async def dynamic(
         cls: type[T], dynamicSql: str, params: str | list = None
     ):
         '''
         params是sql参数值
         '''
-        # if cls.cacheSql[dynamicSql]:
-        #     cls.exec(sql = cls.cacheSql[dynamicSql],params=params)
-        #     return
+        if cls.cacheSql.get(dynamicSql):
+            return await PPA.exec(sql=cls.cacheSql.get(dynamicSql),params=params,execOne=True)  
         cls.cacheSql[dynamicSql] = cls.state_machine.execute_sql    
-        # 翻译dynamicSql
+       
+        if params and not isinstance(params, (list, tuple)):
+            params = [params]
+         # 翻译dynamicSql    
         cls.parseMethodToSql(dynamicSql)
-        cls.exec(params=params)
+        res = await cls.exec(params=params,fetch_one=True)    
+        return res
     @classmethod
-    @lru_cache()
     def parseMethodToSql(cls: type[T],dynamicSql: str):
         # 使用正则表达式找到所有大写字母的位置并进行分割
         parts = re.split("(?=[A-Z])", dynamicSql)
         # 去除可能出现的空字符串（例如：首位是大写字母的情况）
         parts = [part for part in parts if part]
-        cls.state_machine.current_state = parts[0]
+        cls.state_machine.mode = parts[0]
         for i in parts[1:]:
             if i == "In" and len(cls.state_machine.sql_parts["where"]) > 0:
                 cls.state_machine.process_keyword(
-                    cls.state_machine.current_state, f'{cls.state_machine.sql_parts["where"].pop()} in ({"%s"})'
+                    cls.state_machine.current_state, f'{cls.state_machine.sql_parts["where"].pop()} in (?)'
                 )
                 continue
             if i == "By" or i == "And":
                 cls.state_machine.current_state = "where"
                 continue
-            cls.state_machine.process_keyword(cls.state_machine.current_state, f'{i}={"%s"}')
+            cls.state_machine.process_keyword(cls.state_machine.current_state, f'{i}=?')
     @classmethod
     def select(cls: type[T], params: str = "*") -> type[T]:
-        cls.state_machine.process_keyword("SELECT", params)
+        cls.state_machine.process_keyword("select", params)
         return cls
 
     @classmethod
@@ -185,7 +186,7 @@ class LaModel(metaclass=ABCMeta):
         Config.where(name='admin')
         """
         for key, value in kwargs.items():
-            cls.state_machine.process_keyword("WHERE", f"{key}={value}")
+            cls.state_machine.process_keyword("where", f"{key}={value}")
         return cls
 
     @classmethod
@@ -202,7 +203,7 @@ class LaModel(metaclass=ABCMeta):
 
         # 使用zip将键和值配对，然后通过列表推导式生成条件子句并调用process_keyword方法
         for key, value in zip(*[iter(args)] * 2):
-            cls.state_machine.process_keyword("WHERE", f"{key}={value}")
+            cls.state_machine.process_keyword("where", f"{key}={value}")
         return cls
 
     @classmethod
@@ -219,7 +220,7 @@ class LaModel(metaclass=ABCMeta):
     async def get(cls: type[T], primaryId: int | str = None) -> T:
         cls.state_machine.mode = "select"
         if primaryId:
-            cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
+            cls.state_machine.process_keyword("where", f"{cls.primaryKey}={primaryId}")
         res = await cls.exec(True)
         if res:
             for key, _ in cls.dictMap.items():
@@ -230,7 +231,7 @@ class LaModel(metaclass=ABCMeta):
     async def getList(cls: type[T], primaryIdList: list[int] | list[str] = None) -> T:
         if primaryIdList:
             cls.state_machine.process_keyword(
-                "WHERE", f"{cls.primaryKey} in {primaryIdList}"
+                "where", f"{cls.primaryKey} in {primaryIdList}"
             )
         return await cls.exec()
 
@@ -256,7 +257,7 @@ class LaModel(metaclass=ABCMeta):
 
         for item in data:
             cls.state_machine.process_keyword(
-                "WHERE", f"{cls.primaryKey}={getattr(item, cls.primaryKey)}"
+                "where", f"{cls.primaryKey}={getattr(item, cls.primaryKey)}"
             )
             for key, _ in cls.dictMap.items():
                 if key == cls.primaryKey:
@@ -278,12 +279,12 @@ class LaModel(metaclass=ABCMeta):
         cls.state_machine.mode = "delete"
 
         if primaryId:
-            cls.state_machine.process_keyword("WHERE", f"{cls.primaryKey}={primaryId}")
+            cls.state_machine.process_keyword("where", f"{cls.primaryKey}={primaryId}")
         await cls.exec(True)
         return cls
 
     @classmethod
-    async def exec(cls, fetch_one: bool = False,params = {}):
+    async def exec(cls, fetch_one: bool = False,params={}):
         """
         执行sql fetch_one true是返回单条数据,fetch_many是返回列表数据
         """
