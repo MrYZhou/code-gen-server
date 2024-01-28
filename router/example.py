@@ -105,6 +105,14 @@ async def updateone():
     config1.name = 123
     res = await Config1.where(name=22).update(config1)
     return {"result": res}
+@router.put("/config2/updatedy")
+async def updatedy():
+    config1 = Config1()
+    config1.id = 1
+    config1.name = 123
+    res = await config1.dynamic('updateByNameSetNameAndAge',1)
+    return {"result": res}
+
 
 
 @router.get("/config")
