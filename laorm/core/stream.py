@@ -1,7 +1,8 @@
 import inspect
+import re
 from typing import TypeVar
 from abc import ABCMeta
-from laorm.core.PPA import PPA
+import PPA
 
 
 class SqlStateMachine:
@@ -139,8 +140,25 @@ class LaModel(metaclass=ABCMeta):
         cls: type[T], dynamicSql: str, params: dict[str, any] | tuple | list = None
     ):
         # 翻译dynamicSql
-        print("get ---", dynamicSql, params)
-
+        cls.parseMethodToSql(dynamicSql)
+        cls.exec(params=params)
+    @classmethod
+    def parseMethodToSql(cls: type[T],dynamicSql: str):
+        # 使用正则表达式找到所有大写字母的位置并进行分割
+        parts = re.split("(?=[A-Z])", dynamicSql)
+        # 去除可能出现的空字符串（例如：首位是大写字母的情况）
+        parts = [part for part in parts if part]
+        cls.state_machine.current_state = parts[0]
+        for i in parts[1:]:
+            if i == "In" and len(cls.state_machine.sql_parts["where"]) > 0:
+                cls.state_machine.process_keyword(
+                    cls.state_machine.current_state, f'{cls.state_machine.sql_parts["where"].pop()} in ({"%s"})'
+                )
+                continue
+            if i == "By" or i == "And":
+                cls.state_machine.current_state = "where"
+                continue
+            cls.state_machine.process_keyword(cls.state_machine.current_state, f'{i}={"%s"}')
     @classmethod
     def select(cls: type[T], params: str = "*") -> type[T]:
         cls.state_machine.process_keyword("SELECT", params)
@@ -256,14 +274,14 @@ class LaModel(metaclass=ABCMeta):
         return cls
 
     @classmethod
-    async def exec(cls, fetch_one: bool = False):
+    async def exec(cls, fetch_one: bool = False,params = {}):
         """
         执行sql fetch_one true是返回单条数据,fetch_many是返回列表数据
         """
         sql = cls.state_machine.finalize()
         if PPA.showMode:
             print(sql)
-        res = await PPA.exec(sql, {}, fetch_one)
+        res = await PPA.exec(sql, params, fetch_one)
         return res
 
 
