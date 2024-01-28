@@ -55,6 +55,10 @@ class Config1:
     id: str = FieldDescriptor(primary=True)
     name: str = FieldDescriptor()
 
+@router.get("/config2/getdy")
+async def get_config2():
+    res = await Config1.dynamic('selectById',[1])
+    return {"result": res}
 
 @router.get("/config2/get")
 async def get_config2():
