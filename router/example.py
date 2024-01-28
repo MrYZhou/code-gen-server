@@ -57,9 +57,8 @@ class Config1:
 
 @router.get("/config2/getdy")
 async def getdy():
-    # res = await PPA.exec('select * from config where Id=?',[2])
-    res = await Config1.dynamic('selectById',2)
-    res = await Config1.dynamic('selectById',3)
+    res = await Config1.dynamic('selectByIdAndName',[2,456])
+    # res = await Config1.dynamic('selectById',3)
     return {"result": res}
 
 @router.get("/config2/get")
