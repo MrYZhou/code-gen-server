@@ -1,8 +1,9 @@
+from functools import lru_cache
 import inspect
 import re
 from typing import TypeVar
 from abc import ABCMeta
-import PPA
+from . import PPA
 
 
 class SqlStateMachine:
@@ -134,15 +135,23 @@ class LaModel(metaclass=ABCMeta):
 
     excuteSql = ""
     state_machine = SqlStateMachine()
-
+    cacheSql = {}
     @classmethod
     def dynamic(
-        cls: type[T], dynamicSql: str, params: dict[str, any] | tuple | list = None
+        cls: type[T], dynamicSql: str, params: str | list = None
     ):
+        '''
+        params是sql参数值
+        '''
+        # if cls.cacheSql[dynamicSql]:
+        #     cls.exec(sql = cls.cacheSql[dynamicSql],params=params)
+        #     return
+        cls.cacheSql[dynamicSql] = cls.state_machine.execute_sql    
         # 翻译dynamicSql
         cls.parseMethodToSql(dynamicSql)
         cls.exec(params=params)
     @classmethod
+    @lru_cache()
     def parseMethodToSql(cls: type[T],dynamicSql: str):
         # 使用正则表达式找到所有大写字母的位置并进行分割
         parts = re.split("(?=[A-Z])", dynamicSql)
