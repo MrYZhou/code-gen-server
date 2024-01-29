@@ -56,6 +56,8 @@ class Config1:
     name: str = FieldDescriptor()
     @sql
     def selectByName(name:str)->list['Config1']:pass
+    # @sql
+    # def selectByName(name:str)->'Config1':pass
 
 @router.get("/config2/getdy")
 async def getdy():
