@@ -54,20 +54,27 @@ Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
 class Config1:
     id: str = FieldDescriptor(primary=True)
     name: str = FieldDescriptor()
+
     @sql
-    def selectByName(name:str)->list['Config1']:pass
+    def selectByName(name: str) -> list["Config1"]:
+        pass
+
     # @sql
     # def selectByName(name:str)->'Config1':pass
 
+
 @router.get("/config2/getdy")
 async def getdy():
-    res = await Config1.dynamic('selectByIdAndName',[2,456])
+    res = await Config1.dynamic("selectByIdAndName", [2, 456])
     # res = await Config1.dynamic('selectById',3)
     return {"result": res}
+
+
 @router.get("/config2/getdy2")
 async def getdy2():
     res = await Config1.selectByName(22)
     return {"result": res}
+
 
 @router.get("/config2/get")
 async def get_config2():
@@ -85,7 +92,7 @@ async def addone():
     config12 = Config1()
     config12.id = 2
     config12.name = 456
-    configlist = [ config12]
+    configlist = [config12]
     await Config1.post(config1)
     await Config1.post(configlist)
     return {"result": "success"}
@@ -96,13 +103,15 @@ async def deleteone():
     await Config1.delete(1)
     # res = await Config1.where(name=22).delete()
     return {"result": "success"}
+
+
 @router.delete("/config2/deletedy")
 async def deletedy():
     config1 = Config1()
     config1.id = 1
     config1.name = 123
     await Config1.post(config1)
-    await Config1.dynamic('deleteById',1)
+    await Config1.dynamic("deleteById", 1)
     return {"result": "success"}
 
 
