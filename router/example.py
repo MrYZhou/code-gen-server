@@ -12,7 +12,7 @@ from fastapi.responses import (
 # from sqlalchemy import table
 
 from walrus import Database as RedisDatabase
-from laorm.core.stream import FieldDescriptor, table
+from laorm.core.stream import FieldDescriptor, sql, table
 
 from laorm.core import PPA
 
@@ -54,11 +54,17 @@ Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
 class Config1:
     id: str = FieldDescriptor(primary=True)
     name: str = FieldDescriptor()
+    @sql
+    def selectByName(name:str)->list['Config1']:pass
 
 @router.get("/config2/getdy")
 async def getdy():
     res = await Config1.dynamic('selectByIdAndName',[2,456])
     # res = await Config1.dynamic('selectById',3)
+    return {"result": res}
+@router.get("/config2/getdy2")
+async def getdy2():
+    res = await Config1.selectByName(22)
     return {"result": res}
 
 @router.get("/config2/get")
