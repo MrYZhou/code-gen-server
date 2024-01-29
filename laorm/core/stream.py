@@ -143,14 +143,13 @@ class LaModel(metaclass=ABCMeta):
         '''
         try:
             if cls.cacheSql.get(dynamicSql):
-                return await PPA.exec(sql=cls.cacheSql.get(dynamicSql),params=params,execOne=True)  
-       
+                return await PPA.exec(sql=cls.cacheSql.get(dynamicSql),params=params,execOne=True)         
             if params and not isinstance(params, (list, tuple)):
                 params = [params]
             # 翻译dynamicSql    
             cls.parseMethodToSql(dynamicSql)
+            res = await cls.exec(params=params,fetch_one=True)
             cls.cacheSql[dynamicSql] = cls.state_machine.execute_sql  
-            res = await cls.exec(params=params,fetch_one=True)  
         except Exception as e:
             print(e)
             cls.cacheSql[dynamicSql] = ''
@@ -332,7 +331,7 @@ def sql(func):
         params = [str(arg) for arg in args]
         if cls.cacheSql.get(method_cache_name):
              return PPA.exec(sql=cls.cacheSql.get(method_cache_name),params=params,execOne=True)  
-        cls.cacheSql[method_cache_name] = cls.state_machine.execute_sql
+       
          # 获取方法名和参数
         method_name = func.__name__
         if not method_name.startswith('select'):
@@ -346,7 +345,9 @@ def sql(func):
             fetch_one = False
 
         LaModel.parseMethodToSql(method_name)
-        return  LaModel.exec(params=params,fetch_one=fetch_one)   
+        res=LaModel.exec(params=params,fetch_one=fetch_one)
+        cls.cacheSql[method_cache_name] = cls.state_machine.execute_sql
+        return res   
 
     # 转换为类方法并返回
     return classmethod(wrapper)
