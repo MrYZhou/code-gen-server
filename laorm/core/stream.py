@@ -130,7 +130,6 @@ T = TypeVar("T", bound="LaModel")
 class LaModel(metaclass=ABCMeta):
     def __init_subclass__(self) -> None:
         self.state_machine.process_keyword("from", self.tablename)
-        self.getValue = dict().get
 
     excuteSql = ""
     state_machine = SqlStateMachine()
@@ -142,15 +141,19 @@ class LaModel(metaclass=ABCMeta):
         '''
         params是sql参数值
         '''
-        if cls.cacheSql.get(dynamicSql):
-            return await PPA.exec(sql=cls.cacheSql.get(dynamicSql),params=params,execOne=True)  
-        cls.cacheSql[dynamicSql] = cls.state_machine.execute_sql    
+        try:
+            if cls.cacheSql.get(dynamicSql):
+                return await PPA.exec(sql=cls.cacheSql.get(dynamicSql),params=params,execOne=True)  
        
-        if params and not isinstance(params, (list, tuple)):
-            params = [params]
-        # 翻译dynamicSql    
-        cls.parseMethodToSql(dynamicSql)
-        res = await cls.exec(params=params,fetch_one=True)    
+            if params and not isinstance(params, (list, tuple)):
+                params = [params]
+            # 翻译dynamicSql    
+            cls.parseMethodToSql(dynamicSql)
+            cls.cacheSql[dynamicSql] = cls.state_machine.execute_sql  
+            res = await cls.exec(params=params,fetch_one=True)  
+        except Exception as e:
+            print(e)
+            cls.cacheSql[dynamicSql] = ''
         return res
     @classmethod
     def parseMethodToSql(cls: type[T],dynamicSql: str):
@@ -332,18 +335,18 @@ def sql(func):
         cls.cacheSql[method_cache_name] = cls.state_machine.execute_sql
          # 获取方法名和参数
         method_name = func.__name__
-        # 翻译方法成SQL语句
         if not method_name.startswith('select'):
             raise ValueError(f"Unsupported SQL operation for method: {method_name},because only support select methods")
         
-        # sig = inspect.signature(func)
-        # return_annotation = sig.return_annotation
-        # 检查并处理返回类型
-        # print(f"Method '{method_name}' has a return type annotation of: {return_annotation}")
+        # 根据return_annotation返回对应类型的值,比如列表处理为列表,单个处理单个对象
+        sig = inspect.signature(func)
+        return_annotation = sig.return_annotation
+        fetch_one = True
+        if callable(return_annotation):
+            fetch_one = False
 
-        # 这里模拟根据return_annotation返回对应类型的值,比如列表处理为列表,单个处理单个对象
         LaModel.parseMethodToSql(method_name)
-        return  LaModel.exec(params=params,fetch_one=True)   
+        return  LaModel.exec(params=params,fetch_one=fetch_one)   
 
     # 转换为类方法并返回
     return classmethod(wrapper)
