@@ -12,9 +12,8 @@ from fastapi.responses import (
 # from sqlalchemy import table
 
 from walrus import Database as RedisDatabase
-from laorm.core.stream import FieldDescriptor, sql, table
-
-from laorm.core import PPA
+from laorm.stream import FieldDescriptor, sql, table
+from laorm.PPA import PPA
 
 
 from server.generate.dao import Config

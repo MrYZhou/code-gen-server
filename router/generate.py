@@ -6,7 +6,7 @@ from fastapi import APIRouter, Body, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
 from nanoid import generate
 from sqlmodel import Session, select
-from laorm.core.PPA import PPA
+from laorm.PPA import PPA
 
 from server.connect.dao import DataBase, getTable, dyConnect
 from server.generate.dao import Config
