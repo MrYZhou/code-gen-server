@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 
-
 class PPAFastAPI(PPA):
     _instance = None
 
