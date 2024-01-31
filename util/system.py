@@ -9,7 +9,7 @@ from walrus import RateLimitException
 
 from fastapi.responses import JSONResponse
 
-from laorm.fastapi.PPAFastAPI import PPAFastAPI
+from util.PPAFastAPI import PPAFastAPI
 
 
 # 路由注册
