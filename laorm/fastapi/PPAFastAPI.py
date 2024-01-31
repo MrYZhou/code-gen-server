@@ -1,4 +1,3 @@
-from laorm.core.PPA import PPA
 from fastapi import FastAPI
 
 
