@@ -5,6 +5,7 @@ aiofiles
 sqlmodel
 nanoid
 # pymysql
+laorm
 aiomysql
 walrus
 cryptography
