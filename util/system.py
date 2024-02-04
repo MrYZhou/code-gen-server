@@ -2,7 +2,7 @@ import importlib
 import os
 import sys
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from walrus import RateLimitException
@@ -10,6 +10,7 @@ from walrus import RateLimitException
 from fastapi.responses import JSONResponse
 
 from util.PPAFastAPI import PPAFastAPI
+from util.exception import CustomException
 
 
 # 路由注册
@@ -49,6 +50,14 @@ def initHttp(app: FastAPI):
     origins = [
         "http://localhost",
     ]
+    # 限流处理器
+    @app.exception_handler(RateLimitException)
+    async def handle(request: Request, exc: RateLimitException):
+        msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
+        return JSONResponse(status_code=412, content=msg)
+    
+   
+    
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
@@ -56,12 +65,6 @@ def initHttp(app: FastAPI):
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    # 限流处理器
-    @app.exception_handler(RateLimitException)
-    async def handle(request: Request, exc: RateLimitException):
-        msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
-        return JSONResponse(status_code=412, content=msg)
 
 
 def initDataBase(app):

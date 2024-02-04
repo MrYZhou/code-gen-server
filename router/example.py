@@ -22,6 +22,7 @@ from util.base import Common, jinjaEngine
 
 
 from sqlmodel import create_engine, Session, select
+from util.exception import CustomException
 
 from util.response import AppResult
 
