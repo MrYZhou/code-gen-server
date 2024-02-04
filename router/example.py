@@ -23,6 +23,8 @@ from util.base import Common, jinjaEngine
 
 from sqlmodel import create_engine, Session, select
 
+from util.response import AppResult
+
 
 router = APIRouter(
     prefix="/example",
@@ -66,7 +68,7 @@ class Config1:
 async def getdy():
     res = await Config1.dynamic("selectByIdAndName", [2, 456])
     # res = await Config1.dynamic('selectById',3)
-    return {"result": res}
+    return AppResult.success(res)
 
 
 @router.get("/config2/getdy2")
