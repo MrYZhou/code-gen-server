@@ -22,7 +22,7 @@ from util.base import Common, jinjaEngine
 
 
 from sqlmodel import create_engine, Session, select
-from util.exception import CustomException
+from util.exception import exception
 
 from util.response import AppResult
 
@@ -79,6 +79,7 @@ async def getdy2():
 
 
 @router.get("/config2/get")
+@exception
 async def get_config2():
     res = await Config1.where(name=22).get()
     return {"result": res}
