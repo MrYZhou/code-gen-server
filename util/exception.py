@@ -1,6 +1,21 @@
 
+import functools
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
+
+from util.response import AppResult
+
+
+def exception(f):
+    async def wrapper(*args, **kwargs):
+        try:
+            return await f(*args, **kwargs)
+        except CustomException:
+            return AppResult.fail("遇到错误")
+        except Exception as e:
+            return AppResult.fail("遇到错误:" + e.__doc__)
+
+    return functools.update_wrapper(wrapper, f)
 
 
 class CustomException(Exception):
