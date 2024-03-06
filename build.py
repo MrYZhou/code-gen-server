@@ -10,7 +10,7 @@ params = [
     "--hidden-import=sqlmodel",
     "--hidden-import=pysqlite2",
     "--hidden-import=MySQLdb",
-    "--hidden-import=laorm.core.stream",
+    "--hidden-import=laorm",
     "--hidden-import=fastapi.templating",
     # 额外目录纳入打包
     "--add-data",

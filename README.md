@@ -45,4 +45,10 @@ docker build -t fastweb .
 docker run -d -p 8000:8000 fastweb
 ```
 
+打包exe可执行文件
+```bash
+python -m build.py
+```
+
+
 
