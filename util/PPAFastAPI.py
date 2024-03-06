@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from laorm import PPA
+
+
 class PPAFastAPI(PPA):
     _instance = None
 
