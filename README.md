@@ -3,11 +3,6 @@
 fastapi document
 [https://fastapi.tiangolo.com/zh/tutorial/first-steps/](https://fastapi.tiangolo.com/zh/tutorial/first-steps/)
 
-
-orm document
-[https://sqlmodel.tiangolo.com/tutorial/](https://sqlmodel.tiangolo.com/tutorial/)
-
-
 jinja2 document
 [http://docs.jinkan.org/docs/jinja2/index.html](http://docs.jinkan.org/docs/jinja2/index.html)
 
@@ -38,8 +33,6 @@ DB_NAME = "study"
 DB_DRIVER = "mysql+pymysql"
 SQLMODEL_ECHO = True
 ```
-
-
 
 ## build app
 ```bash

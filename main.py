@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
 from util.response import AppResult
 
 
