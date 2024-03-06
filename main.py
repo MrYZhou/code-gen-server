@@ -1,17 +1,18 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from util.response import AppResult
 
 
-from util.system import Init
+from util.system import Env
 
 
 app = FastAPI()
-Init.do(app)
+Env.init(app)
 
 
 @app.get("/")
 def root():
-    return RedirectResponse("https://www.baidu.com")
+    return AppResult.success("code-gen-server")
 
 
 if __name__ == "__main__":
@@ -19,9 +20,7 @@ if __name__ == "__main__":
     import os
 
     # 输出无日志
-    log_path = os.path.join(
-        os.path.expanduser("~"), "code-gen-server", "logfile.log"
-    )  # Get the name of the script
+    log_path = os.path.join(os.path.expanduser("~"), "code-gen-server", "logfile.log")
 
     if not os.path.exists(log_path):
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
@@ -45,5 +44,5 @@ if __name__ == "__main__":
         port=8000,
         reload=False,
         workers=1,
-        # log_config=log_config
+        log_config=log_config,
     )
