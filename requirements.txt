@@ -9,3 +9,4 @@ laorm==1.5.0
 aiomysql
 walrus
 cryptography
+ruff
