@@ -94,3 +94,9 @@ class Env:
         Env.initHttp(app)
         Env.initRouter(app)
         Env.initStaticDir(app)
+
+    def getPath(name: str):
+        path = os.path.join(os.path.expanduser("~"), "code-gen-server", name)
+        if not os.path.exists(path):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+        return path
