@@ -1,8 +1,0 @@
-fastapi
-uvicorn[standard]
-jinja2
-aiofiles
-nanoid
-laorm==1.7.1
-aiomysql
-walrus
