@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+jinja2
+laorm==1.7.1
+aiomysql
+walrus
+# aiofiles
+# nanoid
