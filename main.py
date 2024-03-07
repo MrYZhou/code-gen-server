@@ -40,5 +40,5 @@ if __name__ == "__main__":
         port=8000,
         reload=False,
         workers=1,
-        log_config=log_config,
+        # log_config=log_config,
     )

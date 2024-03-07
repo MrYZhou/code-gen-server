@@ -7,45 +7,23 @@ jinja2 document
 [http://docs.jinkan.org/docs/jinja2/index.html](http://docs.jinkan.org/docs/jinja2/index.html)
 
 ## step:
-1: need build a venv folder
+1: install dependencies
 ```bash
-python -m venv .venv
+poetry update
 ```
-2.start venv
+2.start project
 ```bash
-.\.venv\Scripts\activate 
-```
-3.install pacakge
-```bash
-pip install -r requirements.txt
-```
-4.start app
-```bash
-uvicorn main:app --reload --port=8000
-```
-5.add a dotenv file (optional)
-```python
-DB_HOST = "192.168.20.43"
-DB_PORT = "3306"
-DB_USER = "root"
-DB_PASSWORD = "123456"
-DB_NAME = "study"
-DB_DRIVER = "mysql+pymysql"
-SQLMODEL_ECHO = True
+f5 or run main.py
 ```
 
 ## build app
-```bash
-docker-compose up -d
-```
 if you want build a docker image,you can use dockerfile.
 such as
 ```bash
 docker build -t fastweb .
 docker run -d -p 8000:8000 fastweb
 ```
-
-打包exe可执行文件
+or build executable file
 ```bash
 python -m build.py
 ```
