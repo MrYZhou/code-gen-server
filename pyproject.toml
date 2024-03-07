@@ -14,9 +14,9 @@ uvicorn = {extras = ["standard"], version = "^0.27.1"}  # 或者使用最新稳�
 jinja2 = "^3.1.2"  # Jinja2模板引擎
 laorm = "^1.7.0"  # ORM库
 aiomysql = "^0.2.0"  # MySQL异步驱动
+walrus = "^0.9.3"  # api请求限速
 # aiofiles = "^23.2.1"  # 异步文件操作库
 # nanoid = "^3.1.33"  # 非常小且安全的ID生成器
-walrus = "^0.9.3"  # api请求限速
 
 [build-system]
 requires = ["poetry-core>=1.8.2"]
