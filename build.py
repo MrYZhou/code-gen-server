@@ -4,7 +4,7 @@ from PyInstaller import __main__ as pyi
 
 params = [
     "-F",  #  是否单文件
-    # '-w', #是否隐藏控制台
+    # '-w', # 是否隐藏控制台-w代表无,默认有
     "--hidden-import=aiomysql",
     "--hidden-import=nanoid",
     "--hidden-import=sqlmodel",
@@ -13,16 +13,14 @@ params = [
     "--hidden-import=laorm",
     "--hidden-import=fastapi.templating",
     # 额外目录纳入打包
-    "--add-data",
-    "util;util",
-    "--add-data",
-    "router;router",
-    "--add-data",
-    "server;server",
-    # 每次打包前清楚build 和 dist目录
-    # "--clean",
+    "--add-data=util;util",
+    "--add-data=router;router",
+    "--add-data=server;server",
+    # 指定输出目录
+    "--distpath=build",
     # 无需用户确认
     "--noconfirm",
+    "-n=codegen",
     "main.py",
 ]
 pyi.run(params)
