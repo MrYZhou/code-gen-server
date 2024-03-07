@@ -2,11 +2,9 @@ fastapi
 uvicorn[standard]
 jinja2
 aiofiles
-sqlmodel
 nanoid
 # pymysql
 laorm==1.6.1
 aiomysql
 walrus
-cryptography
-ruff
+# cryptography
