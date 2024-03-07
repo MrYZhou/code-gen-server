@@ -58,14 +58,14 @@ async def getdy():
 @router.get("/config2/getdy2")
 async def getdy2():
     res:List[Config1] = await Config1.selectByName(22)
-    return {"result": res}
+    return AppResult.success(res)
 
 
 @router.get("/config2/get")
 @exception
 async def get_config2():
     res = await Config1.where(name=22).get()
-    return {"result": res}
+    return AppResult.success(res)
 
 
 @router.post("/config2/add")
@@ -81,14 +81,14 @@ async def addone():
     configlist = [config12]
     await Config1.post(config1)
     await Config1.post(configlist)
-    return {"result": "success"}
+    return AppResult.success()
 
 
 @router.delete("/config2/delete")
 async def deleteone():
     await Config1.delete(1)
     # res = await Config1.where(name=22).delete()
-    return {"result": "success"}
+    return AppResult.success()
 
 
 @router.delete("/config2/deletedy")
@@ -98,7 +98,7 @@ async def deletedy():
     config1.name = 123
     await Config1.post(config1)
     await Config1.dynamic("deleteById", 1)
-    return {"result": "success"}
+    return AppResult.success()
 
 
 @router.put("/config2/update")
@@ -107,7 +107,7 @@ async def updateone():
     config1.id = 1
     config1.name = 123
     res = await Config1.where(name=22).update(config1)
-    return {"result": res}
+    return AppResult.success(res)
 
 
 @router.get("/config")
@@ -129,7 +129,7 @@ async def get_config():
     for i in results:
         print(i[0].get("id"))
     print(f"代码执行时间aio: {execution_time} 秒")
-    return results[0]
+    return AppResult.success(results[0])
 
 
 
