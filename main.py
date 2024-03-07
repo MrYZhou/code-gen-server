@@ -16,16 +16,13 @@ def root():
 
 if __name__ == "__main__":
     import uvicorn
-    import os
 
     # 输出无日志
-    log_path = os.path.join(os.path.expanduser("~"), "code-gen-server", "logfile.log")
+    log_path = Env.getPath("logfile.log")
 
-    if not os.path.exists(log_path):
-        os.makedirs(os.path.dirname(log_path), exist_ok=True)
     log_config = {
         "version": 1,
-        "disable_existing_loggers": True,
+        "disable_existing_loggers": False,
         "handlers": {
             "file_handler": {
                 "class": "logging.FileHandler",

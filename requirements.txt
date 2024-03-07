@@ -3,8 +3,6 @@ uvicorn[standard]
 jinja2
 aiofiles
 nanoid
-# pymysql
-laorm==1.6.1
+laorm==1.7.0
 aiomysql
 walrus
-# cryptography
