@@ -18,7 +18,7 @@ walrus = "^0.9.3"  # api请求限速
 # aiofiles = "^23.2.1"  # 异步文件操作库
 # nanoid = "^3.1.33"  # 非常小且安全的ID生成器
 pyinstaller = {version = "^6.4.0", python = ">=3.10,<3.13"}
-
+cryptography = "^42.0.5" # aiomysql 密码认证依赖
 [build-system]
 requires = ["poetry-core>=1.8.2"]
 build-backend = "poetry.core.masonry.api"
