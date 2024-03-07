@@ -48,23 +48,25 @@ class Config1:
     # def selectByName(name:str)->'Config1':pass
 
 
+# 读取自定义方法的返回类型
 @router.get("/config2/getdy")
+async def getdy2():
+    res: List[Config1] = await Config1.selectByName(22)
+    return AppResult.success(res)
+
+# dynamic 都是查询数组回来
+@router.get("/config2/getdy2")
 async def getdy():
     res = await Config1.dynamic("selectByIdAndName", [2, 456])
-    # res = await Config1.dynamic('selectById',3)
+    # res = await Config1.dynamic('selectByName',123)
     return AppResult.success(res)
 
-
-@router.get("/config2/getdy2")
-async def getdy2():
-    res:List[Config1] = await Config1.selectByName(22)
-    return AppResult.success(res)
-
-
+# 默认get是查询对象, getList自动为数组
 @router.get("/config2/get")
 @exception
 async def get_config2():
     res = await Config1.where(name=22).get()
+    # res = await Config1.where(name=22).getList()
     return AppResult.success(res)
 
 
