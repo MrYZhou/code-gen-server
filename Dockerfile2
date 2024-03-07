@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+# 设置工作目录为/app
+WORKDIR /app
+
+# 将当前目录的内容复制到容器的/app目录下
+COPY . /app
+
+# 使用Poetry安装依赖项
+RUN pip install --upgrade poetry && poetry config virtualenvs.create false && \
+poetry config repositories.pypi https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/ && \
+poetry install --no-dev
+
+# 声明运行时环境变量
+ENV PYTHONPATH = /app
+
+# 指定启动命令
+CMD ["poetry", "run", "uvicorn", "main:app","--reload", "--host", "0.0.0.0", "--port", "8000"]
+
+## 网络监听端口
+EXPOSE 8000
