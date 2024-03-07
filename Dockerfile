@@ -14,6 +14,4 @@ ENV PYTHONPATH = /app
 
 CMD ["uvicorn", "main:app","--reload", "--host", "0.0.0.0", "--port", "8000"]
 
-## 网络监听端口
-
 EXPOSE 8000
