@@ -1,9 +1,8 @@
 import asyncio
 import os
 import time
-from typing import Sequence
+from typing import List
 from fastapi import APIRouter, Request, Header, Body
-from fastapi import Depends
 from fastapi.responses import (
     RedirectResponse,
     FileResponse,
@@ -16,12 +15,10 @@ from laorm.stream import FieldDescriptor, sql, table
 from laorm.PPA import PPA
 
 
-from server.generate.dao import Config
 
 from util.base import Common, jinjaEngine
 
 
-from sqlmodel import create_engine, Session, select
 from util.exception import exception
 
 from util.response import AppResult
@@ -38,18 +35,7 @@ db = RedisDatabase(host="localhost", port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
 
-@router.get("/dynamicConnect")
-async def dynamicConnect():
-    sql = """SELECT TB.TABLE_NAME as dbName,TB.TABLE_COMMENT as tableComment, COL.COLUMN_NAME as columnName,COL.COLUMN_COMMENT as columnComment,COL.DATA_TYPE   as dataType
-FROM INFORMATION_SCHEMA.TABLES TB,INFORMATION_SCHEMA.COLUMNS COL
-Where TB.TABLE_SCHEMA ='study' AND TB.TABLE_NAME = COL.TABLE_NAME"""
-    DB_URL = "mysql+pymysql://root:root@localhost:3306/study?charset=utf8mb4"
-    engine = create_engine(DB_URL)
-    with Session(engine) as session:
-        # list:List[Table] = session.execute(sql).fetchall()
-        # list:List[Table]  = session.exec(select(text(sql))).all()
-        pass
-    return []
+
 
 
 @table("config")
@@ -74,7 +60,7 @@ async def getdy():
 
 @router.get("/config2/getdy2")
 async def getdy2():
-    res = await Config1.selectByName(22)
+    res:List[Config1] = await Config1.selectByName(22)
     return {"result": res}
 
 
@@ -149,19 +135,7 @@ async def get_config():
     return results[0]
 
 
-@router.get("/dependSession")
-async def dependSession(session: Session = Depends(Common.get_session)):
-    print(id(session))
-    config: Sequence[Config] = session.exec(select(Config)).all()
-    return config
 
-
-# 预览图片
-@router.get("/preview")
-async def preview(data: Config = Body(Config)):
-    url = os.path.join(os.getcwd(), "static", "1.png")
-    file_like = open(url, mode="rb")
-    return StreamingResponse(file_like, media_type="image/jpg")
 
 
 # 获取路径参数

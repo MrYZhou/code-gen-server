@@ -1,4 +1,3 @@
-from functools import lru_cache
 import os
 import random
 import re
@@ -6,7 +5,6 @@ import string
 import zipfile
 
 from fastapi.templating import Jinja2Templates
-from sqlmodel import Session
 
 from walrus import Database as RedisDatabase
 
@@ -17,15 +15,7 @@ jinjaEngine = Jinja2Templates("template")
 
 
 class Common:
-    @staticmethod
-    # 缓存lru注解
-    @lru_cache(maxsize=1024)
-    def get_session():
-        """
-        Get a database session.
-        """
-        with Session(engine) as session:
-            return session
+    
 
     @staticmethod
     def rate():

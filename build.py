@@ -7,7 +7,6 @@ params = [
     # '-w', # 是否隐藏控制台-w代表无,默认有
     "--hidden-import=aiomysql",
     "--hidden-import=nanoid",
-    "--hidden-import=sqlmodel",
     "--hidden-import=pysqlite2",
     "--hidden-import=MySQLdb",
     "--hidden-import=laorm",
