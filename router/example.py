@@ -12,7 +12,6 @@ from laorm.stream import FieldDescriptor, sql, table
 from laorm.PPA import PPA
 
 
-
 from util.base import Common, jinjaEngine
 
 
@@ -30,9 +29,6 @@ router = APIRouter(
 
 db = RedisDatabase(host="localhost", port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
-
-
-
 
 
 @table("config")
@@ -54,6 +50,7 @@ async def getdy2():
     res: List[Config1] = await Config1.selectByName(22)
     return AppResult.success(res)
 
+
 # dynamic 都是查询数组回来
 @router.get("/config2/getdy2")
 async def getdy():
@@ -61,7 +58,8 @@ async def getdy():
     # res = await Config1.dynamic('selectByName',123)
     return AppResult.success(res)
 
-# 默认get是查询对象, getList自动为数组
+
+# 默认get是查询首个对象, getList自动为数组
 @router.get("/config2/get")
 @exception
 async def get_config2():
@@ -132,9 +130,6 @@ async def get_config():
         print(i[0].get("id"))
     print(f"代码执行时间aio: {execution_time} 秒")
     return AppResult.success(results[0])
-
-
-
 
 
 # 获取路径参数
