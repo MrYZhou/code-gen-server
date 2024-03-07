@@ -65,30 +65,3 @@ class Common:
         return True
 
 
-# 通用常量
-mapKey = {
-    "java": {
-        "list": [
-            "Info.java",
-            "Query.java",
-            "Controller.java",
-            "Entity.java",
-            "Model.xml",
-            "Mapper.java",
-            "Service.java",
-            "ServiceImpl.java",
-        ]
-    },
-    "mobile": {
-        "list": [
-            "/index.vue",
-            "/form.vue",
-        ]
-    },
-    "web": {
-        "list": [
-            "/index.vue",
-            "/form.vue",
-        ]
-    },
-}

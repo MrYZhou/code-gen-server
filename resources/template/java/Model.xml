@@ -1,8 +1,0 @@
-{% set modelName = config.modelName -%}
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="jnpf.base.mapper.{{modelName}}Mapper">
-    <select id="getList" resultType="jnpf.base.entity.{{ modelName }}Entity">
-        select * from {{config.tableName}}
-    </select>
-</mapper>
