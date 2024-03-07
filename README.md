@@ -11,7 +11,11 @@ jinja2 document
 ```bash
 poetry update
 ```
-2.start project
+2.Prepare Redis and listen on port 6379.
+
+3.Prepare the MySQL database and load/execute the SQL statements in the init.sql file located in the current directory.
+
+4.start project
 ```bash
 f5 or run main.py
 ```
