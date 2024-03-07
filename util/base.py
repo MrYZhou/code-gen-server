@@ -6,23 +6,12 @@ import zipfile
 
 from fastapi.templating import Jinja2Templates
 
-from walrus import Database as RedisDatabase
-
-engine = None
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
 
 
 class Common:
-    
-
-    @staticmethod
-    def rate():
-        db = RedisDatabase(host="localhost", port=6379)
-        rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
-        return rate
-
     @staticmethod
     def tocamel(name: str) -> str:
         """下划线转驼峰(小驼峰)"""
