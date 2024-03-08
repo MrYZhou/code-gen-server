@@ -5,13 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Code Gen",
-      "type": "debugpy",
+      "name": "Code Gen", // 调试器名称
+      "type": "debugpy", // 使用调试器
       "request": "launch",
-      "module": "uvicorn",
+      "module": "uvicorn", 
       "args": ["main:app", "--reload"],
-      "jinja": true,
-      "justMyCode": false
+      "jinja": true, // 模板引擎
+      "justMyCode": false, // 可调试源码代码
+      "env": {
+        "PYDEVD_DISABLE_FILE_VALIDATION": "1" // 冻结模块不检测
+      },
     }
   ]
 }
