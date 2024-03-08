@@ -99,5 +99,5 @@ class Env:
     def getPath(*path):
         path = os.path.join(os.path.expanduser("~"), "code-gen-server", *path)
         if not os.path.exists(path):
-            os.makedirs(os.path.dirname(path), exist_ok=True)
+            os.makedirs(os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False)
         return path
