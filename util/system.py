@@ -75,18 +75,7 @@ class Env:
         app.mount("/static", StaticFiles(directory=path), name="static")
 
     def initEnv():
-        # if not os.path.exists(".env"):
-        #     with open(".env", "w") as f:
-        #         f.write("DB_HOST=127.0.0.1\n")
-        #         f.write("DB_PORT=3306\n")
-        #         f.write("DB_USER=root\n")
-        #         f.write("DB_PASSWORD=root\n")
-        #         f.write("DB_NAME=study\n")
-        #         f.write("DB_DRIVER=mysql+pymysql\n")
-        #         f.write("SQLMODEL_ECHO=False\n")
         Env.getPath("resources")
-        # if not os.path.exists("resources/static"):
-        #     os.makedirs("resources/static")
 
     @staticmethod
     def init(app: FastAPI):
