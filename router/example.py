@@ -64,7 +64,7 @@ async def getdy():
 @exception
 async def get_config2():
     res = await Config1.where(name=22).get()
-    # res = await Config1.where(name=22).getList()
+    # res = await Config1().where(name=22).getList()
     return AppResult.success(res)
 
 
