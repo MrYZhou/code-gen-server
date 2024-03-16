@@ -43,7 +43,10 @@ class Config1:
     # @sql
     # def selectByName(name:str)->'Config1':pass
 
-
+@table()
+class Users:
+    id: str = FieldDescriptor(primary=True)
+    username: str = FieldDescriptor()
 # 读取自定义方法的返回类型
 @router.get("/config2/getdy")
 async def getdy2():
@@ -64,6 +67,7 @@ async def getdy():
 @exception
 async def get_config2():
     res = await Config1.where(name=22).get()
+    # res = await Users.get(407)
     # res = await Config1().where(name=22).getList()
     return AppResult.success(res)
 
