@@ -29,7 +29,7 @@ docker run -d -p 8000:8000 fastweb
 ```
 or build executable file
 ```bash
-python -m build.py
+python  build.py
 ```
 
 
