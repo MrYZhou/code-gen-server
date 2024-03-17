@@ -37,7 +37,7 @@ class Config1:
     name: str = FieldDescriptor()
 
     @sql
-    def selectByName(name: str) -> type["Config1"]:
+    def selectByName(name: str) -> list["Config1"]:
         pass
 
     @sql
