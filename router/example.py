@@ -37,11 +37,11 @@ class Config1:
     name: str = FieldDescriptor()
 
     @sql
-    def selectByName(name: str) -> list["Config1"]:
+    def selectByName(name: str) -> type["Config1"]:
         pass
 
-    # @sql
-    # def selectByName(name:str)->'Config1':pass
+    @sql
+    def selectOneByName(name:str)->'Config1':pass
 
 @table()
 class Users:
@@ -51,6 +51,7 @@ class Users:
 @router.get("/config2/getdy")
 async def getdy2():
     res: List[Config1] = await Config1.selectByName(22)
+    res:Config1 = await Config1.selectOneByName(22)
     return AppResult.success(res)
 
 
@@ -58,7 +59,7 @@ async def getdy2():
 @router.get("/config2/getdy2")
 async def getdy():
     res = await Config1.dynamic("selectByIdAndName", [2, 456])
-    # res = await Config1.dynamic('selectByName',123)
+    res = await Config1.dynamic('selectByName',123)
     return AppResult.success(res)
 
 
@@ -67,8 +68,8 @@ async def getdy():
 @exception
 async def get_config2():
     res = await Config1.where(name=22).get()
-    # res = await Users.get(407)
-    # res = await Config1().where(name=22).getList()
+    res = await Users.get(407)
+    res = await Config1.where(name=22).getList()
     return AppResult.success(res)
 
 
