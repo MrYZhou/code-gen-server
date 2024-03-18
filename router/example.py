@@ -63,13 +63,18 @@ async def getdy():
     return AppResult.success(res)
 
 
+@router.get("/config2/getdy3")
+async def getdy3():
+    res:Config1 = await Config1.selectById(1)
+    return AppResult.success(res)
+
 # 默认get是查询首个对象, getList自动为数组
 @router.get("/config2/get")
 @exception
 async def get_config2():
     res = await Config1.where(name=22).get()
     res = await Users.get(407)
-    res = await Config1.where(name=22).getList()
+    res = await Config1.where(name=22).getList([1,2,3])
     return AppResult.success(res)
 
 
