@@ -95,10 +95,14 @@ async def addone():
 
 
 @router.delete("/config2/delete")
-async def deleteone():
-    await Config1.delete(1)
-    # res = await Config1.where(name=22).delete()
-    return AppResult.success()
+async def deleteconfig():
+    await Config1.delete([1])
+    config1 = Config1()
+    config1.id = 1
+    config1.name = 123
+    await Config1.post(config1)
+    
+    return AppResult.success("删除成功")
 
 
 @router.delete("/config2/deletedy")
@@ -108,6 +112,8 @@ async def deletedy():
     config1.name = 123
     await Config1.post(config1)
     await Config1.dynamic("deleteById", 1)
+    
+    # res = await Config1.where(name=22).delete()
     return AppResult.success()
 
 
