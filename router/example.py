@@ -18,7 +18,7 @@ from util.base import Common, jinjaEngine
 from util.exception import exception
 
 from util.response import AppResult
-
+from models.example.input import Page
 
 router = APIRouter(
     prefix="/example",
@@ -67,6 +67,13 @@ async def getdy():
 async def getdy3():
     res:Config1 = await Config1.selectById(1)
     return AppResult.success(res)
+
+# 分页查询
+@router.post("/config2/page")
+async def body(page=Body(Page)):
+    list,pageData = await Config1.page(page)
+    return AppResult.success(list)
+
 
 # 默认get是查询首个对象, getList自动为数组
 @router.get("/config2/get")
@@ -170,6 +177,7 @@ async def token(id, token=Header(None)):
 @router.post("/post")
 def body(data=Body(None)):
     return {"code": 200, "msg": f"username:{data.username}"}
+
 
 
 # 多请求合并
