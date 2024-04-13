@@ -72,7 +72,7 @@ async def getdy3():
 # 分页查询
 @router.post("/config2/page")
 async def body(page=Body(Page)):
-    data = await Config1.where(name=22).page(page)
+    data = await Config1.where(name="邱桂珍").match('age','>30','age','<32').page(page)
     return AppResult.success(data)
 
 
