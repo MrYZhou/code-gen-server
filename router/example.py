@@ -35,6 +35,7 @@ rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 class Config1:
     id: str = FieldDescriptor(primary=True)
     name: str = FieldDescriptor()
+    age: int = FieldDescriptor()
 
     @sql
     def selectByName(name: str) -> list["Config1"]:
@@ -83,6 +84,17 @@ async def get_config2():
     res = await Users.get(407)
     res = await Config1.where(name=22).getList([1,2,3])
     return AppResult.success(res)
+@router.get("/config2/addBatch")
+async def addBatch():
+    configlist = []
+    for i in range(0, 20000):
+        config1 = Config1()
+        config1.id = Common.uid()
+        config1.name = Common.randomName()
+        config1.age = Common.randomAge()
+        configlist.append(config1)
+    await Config1.post(configlist)
+    return AppResult.success(configlist)
 
 
 @router.post("/config2/add")
