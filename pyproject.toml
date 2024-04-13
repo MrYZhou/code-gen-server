@@ -14,10 +14,11 @@ uvicorn = {extras = ["standard"], version = "^0.27.1"}  # 或者使用最新稳�
 jinja2 = "^3.1.2"  # Jinja2模板引擎
 aiomysql = "^0.2.0"  # MySQL异步驱动
 walrus = "^0.9.3"  # api请求限速
-# aiofiles = "^23.2.1"  # 异步文件操作库
-# nanoid = "^3.1.33"  # 非常小且安全的ID生成器
+aiofiles = "^23.2.1"  # 异步文件操作库
+nanoid = "^2.0.0"  # 非常小且安全的ID生成器
 cryptography = "^42.0.5" # aiomysql 密码认证依赖
-laorm = "^2.0.0"
+laorm = "^2.0.0" # orm库
+faker = "^24.0.0" # 随机数据生成
 
 [tool.poetry.dev-dependencies]
 pyinstaller = {version = "^6.4.0", python = ">=3.10,<3.13"}

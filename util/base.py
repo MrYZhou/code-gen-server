@@ -5,13 +5,18 @@ import string
 import zipfile
 
 from fastapi.templating import Jinja2Templates
+from nanoid import generate
 
+from faker import Faker
 
 # 模板初始化
 jinjaEngine = Jinja2Templates("template")
 
 
 class Common:
+    # 创建一个Faker实例，指定语言为中文（简体）
+    fake = Faker("zh_CN")
+
     @staticmethod
     def tocamel(name: str) -> str:
         """下划线转驼峰(小驼峰)"""
@@ -27,6 +32,18 @@ class Common:
     @staticmethod
     def randomkey(len: int = 10):
         return "".join(random.sample(string.ascii_letters + string.digits, len))
+
+    @staticmethod
+    def uid(size: int = 10):
+        return generate("1234567890abcdefghijklmnopqrstuvwxyz", size=10)
+
+    @staticmethod
+    def randomName():
+        return Common.fake.name()
+
+    @staticmethod
+    def randomAge(min_age=18, max_age=60):
+        return random.randint(min_age, max_age)
 
     @staticmethod
     def zipfile(src_dir, save_name):
