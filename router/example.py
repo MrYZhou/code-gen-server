@@ -132,18 +132,6 @@ async def deletedy():
     return AppResult.success()
 
 
-@router.delete("/config2/deletedy")
-async def deletedy():
-    config1 = Config1()
-    config1.id = 1
-    config1.name = 123
-    await Config1.post(config1)
-    await Config1.dynamic("deleteById", 1)
-    
-    # res = await Config1.where(name=22).delete()
-    return AppResult.success()
-
-
 @router.put("/config2/update")
 async def updateone():
     config1 = Config1()
@@ -195,7 +183,7 @@ async def token(id, token=Header(None)):
 
 # post参数获取
 @router.post("/post")
-def body(data=Body(None)):
+def postbody(data=Body(None)):
     return {"code": 200, "msg": f"username:{data.username}"}
 
 
