@@ -35,7 +35,7 @@ class Common:
 
     @staticmethod
     def uid(size: int = 10):
-        return generate("123456789abcdefghijkmnpqrstuvwxyz", size=10)
+        return generate("abcdefghijkmnpqrstuvwxyz", size=10)
 
     @staticmethod
     def randomName():
