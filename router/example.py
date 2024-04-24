@@ -216,7 +216,6 @@ def html(request: Request, username: str = ''):
     content = jinjaEngine.TemplateResponse(
         "1.html", {"request": request, "username": username, "list": list}
     )
-    print(content.body)
     return content
 
 

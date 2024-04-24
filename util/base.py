@@ -6,16 +6,20 @@ import zipfile
 
 from fastapi.templating import Jinja2Templates
 from nanoid import generate
-
 from faker import Faker
-
+# 修改Jinja2的定界符
+custom_delimiters = {
+    "variable_start_string": "[[",
+    "variable_end_string": "]]",
+    "block_start_string": "[%",
+    "block_end_string": "%]",
+    "comment_start_string": "[#",
+    "comment_end_string": "#]",
+}
 # 模板初始化
 jinjaEngine = Jinja2Templates(
-    "template",
-    trim_blocks=True,
-    lstrip_blocks=True,
+    "template", trim_blocks=True, lstrip_blocks=True, **custom_delimiters
 )
-
 
 class Common:
     # 创建一个Faker实例，指定语言为中文（简体）

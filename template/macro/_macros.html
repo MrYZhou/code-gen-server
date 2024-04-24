@@ -1,14 +1,14 @@
-{% macro user_card(list, show_bio=True) %}
+[% macro user_card(list, show_bio=True) %]
 <div class="user-card">
-  {{ show_bio }}
-  {% if show_bio  %}
+  [[ show_bio ]]
+  [% if show_bio  %]
   daxin is safe.
-  {% endif %}
-  {# for循环 #}
+  [% endif %]
+  [# for循环 #]
   <ul>
-  {% for item in list %}
-    <li>{{item}}</li>
-  {% endfor %}
+  [% for item in list %]
+    <li>[[item]]</li>
+  [% endfor %]
   </ul>
 </div>
-{% endmacro %}
+[% endmacro %]
