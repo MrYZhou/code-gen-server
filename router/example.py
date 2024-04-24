@@ -225,9 +225,8 @@ def html(request: Request, username: str = ''):
 def render():
     content = {"username": "larry", "list": ["音乐", "游戏", "编码"]}
     template = jinjaEngine.get_template("1.html")
-    template.stream(content).dump("my_new_file.html")
-
-    return "success"
+    template.stream(content).dump("template/new_file.html")
+    return content
 
 
 # 重定向
