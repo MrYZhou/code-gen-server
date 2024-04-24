@@ -211,7 +211,7 @@ def avator():
 
 # jinja 到浏览器
 @router.get("/html")
-def html(username, request: Request):
+def html(request: Request, username: str = ''):
     list = ["音乐", "游戏", "编码"]
     content = jinjaEngine.TemplateResponse(
         "1.html", {"request": request, "username": username, "list": list}
