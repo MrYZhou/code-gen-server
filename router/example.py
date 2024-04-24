@@ -19,6 +19,7 @@ from util.exception import exception
 
 from util.response import AppResult
 from models.example.input import Page
+from jinja2 import Template
 
 router = APIRouter(
     prefix="/example",
@@ -226,6 +227,19 @@ def render():
     template = jinjaEngine.get_template("1.html")
     template.stream(content).dump("template/new_file.html")
     return content
+
+@router.get("/renderStr")
+def renderStr():
+    template_str = """
+    <p>Hello, {{ name }}!
+    You have {{ num }} new messages.</p>
+    """
+    data = {
+        "name": "Larry",
+        "num": 3,
+    }
+    template=Template(template_str)
+    return template.render(data)
 
 
 # 重定向
