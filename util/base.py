@@ -20,6 +20,9 @@ custom_delimiters = {
 jinjaEngine = Jinja2Templates(
     "template", trim_blocks=True, lstrip_blocks=True, **custom_delimiters
 )
+# 定义全局变量
+jinjaEngine.env.globals["arr"] = [1, 2, 3]
+
 
 class Common:
     # 创建一个Faker实例，指定语言为中文（简体）
