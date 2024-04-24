@@ -10,7 +10,11 @@ from nanoid import generate
 from faker import Faker
 
 # 模板初始化
-jinjaEngine = Jinja2Templates("template")
+jinjaEngine = Jinja2Templates(
+    "template",
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
 
 
 class Common:

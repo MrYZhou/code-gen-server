@@ -1,6 +1,6 @@
-{{ username }}
-<ul>
-{% for item in list %}
-  <li>{{item}}</li>
-{% endfor %}
-</ul>
+{#- 引入宏模板 #}
+{% import 'macro/_macros.html' as macros %}
+{#- 变量使用,首字母大写 #}
+{{ username|capitalize }}
+{{ macros.user_card(list) }}
+
