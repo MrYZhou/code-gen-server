@@ -15,7 +15,16 @@ poetry update
 
 3.Prepare the MySQL database and load/execute the SQL statements in the init.sql file located in the current directory.
 
-4.start project
+4.create config .env file which located in the root directory of project just like
+```bash
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=study
+```
+
+5.start project
 ```bash
 f5 or run main.py
 ```
