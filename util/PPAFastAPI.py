@@ -13,11 +13,11 @@ class PPAFastAPI(PPA):
         if cls._instance is None:
             load_dotenv()
             default_values = {
-                "host": os.getenv("host") if os.getenv("DB_HOST") else "127.0.0.1",
-                "port": 3306,
-                "user": "root",
-                "password": "root",
-                "db": "study",
+                "host": os.getenv("DB_HOST", "127.0.0.1"),
+                "port": int(os.getenv("DB_PORT", 3306)),
+                "user": os.getenv("DB_USER", "root"),
+                "password": os.getenv("DB_PASSWORD", "root"),
+                "db": os.getenv("DB_NAME", "study"),
                 "charset": "utf8mb4",
                 "autocommit": True,
             }
