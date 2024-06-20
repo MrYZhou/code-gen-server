@@ -43,17 +43,21 @@ class Config1:
         pass
 
     @sql
-    def selectOneByName(name:str)->'Config1':pass
+    def selectOneByName(name: str) -> "Config1":
+        pass
+
 
 @table()
 class Users:
     id: str = FieldDescriptor(primary=True)
     username: str = FieldDescriptor()
+
+
 # 读取自定义方法的返回类型
 @router.get("/config2/getdy")
 async def getdy2():
     res: List[Config1] = await Config1.selectByName(22)
-    res:Config1 = await Config1.selectOneByName(22)
+    res: Config1 = await Config1.selectOneByName(22)
     return AppResult.success(res)
 
 
@@ -61,19 +65,22 @@ async def getdy2():
 @router.get("/config2/getdy2")
 async def getdy():
     res = await Config1.dynamic("selectByIdAndName", [2, 456])
-    res = await Config1.dynamic('selectByName',123)
+    res = await Config1.dynamic("selectByName", 123)
     return AppResult.success(res)
 
 
 @router.get("/config2/getdy3")
 async def getdy3():
-    res:Config1 = await Config1.selectById(1)
+    res: Config1 = await Config1.selectById(1)
     return AppResult.success(res)
+
 
 # 分页查询
 @router.post("/config2/page")
 async def body(page=Body(Page)):
-    data = await Config1.where(name="邱桂珍").match('age','>30','age','<32').page(page)
+    data = (
+        await Config1.where(name="邱桂珍").match("age", ">30", "age", "<32").page(page)
+    )
     return AppResult.success(data)
 
 
@@ -83,8 +90,10 @@ async def body(page=Body(Page)):
 async def get_config2():
     res = await Config1.where(name=22).get()
     res = await Users.get(407)
-    res = await Config1.where(name=22).getList([1,2,3])
+    res = await Config1.where(name=22).getList([1, 2, 3])
     return AppResult.success(res)
+
+
 @router.get("/config2/addBatch")
 async def addBatch():
     configlist = []
@@ -121,8 +130,10 @@ async def deleteconfig():
     config1.id = 1
     config1.name = 123
     await Config1.post(config1)
-    
+
     return AppResult.success("删除成功")
+
+
 @router.delete("/config2/deletedy")
 async def deletedy():
     config1 = Config1()
@@ -188,7 +199,6 @@ def postbody(data=Body(None)):
     return {"code": 200, "msg": f"username:{data.username}"}
 
 
-
 # 多请求合并
 @router.api_route("/mulreq", methods=["get", "post"])
 def mulreq():
@@ -212,7 +222,7 @@ def avator():
 
 # jinja 到浏览器
 @router.get("/html")
-def html(request: Request, username: str = ''):
+def html(request: Request, username: str = ""):
     list = ["音乐", "游戏", "编码"]
     content = jinjaEngine.TemplateResponse(
         "1.html", {"request": request, "username": username, "list": list}
@@ -228,6 +238,7 @@ def render():
     template.stream(content).dump("template/new_file.html")
     return content
 
+
 # 列表去重
 def removeSame(data):
     return list(set(data))
@@ -241,7 +252,7 @@ def renderStr():
     {{removeSame(arr)}}
     """
     data = {"name": "Larry", "num": 3}
-    template=Template(template_str)
+    template = Template(template_str)
     template.globals["removeSame"] = removeSame
     template.globals["arr"] = [1, 2, 3, 2]
 
