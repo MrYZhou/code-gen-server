@@ -7,6 +7,7 @@ import zipfile
 from fastapi.templating import Jinja2Templates
 from nanoid import generate
 from faker import Faker
+
 # 修改Jinja2的定界符
 custom_delimiters = {
     "variable_start_string": "[[",
@@ -66,7 +67,7 @@ class Common:
         默认压缩文件名：文件夹名
 
         默认压缩文件路径：文件夹上层目录
-        
+
         """
         zip_name = save_name + ".zip"
         if save_name is None or save_name == "":
@@ -95,5 +96,3 @@ class Common:
             print("This is not zip")
             return False
         return True
-
-

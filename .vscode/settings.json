@@ -1,6 +1,7 @@
 {
-  "python.formatting.provider": "autopep8",
+  // 过滤查询的文件
   "search.exclude": {},
+  //   过滤显示的文件
   "files.exclude": {
     "**/__init__.py": true
   }
