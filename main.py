@@ -11,7 +11,7 @@ Env.init(app)
 
 @app.get("/")
 def root():
-    return AppResult.success("code-gen-server")
+    return AppResult.success("服务启动成功")
 
 
 if __name__ == "__main__":
