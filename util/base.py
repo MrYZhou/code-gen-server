@@ -6,7 +6,6 @@ import zipfile
 
 from fastapi.templating import Jinja2Templates
 from nanoid import generate
-from faker import Faker
 
 # 修改Jinja2的定界符
 custom_delimiters = {
@@ -26,8 +25,6 @@ jinjaEngine.env.globals["arr"] = [1, 2, 3]
 
 
 class Common:
-    # 创建一个Faker实例，指定语言为中文（简体）
-    fake = Faker("zh_CN")
 
     @staticmethod
     def tocamel(name: str) -> str:
@@ -49,9 +46,7 @@ class Common:
     def uid(size: int = 10):
         return generate("abcdefghijkmnpqrstuvwxyz", size=10)
 
-    @staticmethod
-    def randomName():
-        return Common.fake.name()
+    
 
     @staticmethod
     def randomAge(min_age=18, max_age=60):
