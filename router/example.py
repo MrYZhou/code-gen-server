@@ -18,7 +18,6 @@ from util.base import Common, jinjaEngine
 from util.exception import exception
 
 from util.response import AppResult
-from models.example.input import Page
 from jinja2 import Template
 
 router = APIRouter(
@@ -27,7 +26,10 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-
+class Page:
+    page: int = 1
+    size: int = 20
+    
 db = RedisDatabase(host="localhost", port=6379)
 rate = db.rate_limit("speedlimit", limit=5, per=60)  # 每分钟只能调用5次
 
