@@ -8,8 +8,8 @@
       "name": "Code Gen", // 调试器名称
       "type": "debugpy", // 使用调试器
       "request": "launch",
-      "module": "uvicorn", 
-      "args": ["main:app", "--reload", "--port", "8888"],
+      "module": "fastapi", 
+      "args": ["run", "main.py","--host", "127.0.0.1", "--port", "8000"],
       "jinja": true, // 模板引擎
       "justMyCode": false, // 可调试源码代码
       "env": {

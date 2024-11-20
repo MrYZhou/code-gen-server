@@ -1,0 +1,20 @@
+{
+  // 使用 IntelliSense 了解相关属性。
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Code Gen", // 调试器名称
+      "type": "debugpy", // 使用调试器
+      "request": "launch",
+      "module": "uvicorn", 
+      "args": ["main:app", "--reload", "--port", "8000"],
+      "jinja": true, // 模板引擎
+      "justMyCode": false, // 可调试源码代码
+      "env": {
+        "PYDEVD_DISABLE_FILE_VALIDATION": "1" // 冻结模块不检测
+      },
+    }
+  ]
+}

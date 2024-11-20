@@ -9,7 +9,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = "^0.115.5"  # 更改为最新稳定版的FastAPI
+fastapi = {extras = ["standard"], version = "^0.115.5"}  # 更改为最新稳定版的FastAPI
 uvicorn = {extras = ["standard"], version = "^0.32.0"}  # 或者使用最新稳定版Uvicorn
 jinja2 = "^3.1.4"  # Jinja2模板引擎
 aiomysql = "^0.2.0"  # MySQL异步驱动
