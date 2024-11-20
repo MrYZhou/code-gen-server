@@ -9,12 +9,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = "^0.110.0"  # 更改为最新稳定版的FastAPI
-uvicorn = {extras = ["standard"], version = "^0.27.1"}  # 或者使用最新稳定版Uvicorn
-jinja2 = "^3.1.2"  # Jinja2模板引擎
+fastapi = "^0.115.5"  # 更改为最新稳定版的FastAPI
+uvicorn = {extras = ["standard"], version = "^0.32.0"}  # 或者使用最新稳定版Uvicorn
+jinja2 = "^3.1.4"  # Jinja2模板引擎
 aiomysql = "^0.2.0"  # MySQL异步驱动
 walrus = "^0.9.3"  # api请求限速
-aiofiles = "^23.2.1"  # 异步文件操作库
+aiofiles = "^24.1.0"  # 异步文件操作库
 nanoid = "^2.0.0"  # 非常小且安全的ID生成器
 cryptography = "^42.0.5" # aiomysql 密码认证依赖
 laorm = "^2.0.0" # orm库

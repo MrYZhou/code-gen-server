@@ -17,20 +17,30 @@ def root():
 if __name__ == "__main__":
     import uvicorn
 
-    # 输出无日志
-    log_path = Env.getPath("logfile.log")
+    # 输出日志
 
     log_config = {
         "version": 1,
         "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {
+                "format": "%(asctime)s - %(levelname)s - %(message)s"
+            },
+        },
         "handlers": {
             "file_handler": {
                 "class": "logging.FileHandler",
-                "filename": log_path,
+                "filename": Env.log_path,
+                "formatter": "standard",
+            },
+            "console_handler": {
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
+                "formatter": "standard",
             },
         },
         "root": {
-            "handlers": ["file_handler"],
+            "handlers": ["file_handler","console_handler"],
             "level": "INFO",
         },
     }
@@ -40,5 +50,5 @@ if __name__ == "__main__":
         port=8000,
         reload=False,
         workers=1,
-        # log_config=log_config,
+        log_config=log_config
     )

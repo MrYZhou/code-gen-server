@@ -13,6 +13,8 @@ from util.PPAFastAPI import PPAFastAPI
 
 
 class Env:
+    homeDir:str
+    log_path:str
     # 路由注册
     def initRouter(app: FastAPI):
         # 解析规则:server模块下面的带router字符的文件 (文件夹下特定文件)
@@ -75,6 +77,10 @@ class Env:
         app.mount("/static", StaticFiles(directory=path), name="static")
 
     def initEnv():
+        Env.homeDir = os.path.join(os.path.expanduser("~"), "code-gen-server")
+        Env.log_path = Env.getFilePath("logfile.log")
+        print("homeDir:", Env.homeDir)
+        print("log_path:", Env.log_path)
         Env.getPath("resources")
 
     @staticmethod
@@ -92,3 +98,5 @@ class Env:
                 os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
             )
         return path
+    def getFilePath(*path):
+        return os.path.join(Env.homeDir, *path)
