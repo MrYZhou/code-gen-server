@@ -13,8 +13,9 @@ from util.PPAFastAPI import PPAFastAPI
 
 
 class Env:
-    homeDir:str
+    home_dir:str
     log_path:str
+    log_config:dict
     # 路由注册
     def initRouter(app: FastAPI):
         # 解析规则:server模块下面的带router字符的文件 (文件夹下特定文件)
@@ -77,19 +78,46 @@ class Env:
         app.mount("/static", StaticFiles(directory=path), name="static")
 
     def initEnv():
-        Env.homeDir = os.path.join(os.path.expanduser("~"), "code-gen-server")
+        Env.home_dir = os.path.join(os.path.expanduser("~"), "code-gen-server")
         Env.log_path = Env.getFilePath("logfile.log")
-        print("homeDir:", Env.homeDir)
-        print("log_path:", Env.log_path)
+        print("资源目录:", Env.home_dir)
+        print("日志文件:", Env.log_path)
         Env.getPath("resources")
+        Env.log_config = {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "formatters": {
+                "standard": {
+                    "format": "%(asctime)s - %(levelname)s - %(message)s"
+                },
+            },
+            "handlers": {
+                "file_handler": {
+                    "class": "logging.FileHandler",
+                    "filename": Env.log_path,
+                    "formatter": "standard",
+                },
+                "console_handler": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "standard",
+                },
+            },
+            "root": {
+                "handlers": ["file_handler","console_handler"],
+                "level": "INFO",
+            },
+        }
 
     @staticmethod
-    def init(app: FastAPI):
+    def init():
         Env.initEnv()
+        app = FastAPI()
         Env.initDataBase(app)
         Env.initHttp(app)
         Env.initRouter(app)
         Env.initStaticDir(app)
+        return app
 
     def getPath(*path):
         path = os.path.join(os.path.expanduser("~"), "code-gen-server", *path)
@@ -99,4 +127,4 @@ class Env:
             )
         return path
     def getFilePath(*path):
-        return os.path.join(Env.homeDir, *path)
+        return os.path.join(Env.home_dir, *path)
