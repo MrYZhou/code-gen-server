@@ -8,7 +8,7 @@
 
 ## 开始
 
-#### 1: 安装 poetry 后换源下载依赖
+### 1: 安装 poetry 后换源下载依赖
 
 ```bash
 pip install poetry
@@ -34,7 +34,7 @@ DB_PASSWORD=root
 DB_NAME=study
 ```
 
-5.启动项目
+### 5.启动项目
 
 ```bash
 f5
