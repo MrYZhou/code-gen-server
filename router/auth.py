@@ -29,8 +29,8 @@ async def login(data:Users=Body()):
     return AppResult.success({"access_token": access_token})
     
 @router.get("/info")
-async def read_users_me():
-    user = UserContext.getUser()
+async def read_users_me(request: Request):
+    user = request.state.user
     if user is None:
         return AppResult.fail(status.HTTP_401_UNAUTHORIZED, "用户未登录")
     return AppResult.success(user, "操作成功")
