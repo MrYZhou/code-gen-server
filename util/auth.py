@@ -6,13 +6,14 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Coroutine, List, Optional
 from starlette.middleware.base import BaseHTTPMiddleware
-
+from util.redis import redisTool
 # 创建一个上下文变量来存储 request 对象
 current_request_var = contextvars.ContextVar('current_request')
 # 配置 JWT
 SECRET_KEY = "laAuth"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 
 
 def create_access_token(data: dict):
