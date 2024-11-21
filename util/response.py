@@ -41,6 +41,8 @@ class AppResult:
                 return {"code": 400, "msg": args[0]}
             return {"code": 400, "data": args[0], "msg": "Fail"}
         if len(args) == 2:
+            if isinstance(args[0], int):
+                return {"code": args[0], "msg": args[1]}
             return {"code": 400, "data": args[0], "msg": args[1]}
 
     @classmethod
