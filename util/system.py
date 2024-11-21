@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from walrus import RateLimitException
-
+from util.auth import AuthenticationMiddleware
 from fastapi.responses import JSONResponse
 
 from util.PPAFastAPI import PPAFastAPI
@@ -50,7 +50,7 @@ class Env:
             app.include_router(m.router)
 
     def initHttp(app: FastAPI):
-        # 资源访问
+        # 允许的跨域来源
         origins = [
             "http://localhost",
         ]
@@ -60,7 +60,8 @@ class Env:
         async def handle(request: Request, exc: RateLimitException):
             msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
             return JSONResponse(status_code=412, content=msg)
-
+        
+        # 添加 CORS 中间件
         app.add_middleware(
             CORSMiddleware,
             allow_origins=origins,
@@ -68,6 +69,8 @@ class Env:
             allow_methods=["*"],
             allow_headers=["*"],
         )
+        # 添加认证中间件
+        app.add_middleware(AuthenticationMiddleware)
 
     def initDataBase(app):
         PPAFastAPI.init_app(app)
@@ -112,7 +115,7 @@ class Env:
     @staticmethod
     def init():
         Env.initEnv()
-        app = FastAPI()
+        app = FastAPI(docs_url=None)
         Env.initDataBase(app)
         Env.initHttp(app)
         Env.initRouter(app)
