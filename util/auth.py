@@ -40,16 +40,18 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self, request: Request, call_next: Callable[[Request], Coroutine[Any, Any, Response]]
     ) -> Response:
+        # 1. 判断当前请求的路径是否在白名单中，如果是，则直接返回响应
         path = request.url.path
         if path in whitePath:
             response = await call_next(request)
             return response
-
+        # 2. 获取请求头中的token，如果没有，则返回401
         token = request.headers.get("Authorization")
         if not token:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
-        
+        # 3. 解析token，如果解析失败，则返回401
         user = verify_token(token)
+        # 4. 设置当前请求的用户信息到上下文变量中，并返回响应
         request.state.user = user
         current_request_var.set(request)  # 设置上下文变量
         response = await call_next(request)
