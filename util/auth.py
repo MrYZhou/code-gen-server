@@ -20,14 +20,16 @@ def create_access_token(data: dict):
     expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.now(timezone.utc) + expires_delta   
     
-    encoded_jwt = jwt.encode({"username": data.get("username")}, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode({"id": data.get("id"), "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# 从redis获取缓存，key是token，value是user
+
 def verify_token(token: str):
+    # 从redis判断是否过期
     user = '123'
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    # 解析token后再次验证是否过期
     return user    
 
 
@@ -58,8 +60,8 @@ class UserContext:
     def getUser():
         request = current_request_var.get(None)  # 获取上下文变量
         if request is None:
-            raise HTTPException(status_code=400, detail="Request context not found")
+            raise HTTPException(status_code=400, detail="未知错误")
         user = getattr(request.state, 'user', None)
         if user is None:
-            raise HTTPException(status_code=401, detail="User not found")
+            raise HTTPException(status_code=401, detail="用户未登录")
         return user
