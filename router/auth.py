@@ -18,7 +18,7 @@ class Users:
 
 @router.post("/login")
 async def login(data:Users=Body()):
-    # 1.获取用户
+    # 1.获取yo
     user = await Users.where(username=data.username).get()
     # 2.校验密码
     if user is None or user['password'] != data.password:
@@ -29,8 +29,8 @@ async def login(data:Users=Body()):
     return AppResult.success({"access_token": access_token})
     
 @router.get("/info")
-async def read_users_me(request: Request):
-    user = request.state.user
+async def read_users_me():
+    user = UserContext.getUser()
     if user is None:
         return AppResult.fail(status.HTTP_401_UNAUTHORIZED, "用户未登录")
     return AppResult.success(user, "操作成功")
