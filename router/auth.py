@@ -2,7 +2,7 @@ from datetime import timedelta
 from fastapi import APIRouter, Body, HTTPException, Request,status
 from laorm import FieldDescriptor, table
 from util.response import AppResult
-from util.auth import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from util.auth import create_access_token, UserContext
 
 router = APIRouter(
     prefix="/auth",
@@ -17,23 +17,22 @@ class Users:
     password: str = FieldDescriptor()
 
 @router.post("/login")
-async def login(data=Body(Users)):
-
-    user = await Users.where(username=user.username).get()
-    if user is None or user.password != data.password:
-        raise HTTPException(
-            status_code=401,
-            detail="用户名或密码错误",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
+async def login(data:Users=Body()):
+    # 1.获取账号
+    user = await Users.where(username=data.username).get()
+    # 2.校验密码
+    if user is None or user['password'] != data.password:
+        raise HTTPException(status_code=401,detail="用户名或密码错误")
+    # 3.生成token
+    access_token = create_access_token(user)
+    # 4.返回token
     return AppResult.success({"access_token": access_token})
-@router.get("/users/me", response_model=Users)
-async def read_users_me(request: Request):
-    user = request.state.user
+    
+@router.get("/info", response_model=Users)
+async def read_users_me():
+    user = UserContext.getUser()
     if user is None:
         return AppResult.fail(status.HTTP_401_UNAUTHORIZED, "用户未登录")
-    return user
+    return AppResult.success(user, "操作成功")
+
+

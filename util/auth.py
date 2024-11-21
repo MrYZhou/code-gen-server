@@ -1,3 +1,4 @@
+import contextvars
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -6,53 +7,28 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Callable, Coroutine, List, Optional
 from starlette.middleware.base import BaseHTTPMiddleware
 
-
+# 创建一个上下文变量来存储 request 对象
+current_request_var = contextvars.ContextVar('current_request')
 # 配置 JWT
 SECRET_KEY = "laAuth"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# 模拟用户数据库
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "password": "secret",
-    }
-}
 
-# OAuth2 密码模式
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
-
-class User(BaseModel):
-    username: str
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+def create_access_token(data: dict):
+    
+    expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + expires_delta   
+    
+    encoded_jwt = jwt.encode({"username": data.get("username")}, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# 从redis获取缓存，key是token，value是user
 def verify_token(token: str):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            return None
-        token_data = TokenData(username=username)
-    except jwt.PyJWTError:
-        return None
-    return token_data    
+    user = '123'
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    return user    
 
 
 whitePath=["/","/docs", "/redoc", "/openapi.json","/auth/login", "register"]
@@ -70,18 +46,20 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         token = request.headers.get("Authorization")
         if not token:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
-
-        token = token.replace("Bearer ", "")
-        token_data = verify_token(token)
-        if not token_data:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-
-        request.state.user = get_user(fake_users_db, username=token_data.username)
+        
+        user = verify_token(token)
+        request.state.user = user
+        current_request_var.set(request)  # 设置上下文变量
         response = await call_next(request)
         return response
     
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return User(**user_dict)
-    return None
+class UserContext:
+    @staticmethod
+    def getUser():
+        request = current_request_var.get(None)  # 获取上下文变量
+        if request is None:
+            raise HTTPException(status_code=400, detail="Request context not found")
+        user = getattr(request.state, 'user', None)
+        if user is None:
+            raise HTTPException(status_code=401, detail="User not found")
+        return user

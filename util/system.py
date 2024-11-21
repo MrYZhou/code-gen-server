@@ -2,11 +2,12 @@ import importlib
 import os
 import sys
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from walrus import RateLimitException
 from util.auth import AuthenticationMiddleware
+from util.response import AppResult
 from fastapi.responses import JSONResponse
 
 from util.PPAFastAPI import PPAFastAPI
@@ -59,7 +60,13 @@ class Env:
         @app.exception_handler(RateLimitException)
         async def handle(request: Request, exc: RateLimitException):
             msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
-            return JSONResponse(status_code=412, content=msg)
+            return AppResult.fail(412, msg)
+        
+        @app.exception_handler(HTTPException)
+        async def handle(request: Request, exc: HTTPException):
+            return AppResult.fail(exc.status_code, exc.detail)
+        
+        
         
         # 添加 CORS 中间件
         app.add_middleware(
