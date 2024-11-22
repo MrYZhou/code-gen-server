@@ -27,7 +27,7 @@ async def login(data: Users = Body(Users)):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
     access_token = redisTool.get(user["id"])
     if access_token is not None:
-        return AppResult.success({"access_token": access_token})
+        return AppResult.success({"access_token": access_token.decode("utf-8")})
     # 3.生成token
     access_token = create_access_token(user)
     # 4.返回token
