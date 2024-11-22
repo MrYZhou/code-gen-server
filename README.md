@@ -30,6 +30,8 @@ docker run --restart=always --name redis -d -p 6379:6379 redis
 
 ```bash
 pre-commit install
+pre-commit run --all-files
+auto-commit.bat
 ```
 
 ```bash
