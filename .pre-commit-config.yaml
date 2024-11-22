@@ -3,5 +3,11 @@ repos:
     rev: v0.1.9
     hooks:
       - id: ruff
+        name: Lint with Ruff
         args: [--fix]
+        stages: [pre-commit]
+        always_run: true
       - id: ruff-format
+        name: Format with Ruff
+        stages: [pre-commit]
+        always_run: true

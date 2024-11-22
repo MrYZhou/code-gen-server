@@ -25,7 +25,6 @@ jinjaEngine.env.globals["arr"] = [1, 2, 3]
 
 
 class Common:
-
     @staticmethod
     def tocamel(name: str) -> str:
         """下划线转驼峰(小驼峰)"""
@@ -45,8 +44,6 @@ class Common:
     @staticmethod
     def uid(size: int = 10):
         return generate("abcdefghijkmnpqrstuvwxyz", size=10)
-
-    
 
     @staticmethod
     def randomAge(min_age=18, max_age=60):
