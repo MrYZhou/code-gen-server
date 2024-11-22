@@ -19,13 +19,13 @@ def create_access_token(data: dict):
     expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.now(timezone.utc) + expires_delta
     encoded_jwt = jwt.encode(
-        {"id": data.get("id"), "username": data.get("username"), "exp": expire},
+        {"id": data.id, "username": data.username, "exp": expire},
         SECRET_KEY,
         algorithm=ALGORITHM,
     )
     # 保存在auth目录下的key
-    redisTool.set(encoded_jwt, data.get("id"), ex=ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    redisTool.set(data.get("id"), encoded_jwt, ex=ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    redisTool.set(encoded_jwt, data.id, ex=ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    redisTool.set(data.id, encoded_jwt, ex=ACCESS_TOKEN_EXPIRE_MINUTES * 60)
     return encoded_jwt
 
 
