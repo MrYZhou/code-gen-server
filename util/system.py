@@ -8,15 +8,15 @@ from fastapi.staticfiles import StaticFiles
 from walrus import RateLimitException
 from util.auth import AuthenticationMiddleware
 from util.response import AppResult
-from fastapi.responses import JSONResponse
 
 from util.PPAFastAPI import PPAFastAPI
 
 
 class Env:
-    home_dir:str
-    log_path:str
-    log_config:dict
+    home_dir: str
+    log_path: str
+    log_config: dict
+
     # 路由注册
     def initRouter(app: FastAPI):
         # 解析规则:server模块下面的带router字符的文件 (文件夹下特定文件)
@@ -61,13 +61,11 @@ class Env:
         async def handle(request: Request, exc: RateLimitException):
             msg = {"code": 400, "msg": f"太快了哟!,{request.client.host}"}
             return AppResult.fail(412, msg)
-        
+
         @app.exception_handler(HTTPException)
-        async def handle(request: Request, exc: HTTPException):
+        async def handle2(request: Request, exc: HTTPException):
             return AppResult.fail(exc.status_code, exc.detail)
-        
-        
-        
+
         # 添加 CORS 中间件
         app.add_middleware(
             CORSMiddleware,
@@ -97,9 +95,7 @@ class Env:
             "version": 1,
             "disable_existing_loggers": False,
             "formatters": {
-                "standard": {
-                    "format": "%(asctime)s - %(levelname)s - %(message)s"
-                },
+                "standard": {"format": "%(asctime)s - %(levelname)s - %(message)s"},
             },
             "handlers": {
                 "file_handler": {
@@ -114,7 +110,7 @@ class Env:
                 },
             },
             "root": {
-                "handlers": ["file_handler","console_handler"],
+                "handlers": ["file_handler", "console_handler"],
                 "level": "INFO",
             },
         }
@@ -136,5 +132,6 @@ class Env:
                 os.path.dirname(path) if os.path.isfile(path) else path, exist_ok=False
             )
         return path
+
     def getFilePath(*path):
         return os.path.join(Env.home_dir, *path)
