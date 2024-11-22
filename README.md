@@ -26,6 +26,12 @@ docker run --restart=always --name redis -d -p 6379:6379 redis
 
 ### 4.创建.env 文件，内容参考如下,可以动态修改数据库配置
 
+### 5.提交格式化钩子
+
+```bash
+pre-commit install
+```
+
 ```bash
 DB_HOST=127.0.0.1
 DB_PORT=3306
