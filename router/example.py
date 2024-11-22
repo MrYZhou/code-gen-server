@@ -11,7 +11,6 @@ from walrus import Database as RedisDatabase
 from laorm.stream import FieldDescriptor, sql, table
 from laorm.PPA import PPA
 
-
 from util.base import Common, jinjaEngine
 
 
