@@ -14,12 +14,3 @@ repos:
         name: Format with Ruff
         stages: [pre-commit]
         always_run: true
-  - repo: local
-    hooks:
-      - id: custom-pre-commit
-        name: Custom Pre-Commit Hook
-        entry: bash -c 'pre-commit run --all-files && git diff --cached --quiet || (git add . && git commit --amend --no-edit --no-verify)'
-        language: system
-        stages: [pre-commit]
-        always_run: true
-        pass_filenames: false
