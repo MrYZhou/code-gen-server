@@ -27,6 +27,7 @@ pyinstaller = {version = "^6.4.0", python = ">=3.10,<3.14"}
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.7.4"
+pre-commit = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.8.2"]
