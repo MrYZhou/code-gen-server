@@ -1,4 +1,5 @@
 import contextvars
+from math import e
 from fastapi import FastAPI, Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -21,16 +22,21 @@ def create_access_token(data: dict):
     expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.now(timezone.utc) + expires_delta   
     
-    encoded_jwt = jwt.encode({"id": data.get("id"), "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode({"id": data.get("id"),"username": data.get("username"), "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
+    # 保存在auth目录下的key
+    redisTool.set(encoded_jwt, data.get("id"), ex=ACCESS_TOKEN_EXPIRE_MINUTES*60)
+    redisTool.set(data.get("id"), encoded_jwt, ex=ACCESS_TOKEN_EXPIRE_MINUTES*60)
     return encoded_jwt
 
 
 def verify_token(token: str):
-    # 从redis判断是否过期
-    user = '123'
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    # 从 Redis 中检查 token 是否存在
+    if not redisTool.exists(token):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="未登录")
     # 解析token后再次验证是否过期
+    user = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    if not user or user.get("exp", 0) < datetime.now(timezone.utc).timestamp():
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     return user    
 
 
@@ -54,7 +60,8 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         user = verify_token(token)
         # 4. 设置当前请求的用户信息到上下文变量中，并返回响应
         request.state.user = user
-        current_request_var.set(request)  # 设置上下文变量
+        # 5.设置上下文变量
+        current_request_var.set(request) 
         response = await call_next(request)
         return response
     
