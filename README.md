@@ -54,7 +54,9 @@ docker 镜像
 
 ```bash
 docker build -t fastweb .
-docker build -t fastweb -f ./Dockerfile-exe .
+或
+docker build -t fastweb -f ./Dockerfile2-1 . （依赖不变都不用重新编构建）
+docker build -t fastweb -f ./Dockerfile2-2 .
 docker run -d -p 8000:8000 fastweb
 ```
 
