@@ -3,3 +3,5 @@
 *.spec
 *.lock
 build
+.git
+build

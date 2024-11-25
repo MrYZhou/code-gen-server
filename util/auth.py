@@ -12,7 +12,7 @@ current_request_var = contextvars.ContextVar("current_request")
 # 配置 JWT
 SECRET_KEY = "laAuth"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 3000
 
 
 def create_access_token(data: dict):

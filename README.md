@@ -54,6 +54,7 @@ docker 镜像
 
 ```bash
 docker build -t fastweb .
+docker build -t fastweb -f ./Dockerfile-exe .
 docker run -d -p 8000:8000 fastweb
 ```
 
