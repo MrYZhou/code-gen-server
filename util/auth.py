@@ -57,7 +57,7 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
         try:
             # 1. 判断当前请求的路径是否在白名单中
             path = request.url.path
-            if path in whitePath:
+            if path in whitePath or path.endswith(".map"):
                 response = await call_next(request)
                 return response
             # 2. 获取请求头中的token，如果没有，则返回401
