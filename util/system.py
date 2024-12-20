@@ -19,16 +19,7 @@ class Env:
 
     # 路由注册
     def initRouter(app: FastAPI):
-        # 解析规则:server模块下面的带router字符的文件 (文件夹下特定文件)
-        # modulesServer = __import__("server")
-        # for root, dirs, files in os.walk(os.path.join(os.getcwd(), "server")):
-        #     for file in files:
-        #         if not file.find("router") == -1:
-        #             file = file.replace(".py", "")
-        #             parentModule = getattr(modulesServer, os.path.basename(root))
-        #             module = getattr(parentModule, file)
-        #             app.include_router(module.router)
-
+        # 解析规则:放在router模块下面的文件 (文件夹下文件)
         # 是否为已打包环境
         if getattr(sys, "frozen", False):
             base_path = os.path.join(sys._MEIPASS, "router")
@@ -42,13 +33,13 @@ class Env:
             if os.path.isfile(os.path.join(base_path, f))
         ]
 
-        # 解析规则:放在router模块下面的文件 (文件夹下文件)
         for file in files_in_current_dir:
             file = file.replace(".py", "")
             if file in ["__init__", ".pyc"]:
                 continue
-            m = importlib.import_module("router." + file)
-            app.include_router(m.router)
+            module = importlib.import_module("router." + file)
+            if hasattr(module, "router"):
+                app.include_router(module.router)
 
     def initHttp(app: FastAPI):
         # 允许的跨域来源
@@ -74,6 +65,7 @@ class Env:
             allow_methods=["*"],
             allow_headers=["*"],
         )
+
         # 添加认证中间件
         app.add_middleware(AuthenticationMiddleware)
 
